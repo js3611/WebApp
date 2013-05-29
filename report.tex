@@ -5,7 +5,7 @@
 \begin{document}
 \title{WebApps Group Project: Milestone Report} \date{29th May
   2013} \author{
-  Thai Tham Nguyen $<$ttn211@imperial.ac.uk$>$\\
+  Thai Tam Nguyen $<$ttn211@imperial.ac.uk$>$\\
   Jo Schlemper $<$js3611@imperial.ac.uk$>$\\
   Terence Tse  $<$tt1611@imperial.ac.uk$>$ }
 \maketitle
@@ -16,24 +16,25 @@ While sharing a flat with some friends, naturally, we decided to pool together m
 Although we shall all be helping one another in every aspect of the project, we did find it to be a good idea to split the problem into 3 main parts for each of us to "take charge" of. If one part gets finished before the others, then of course we will collbaorate to finish the remaining bits.\\ \\
 Thai Tam shall be managing the app GUI and the general graphical representation and visual aspects of the application.\\
 Jo shall be in charge of the core of the application such as how to link the database to the application and how different sections of the application interact with one another and the database and web server.\\
-Terence shall be in charge of managing the database and how updates are made to it as well as maintained and any other general issues concerning that.
+Terence shall be in charge of managing the database and its updates as well as its maintenance and any other general issues that they may involve.
 
 \section*{Implementation Language}
 
-After a short discussion, we decided to develop an application for android phones. There are several reasons for our decision. Firstly, we can develop android applications using Java, which is the programming language we are, collectively, most proficient in. Choosing to develop an iOS application requires knowing Objective-C; this would give us the added work of learning the language which could detract us from more interesting options, such as extending the application. Secondly, there are many existing templates for android applications which will save us some time in the design stage of the project as we can draw inspiration from them. \\
-Instead of having the software situated on the web, we decided that it would be more flexible having it for mobile devices with possibility of adding the web version of the application at a later date. 
+After a short discussion, we decided to develop an application for android phones. There are several reasons for our decision. Indeed, we can develop android applications using Java, which is the programming language we are, collectively, most proficient in. Choosing to develop an iOS application requires knowing Objective-C; this would give us the added work of learning the language which could detract us from more interesting options, such as extending the application. Furthermore, there are many existing templates for android applications which will save us some time in the design stage of the project as we can draw inspiration from them. \\
+We have also decided to design an application for mobile devices, as it would be more flexible than having the software situated on the web server while still allowing us to add a web version of the application at a later date.
 
 \section*{The Idea}
-As we have highlighted in the preface of this document, we are designing an application aimed ideally at students who are sharing a flat. Of course this application is not just restricted to these people, it doesnt have to be used by students and it does not just have to be for those who share a flat. It could also be loosely used to help simply track debts in between friends, for example when they go out, share a meal and have one person foot the bill for the time being.\\
+As we have highlighted in the preface of this document, we are designing an application aimed ideally at students who are sharing a flat. However, this is not restrictive - the application could be loosely used to help simply track debts in between friends, for example when they go out, share a meal and have one person foot the bill for the time being.\\
+
 \\
 \subsection*{Application Basics}
-The main focus of the application is to keep track of money that is owed to the person who has the app and the money that the user owes to other friends. Ideally, all users will have an account by using this application. They will also have the ability to link with others who have the application. If not, then all that is lost is some small functionality such as messaging and reminders etc and the application will just act as a memo to collect or retrieve money from the listed individual. 
+The main focus of the application is to keep track of money that is owed to the user, and the money that he owes to other friends. Ideally, all users will have an account when using this application, which will allow them to link with each other. If not, then the application will just act as a memo to collect or retrieve money from the listed individual, and ignore the messaging and reminder functionalities. 
 
-The debt tracking part of the application can be thought of in two modes. We have a per item mode or a per person mode. An explanation of these two modes can be found below. The user can also switch between these two modes within the settings of the application.  
-Additional parts of the application which greatly increase and improve the functionality and reason for use of this application, which we have decided on include: messaging, calendar and 'wish lists' for the time being. These shall also be introduced briefly later in this section.
+The debt tracking part of the application can be thought of in two modes: a per item mode or a per person mode, both described below. The user can switch between these two modes within the settings of the application.  
+Additional parts of the application which greatly increase and improve its functionality and reason for use, which we have decided on include messaging, a calendar and 'wish lists' for the time being. These shall also be introduced briefly later in this section.
 
-We are also integrating reminders into this application. This is the 'Where's my money?' part of the application. We all feel a little awkward pestering each other to return money so this app should do that annoying stuff for you.
-The reminders will be automatic or user incurred. Every time the user opens up the application, they will be reminded if they have any outstanding debts to pay. Since that may not be enough, we also decided to allow users to send reminders to others that money is due to be paid. 
+Reminders act as the 'Where's my money?' part of the application, and therefore a crucial part of it. We all feel a little awkward pestering each other to return money so this app should do it for you.
+The reminders will be automatic or user incurred. Every time the user opens up the application, they will be reminded of any outstanding debts to pay. Since that may not be enough, we also decided to allow users to send reminders to others that money is due to be paid. 
 
 \subsubsection*{Per Item Mode}
 We consider a 'transaction' or some form of payment as an 'item'. Thus transactions of money in real life will be logged in a database and presented to the user on screen. It shall be displayed as a 'log' or a list of transactions. 
