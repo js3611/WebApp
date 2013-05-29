@@ -1,5 +1,5 @@
 \documentclass[a4paper,9t]{article}
-\usepackage[a4paper, includefoot, margin=2cm]{geometry}
+\usepackage[a4paper, includefoot, margin=1.5cm]{geometry}
 \usepackage[parfill]{parskip}
 
 \begin{document}
@@ -10,7 +10,7 @@
   Terence Tse  $<$tt1611@imperial.ac.uk$>$ }
 \maketitle
 \section*{Preface}
-While sharing a flat with some friends, naturally, we decided to pool together money and share payments for things such as groceries, meals out and utility bills. Everyone who shares a flat knows the troubles associated with tracking payment to your friends, and even more so, chasing them down for your money. Our group intends to develop and application which will allow such situations to be resolved easily.
+While sharing a flat with some friends, naturally, we decided to pool together money and share payments for things such as groceries, meals out and utility bills. Everyone who shares a flat knows the troubles associated with tracking payment to your friends, and even more so, chasing them down for your money. Our group intends to develop and application which will allow such situations to be resolved easily. This will aim ideally at students who are sharing a flat. However, this is not restrictive - the application could be loosely used to help simply track debts in between friends, for example when they go out, share a meal and have one person foot the bill for the time being.\\
 
 \section*{Group arrangement}
 Although we shall all be helping one another in every aspect of the project, we did find it to be a good idea to split the problem into 3 main parts for each of us to "take charge" of. If one part gets finished before the others, then of course we will collbaorate to finish the remaining bits.\\ \\
@@ -24,9 +24,7 @@ After a short discussion, we decided to develop an application for android phone
 We have also decided to design an application for mobile devices, as it would be more flexible than having the software situated on the web server while still allowing us to add a web version of the application at a later date.
 
 \section*{The Idea}
-As we have highlighted in the preface of this document, we are designing an application aimed ideally at students who are sharing a flat. However, this is not restrictive - the application could be loosely used to help simply track debts in between friends, for example when they go out, share a meal and have one person foot the bill for the time being.\\
 
-\\
 \subsection*{Application Basics}
 The main focus of the application is to keep track of money that is owed to the user, and the money that he owes to other friends. Ideally, all users will have an account when using this application, which will allow them to link with each other. If not, then the application will just act as a memo to collect or retrieve money from the listed individual, and ignore the messaging and reminder functionalities. 
 
@@ -46,27 +44,26 @@ A transaction will hold the following pieces of data about it:
 \item{Person(s) involved in the transaction}
 \item{Extra notes, a section for user input (*see below)}
 \end{itemize}
-The idea is to have the list display just the core details, which is transaction name, persons involved (or a somewhat cut off list) and the amount that is needed to be collected. The user can then look up further information about the transaction by simply selecting the entry in the log. This should pop open a new window which shall display the information. When there is a transaction that concerns multiple people, the extended information will show the user how much each person of the group owes as a portion of the total.
-The log shall be displayed in chronological order but may be edited slightly based on an additional option of transactions which is urgency of payment collection. We decided to have this feature for those emergency situations such as when you need the money for a utility bill, or simply because the person who owes you is leaving the country for an extended period.
+The idea is to have the list display just the core details, which is transaction name, persons involved (or a somewhat cut off list) and the amount that will be/needs to be collected. The user can then look up further information about the transaction by simply selecting the entry in the log. A new window displaying the information shall then pop up. When a transaction concerns multiple people, the extended information will show the user how much each person of the group owes as a portion of the total.
+The log shall be displayed in chronological order but may be edited slightly based on urgency of payment collection. This will be useful for emergency situations, such as when you need the money for a utility bill, or simply because the person who owes you is leaving the country for an extended period.
 
 \subsubsection*{Per Person Mode}
-Per person mode has the difference from per item mode that instead of transactions, we now have a 'contact list'-type log, where every person you have entered into the application will have an affiliated monetary value affixed to their name. This value will be either the amount you owe or the amount you need to repay to that person. 
+Per person mode differs from the per item mode by its 'contact list'-type log, where every person you have entered into the application will have an affiliated monetary value affixed to their name. This value will be the overall total amount you owe to or are owed by that person. 
 We found that this is a very useful and actually quite a popular method of keeping track of the debt between friends. In absence of such an application, people will usually keep track of the overall amount they owe each other. For example, I owed Jo £5, I might have paid for the next meal which equated to £7 and thus he'd just pay me £2. We thought of this mode with these types of situation in mind.
-The rest of this mode shall follow suit of the per item mode. When you click on a person you shall get a new pop up window, or 'profile' page, which will show you a list of all the transactions between you and the person you have selected. These transactions are essentially just a reformatting of the per item mode just arranged by person name.
+The rest of this mode shall follow suit of the per item mode. When you click on a person you shall get a new pop up window, or 'profile' page, which will show you a list of all the transactions between you and the person you have selected. These transactions are essentially just a reformatting of the per item mode, arranged by person name.
 
 \subsection*{User Interaction}
-Obviously, to add a new transaction into the database of the app, the user has to add one as input. The input method will be made as simplistic and short as possible. The user will have the opportunity to form a 'group payment' and thus form a group of multiple other individuals who need to pay them back. There will also be a 'equal split' button which allows for quick calculation of how much each person owes as part of the bill. This does not necessarily need to be used to hold the data as a transaction, but can also be just used in passing o easily split a bill equally.
+Obviously, to add a new transaction into the database of the app, the user has to add one as input. The input method will be made as simple as possible. The user will have the opportunity to form a 'group payment' involving multiple users who may owe them. There will also be an 'equal split' button which allows for quick calculation of how much each person owes as part of the bill. This does not necessarily need to be used to hold the data as a transaction, but simply in passing or easily spliting a bill equally.
 
 \subsubsection*{Messaging}
 The messaging feature of this application was initially to supplement the reminders that the application offers. For example, if someone kept bothering you with reminders but you had the valid reason that your pay check doesn't arrive until Friday, then a message could be sent.
-We saw that this was necessary but we also saw it would be quite easy to extend this feature to encompass many more features of a fully fledged messenger application.
-We will also incorporate group chats into our application for those transactions that involve multiple people. This way, communication between the members and whatever compromises they may reach can be accommodated.
+We saw that this was necessary but we also saw it would be quite easy to extend this feature to encompass many more features of a fully fledged messenger application, such as group chats. This will allow communication for those transactions that involve multiple people, and therefore, whatever compromises they may reach to be accommodated.
 
 \subsubsection*{Calender}
-The Calendar feature allows for a richening of the debt feature. We intend to use this feature to add deadlines to payments which can then synthesize with the fact that we also have the idea of an urgency rate on payments. The deadline feature can then also collaborate with the reminders the app also provides.
-Additional things we could include on the calendar are pinning the events when the transactions occur to serve as a reminder when looking back on them. Other ideas we had in mind are to add events or other such reminders like when the utility bill is due etc. for all those that share the same flat as the user.
+The Calendar feature allows for a richening of the debt feature. We intend to use this feature to add deadlines to payments which can then synthesize with the fact that we also have the idea of an urgency rate on payments. The deadline feature can then also collaborate with the reminders the app already provides.
+We could possibly include on the calendar pinning of the events when the transactions occur to serve as a reminder when looking back on them. Other ideas we had in mind are to add events or other such reminders like when the utility bill is due etc. for all those that share the same flat as the user.
 
 \subsubsection*{Wish list}
-The Wish List is a small trinket we collectively thought would be a nice addition to our application. In essence, it is a shopping list for not just the user but also anyone else. A user may add friends who also own this application to their wish list and they are free to view the wish list of the person they add and vice versa. This will mean that if a certain flat member is out at the groceries, they can check the list of their wish list and should be able to view their flat mates' lists as well and possibly help them buy things that they need to save multiple trips to the supermarket.
-This poses a few problems and thus we shall be trying to implement a synchronisation component for these wish lists. The lists will need to update whenever someone adds to it, at the moment we are proposing this update check happens upon every time the user starts the application. However we are still contemplating this due to the overhead this will incur.
+The Wish List is a small trinket we collectively thought would be a nice addition to our application. In essence, it is a shopping list for not just the user but also anyone else. A user may add friends who also own this application to their follow list and would become free to view their wish list and vice versa. This will mean that if a certain flat member is out at the groceries, they can check their list of wish lists, and should be able to view both their and their flat mates' lists, hence possibly help them buy things they need,in order to save multiple trips to the supermarket.
+This induces implementing a synchronisation component for these wish lists. The lists will need to update whenever someone adds to it, at the moment we are proposing this update check happens upon every time the user starts the application. However we are still contemplating this due to the overhead this will incur.
 \end{document}
