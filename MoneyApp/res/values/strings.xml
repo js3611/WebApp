@@ -25,5 +25,7 @@
     <string name="settings">Settings</string>
     <integer-array name="amount"></integer-array>
     <string name="amount">Amount</string>
+    
+    <string name="debug">Debug</string>
 
 </resources>

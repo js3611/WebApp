@@ -18,5 +18,4 @@ public class HttpReaders {
 		reader.read(buffer);
 		return new String(buffer);
 	}
-
 }

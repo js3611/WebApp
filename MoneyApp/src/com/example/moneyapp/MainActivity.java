@@ -30,12 +30,14 @@ import com.example.helpers.HttpReaders;
 public class MainActivity extends Activity {
 
 	TextView errorView;
+	String debug;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		errorView = (TextView) findViewById(R.id.errorView);
+		debug ="";
 	}
 
 	@Override
@@ -85,11 +87,11 @@ public class MainActivity extends Activity {
 	private boolean varifyPassword(String phoneNo, String password) {
 		
 		HttpClient httpClient = new DefaultHttpClient();
-		HttpPost httpPost = new HttpPost("http://146.169.53.96:59999/login");
+		HttpPost httpPost = new HttpPost("http://146.169.52.2:59999/login");
 		
 		try {
 			//Add data
-			List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(2);
+			List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(3);
 			nameValueP.add(new BasicNameValuePair("op", "checkPassword"));
 			nameValueP.add(new BasicNameValuePair("phone", phoneNo));
 			nameValueP.add(new BasicNameValuePair("password", password));
@@ -97,7 +99,9 @@ public class MainActivity extends Activity {
 			//execute Post request
 			HttpResponse res = httpClient.execute(httpPost);
 			
-			return HttpReaders.readIt(res.getEntity().getContent(), 500).equals("valid");	
+			String response = HttpReaders.readIt(res.getEntity().getContent(), 30);
+			debug = response;
+			return response.equals("valid");	
 		} catch (ClientProtocolException e) {
 			errorView.setText("ClientProtocolException");
 		} catch (IOException e) {
@@ -105,4 +109,9 @@ public class MainActivity extends Activity {
 		}		
 		return false;		
 	}
+	
+	public void debugButton() {
+		errorView.setText(debug);
+	}
+	
 }

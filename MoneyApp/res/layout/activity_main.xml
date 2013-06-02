@@ -55,4 +55,13 @@
         android:layout_above="@+id/password"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/errorView"
+        android:layout_alignTop="@+id/loginButton"
+        android:onClick="debugButton"
+        android:text="@string/debug" />
+
 </RelativeLayout>
