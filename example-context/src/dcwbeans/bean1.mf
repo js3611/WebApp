@@ -1,0 +1,2 @@
+Name: dcwbeans/bean1.class
+Java-Bean: True

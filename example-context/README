@@ -1,0 +1,70 @@
+Personal Tomcat Notes
+=====================
+
+1. Directory Layout:
+
+This personal tomcat directory is laid out as follows:
+
+conf:	vital Tomcat config files, especially:
+
+	server.xml	   (defining the port - 59999 - Tomcat binds to),
+	web.xml	           (defining what servlets are initially configured),
+	context.xml	   (defining that contexts are reloadable),
+	logging.properties (defining how logs are processed).
+
+logs:	where the Tomcat logs are stored, especially:
+
+	catalina.DATE.log   the Tomcat startup messages.
+	access.DATE.log	    web accesses made so far.
+	localhost.DATE.log  miscellaneous other messages.
+
+	The logs are cleared out each time you run 'tomcat6 start'
+
+src:	a suggested directory for all your Java servlet/bean classes,
+	plus installation logic (ant/make/whatever) to deploy them into
+	the webapp context directory:
+
+webapps/ROOT:
+	where Personal Tomcat's sole webapp resides.  Under this directory
+	we have the usual context directory structure:
+		*.html			- static web pages scattered about
+		*.jsp			- JSP pages scattered about
+		WEB-INF/web.xml		- servlet namespace mappings.
+		WEB-INF/classes/*.class	- servlet/bean/support class files
+		WEB-INF/lib/*.jar	- servlet/bean/support jars
+
+	We've prepped this directory with index.jsp, a trivial example.
+
+work:	where Tomcat places it's working files, eg. the Java servlet source
+	files generated from JSP files are stored here.  In particular,
+	index.jsp will be turned into a servlet stored in:
+	  work/Catalina/localhost/_/org/apache/jsp/index_jsp.java
+	and then compiled into:
+	  work/Catalina/localhost/_/org/apache/jsp/index_jsp.class
+
+2. Starting Personal Tomcat on a Lab PC.
+
+- Logged on to an arbitrary lab PC, having created a context directory
+  using mktomcat6, cd into that context directory.
+
+- Choose what TCP port (above 1024) you'd like Tomcat to start on, we
+  suggest 59999 as an arbitrary unused port - specify the port by
+  changing two lines in conf/server.xml (changing "59999" to your chosen port):
+
+  <!-- Define a non-SSL HTTP/1.1 Connector on port 59999 -->
+  <Connector port="59999" maxHttpHeaderSize="8192"
+
+- Now, start Tomcat running:  tomcat6 start
+
+- Check the logs.  In particular, check the catalina.DATE.log file to
+  see whether or not Tomcat started successfully.
+
+- If so, start a web browser on your lab PC, and point it at the URL:
+
+    http://localhost:59999/
+
+  (or whichever port you choose).
+
+- index.jsp should execute and you should see the results.
+
+- and don't forget to stop Tomcat: tomcat6 stop
