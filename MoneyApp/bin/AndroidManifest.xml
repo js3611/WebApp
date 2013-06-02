@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.moneyapp"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+
+	<uses-permission android:name="android.permission.INTERNET" />	
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.example.moneyapp.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.Calendar"
+            android:label="@string/title_activity_calendar" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.Profile"
+            android:label="@string/title_activity_profile" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.GroupProfile"
+            android:label="@string/title_activity_group_profile" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.MainMenu"
+            android:label="@string/title_activity_main_menu" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.PerPersonLog"
+            android:label="@string/title_activity_per_person_log" >
+        </activity>
+    </application>
+
+</manifest>
