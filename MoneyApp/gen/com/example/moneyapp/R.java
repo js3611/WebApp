@@ -43,6 +43,7 @@ public final class R {
         public static final int activity_vertical_margin=0x7f050001;
         public static final int border_offset=0x7f050004;
         public static final int border_width=0x7f050003;
+        public static final int column_width=0x7f050005;
         public static final int first_column=0x7f050002;
     }
     public static final class drawable {
