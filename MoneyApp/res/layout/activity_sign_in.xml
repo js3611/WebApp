@@ -16,7 +16,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:ems="10"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:text="@string/name"
+        android:textColor="@color/grey" />
 
     <EditText
         android:id="@+id/enterNumber"
@@ -25,7 +27,9 @@
         android:layout_alignLeft="@+id/enterName"
         android:layout_below="@+id/enterName"
         android:ems="10"
-        android:inputType="phone" />
+        android:inputType="phone"
+        android:text="@string/phone"
+        android:textColor="@color/grey" />
     
     <EditText
         android:id="@+id/enterPassword"
@@ -35,7 +39,9 @@
         android:layout_below="@+id/enterNumber"
         android:layout_marginTop="18dp"
         android:ems="10"
-        android:inputType="textPassword" />
+        android:inputType="textPassword" 
+        android:text="@string/password"
+        android:textColor="@color/grey"/>
 
     <EditText
         android:id="@+id/checkPassword"
@@ -44,37 +50,44 @@
         android:layout_below="@+id/enterPassword"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:text="@string/password"
+        android:textColor="@color/grey" />
+
+    <EditText
+        android:id="@+id/enterTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/enterDate"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:inputType="time"
+        android:text="@string/time"
+        android:textColor="@color/grey" >
+
+        <requestFocus />
+    </EditText>
 
     <EditText
         android:id="@+id/enterDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/enterTime"
         android:layout_alignLeft="@+id/checkPassword"
+        android:layout_below="@+id/checkPassword"
+        android:layout_marginTop="28dp"
         android:ems="10"
-        android:inputType="date" />
-    
-    <EditText
-        android:id="@+id/enterTime"
+        android:inputType="date"
+        android:text="@string/date"
+        android:textColor="@color/grey" />
+
+    <Button
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/enterDate"
-        android:layout_marginBottom="56dp"
-        android:ems="10"
-        android:inputType="time" />
-
-    <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/checkPassword"
-        android:layout_centerVertical="true"
-        android:ems="10"
-        android:text="AutoCompleteTextView" >
-
-        <requestFocus />
-    </AutoCompleteTextView>
+        android:layout_below="@+id/enterTime"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/custom_button"
+        android:layout_marginTop="50dp"
+        android:text="@string/register" />
 
 </RelativeLayout>
