@@ -90,6 +90,8 @@
         android:layout_alignTop="@+id/errorView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="27dp"
-        android:text="@string/signIn" />
+        android:text="@string/signIn"
+        android:onClick="signInHandler"
+        android:clickable="true" />"
 
 </RelativeLayout>

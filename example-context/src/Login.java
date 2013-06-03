@@ -61,7 +61,7 @@ public class Login extends HttpServlet {
 		       HttpServletResponse response)
 	throws IOException, ServletException
     {
-	response.setContentType("text/html");
+	//	response.setContentType("text/html");
 	PrintWriter out = response.getWriter();
 
 	String operation = request.getParameter("op");

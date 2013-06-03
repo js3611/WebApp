@@ -30,14 +30,14 @@ import com.example.helpers.HttpReaders;
 public class MainActivity extends Activity {
 
 	TextView errorView;
-	String debug;
+	String errorMessage;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		errorView = (TextView) findViewById(R.id.errorView);
-		debug ="";
+		errorMessage ="";
 		errorView.setText("e.g. phone: 8001505129, pw:IP");
 	}
 
@@ -73,7 +73,9 @@ public class MainActivity extends Activity {
 			if (result) {
 				Intent intent = new Intent(MainActivity.this, MainMenu.class);
 				startActivity(intent);
-			} 
+			} else {
+				errorView.setText(errorMessage);
+			}
 		}
 		
 	}
@@ -101,10 +103,10 @@ public class MainActivity extends Activity {
 			HttpResponse res = httpClient.execute(httpPost);
 			
 			int response = HttpReaders.readInt(res.getEntity().getContent(), 1);
-			
 			return handleResponse(response);	
+			
 		} catch (ClientProtocolException e) {
-			errorView.setText("ClientProtocolException");
+			errorView.setText("ClientProtocolException"); 
 		} catch (IOException e) {
 			errorView.setText("IOException in postData");
 		}		
@@ -116,12 +118,17 @@ public class MainActivity extends Activity {
 		case 1: //Correct password
 			return true;
 		case 2: //Wrong password
-			errorView.setText("invalid password");
+			errorMessage = "invalid password";
 			return false;
 		default:
-			errorView.setText("something went wrong");
+			errorMessage = "something went wrong";
 			return false;
 		}
+	}
+	
+	public void signInHandler(View view) {
+		Intent intent = new Intent(MainActivity.this, SignIn.class);
+		startActivity(intent);
 	}
 	
 	/*
