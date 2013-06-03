@@ -10,6 +10,18 @@
     tools:context=".MainMenu" >
     
     <Button
+        android:id="@+id/calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/transactions"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/custom_button"
+        android:shadowColor="@android:color/background_dark"
+        android:text="@string/calendar" 
+        android:onClick="toCalendar"/>
+    
+    <Button
         android:id="@+id/transactions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +30,8 @@
         android:layout_marginBottom="30dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
-        android:text="@string/transactions" />
+        android:text="@string/transactions" 
+        android:onClick="toTransactions" />
     
     <Button
         android:id="@+id/convos"
@@ -29,7 +42,8 @@
         android:layout_marginBottom="30dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
-        android:text="@string/convos" />
+        android:text="@string/convos"
+        android:onClick="toMessages" />
 
     <Button
         android:id="@+id/wishList"
@@ -40,7 +54,8 @@
         android:layout_marginBottom="30dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
-        android:text="@string/wishList" />
+        android:text="@string/wishList" 
+        android:onClick="toWishList"/>
     
     <Button
         android:id="@+id/settings"
@@ -51,17 +66,10 @@
         android:layout_marginBottom="23dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
-        android:text="@string/settings" />
+        android:text="@string/settings" 
+        android:onClick="toSettings"
+        />
 
-    <Button
-        android:id="@+id/calendar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/transactions"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/custom_button"
-        android:shadowColor="@android:color/background_dark"
-        android:text="@string/calendar" />
+    
 
 </RelativeLayout>
