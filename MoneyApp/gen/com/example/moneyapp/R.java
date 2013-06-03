@@ -43,6 +43,7 @@ public final class R {
         public static final int activity_vertical_margin=0x7f050001;
         public static final int border_offset=0x7f050004;
         public static final int border_width=0x7f050003;
+        public static final int column_width=0x7f050005;
         public static final int first_column=0x7f050002;
     }
     public static final class drawable {
@@ -54,32 +55,40 @@ public final class R {
     public static final class id {
         public static final int CreatorName=0x7f0a0001;
         public static final int GroupName=0x7f0a0002;
-        public static final int Log=0x7f0a0017;
+        public static final int Log=0x7f0a0018;
         public static final int MemberNames=0x7f0a0004;
-        public static final int action_settings=0x7f0a001b;
+        public static final int action_settings=0x7f0a0023;
+        public static final int autoCompleteTextView1=0x7f0a0022;
         public static final int autologin=0x7f0a000c;
-        public static final int calendar=0x7f0a0010;
+        public static final int calendar=0x7f0a0011;
         public static final int calendarView1=0x7f0a0000;
+        public static final int checkPassword=0x7f0a001d;
         public static final int checkedTextView1=0x7f0a0009;
         public static final int checkedTextView2=0x7f0a000b;
-        public static final int convos=0x7f0a0012;
+        public static final int convos=0x7f0a0013;
+        public static final int enterDate=0x7f0a0020;
+        public static final int enterName=0x7f0a001c;
+        public static final int enterNumber=0x7f0a001e;
+        public static final int enterPassword=0x7f0a001f;
+        public static final int enterTime=0x7f0a0021;
         public static final int errorView=0x7f0a000e;
         public static final int loginButton=0x7f0a000d;
         public static final int password=0x7f0a000a;
         public static final int phoneNumber=0x7f0a000f;
         public static final int quickContactBadge1=0x7f0a0003;
-        public static final int relativeLayout1=0x7f0a0016;
-        public static final int settings=0x7f0a0014;
-        public static final int tableLayout1=0x7f0a0015;
+        public static final int relativeLayout1=0x7f0a0017;
+        public static final int settings=0x7f0a0015;
+        public static final int signIn=0x7f0a0010;
+        public static final int tableLayout1=0x7f0a0016;
         public static final int tableRow1=0x7f0a0005;
         public static final int tableRow2=0x7f0a0006;
         public static final int tableRow3=0x7f0a0007;
         public static final int tableRow4=0x7f0a0008;
-        public static final int tableRow5=0x7f0a0018;
-        public static final int transactions=0x7f0a0011;
-        public static final int username=0x7f0a0019;
-        public static final int usernumber=0x7f0a001a;
-        public static final int wishList=0x7f0a0013;
+        public static final int tableRow5=0x7f0a0019;
+        public static final int transactions=0x7f0a0012;
+        public static final int username=0x7f0a001a;
+        public static final int usernumber=0x7f0a001b;
+        public static final int wishList=0x7f0a0014;
     }
     public static final class layout {
         public static final int activity_calendar=0x7f030000;
@@ -90,8 +99,9 @@ public final class R {
         public static final int activity_per_person_log=0x7f030005;
         public static final int activity_profile=0x7f030006;
         public static final int activity_settings=0x7f030007;
-        public static final int activity_transactions=0x7f030008;
-        public static final int activity_wish_list=0x7f030009;
+        public static final int activity_sign_in=0x7f030008;
+        public static final int activity_transactions=0x7f030009;
+        public static final int activity_wish_list=0x7f03000a;
     }
     public static final class menu {
         public static final int calendar=0x7f090000;
@@ -102,8 +112,9 @@ public final class R {
         public static final int per_person_log=0x7f090005;
         public static final int profile=0x7f090006;
         public static final int settings=0x7f090007;
-        public static final int transactions=0x7f090008;
-        public static final int wish_list=0x7f090009;
+        public static final int sign_in=0x7f090008;
+        public static final int transactions=0x7f090009;
+        public static final int wish_list=0x7f09000a;
     }
     public static final class string {
         public static final int action_settings=0x7f060001;
@@ -121,6 +132,7 @@ public final class R {
         public static final int password=0x7f060016;
         public static final int phone=0x7f060015;
         public static final int settings=0x7f060012;
+        public static final int signIn=0x7f06001b;
         public static final int title_activity_calendar=0x7f060003;
         public static final int title_activity_group_profile=0x7f060006;
         public static final int title_activity_main_menu=0x7f06000d;
@@ -128,6 +140,7 @@ public final class R {
         public static final int title_activity_per_person_log=0x7f06000b;
         public static final int title_activity_profile=0x7f060005;
         public static final int title_activity_settings=0x7f06001a;
+        public static final int title_activity_sign_in=0x7f06001c;
         public static final int title_activity_transactions=0x7f060017;
         public static final int title_activity_wish_list=0x7f060019;
         public static final int transactions=0x7f06000f;

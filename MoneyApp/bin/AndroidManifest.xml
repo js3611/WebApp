@@ -61,6 +61,10 @@
             android:name="com.example.moneyapp.Settings"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity
+            android:name="com.example.moneyapp.SignIn"
+            android:label="@string/title_activity_sign_in" >
+        </activity>
     </application>
 
 </manifest>
