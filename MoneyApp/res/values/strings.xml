@@ -23,9 +23,14 @@
     <string name="convos">Messages</string>
     <string name="wishList">Wish List</string>
     <string name="settings">Settings</string>
+
     <integer-array name="amount"></integer-array>
+
     <string name="amount">Amount</string>
-    
     <string name="debug">Debug</string>
+    <string name="title_activity_transactions">Transactions</string>
+    <string name="title_activity_messages">Messages</string>
+    <string name="title_activity_wish_list">WishList</string>
+    <string name="title_activity_settings">Settings</string>
 
 </resources>
