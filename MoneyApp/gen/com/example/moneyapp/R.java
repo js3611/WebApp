@@ -54,30 +54,32 @@ public final class R {
     public static final class id {
         public static final int CreatorName=0x7f0a0001;
         public static final int GroupName=0x7f0a0002;
-        public static final int Log=0x7f0a0015;
+        public static final int Log=0x7f0a0017;
         public static final int MemberNames=0x7f0a0004;
-        public static final int action_settings=0x7f0a0019;
-        public static final int autologin=0x7f0a000b;
-        public static final int button1=0x7f0a000d;
-        public static final int calendar=0x7f0a0010;
+        public static final int action_settings=0x7f0a001b;
+        public static final int autologin=0x7f0a000c;
+        public static final int calendar=0x7f0a0012;
         public static final int calendarView1=0x7f0a0000;
-        public static final int convos=0x7f0a000f;
-        public static final int errorView=0x7f0a000c;
-        public static final int loginButton=0x7f0a0009;
+        public static final int checkedTextView1=0x7f0a0009;
+        public static final int checkedTextView2=0x7f0a000b;
+        public static final int convos=0x7f0a0011;
+        public static final int errorView=0x7f0a000e;
+        public static final int loginButton=0x7f0a000d;
         public static final int password=0x7f0a000a;
+        public static final int phoneNumber=0x7f0a000f;
         public static final int quickContactBadge1=0x7f0a0003;
-        public static final int relativeLayout1=0x7f0a0014;
-        public static final int settings=0x7f0a0012;
-        public static final int tableLayout1=0x7f0a0013;
+        public static final int relativeLayout1=0x7f0a0016;
+        public static final int settings=0x7f0a0014;
+        public static final int tableLayout1=0x7f0a0015;
         public static final int tableRow1=0x7f0a0005;
         public static final int tableRow2=0x7f0a0006;
         public static final int tableRow3=0x7f0a0007;
         public static final int tableRow4=0x7f0a0008;
-        public static final int tableRow5=0x7f0a0016;
-        public static final int transactions=0x7f0a000e;
-        public static final int username=0x7f0a0017;
-        public static final int usernumber=0x7f0a0018;
-        public static final int wishList=0x7f0a0011;
+        public static final int tableRow5=0x7f0a0018;
+        public static final int transactions=0x7f0a0010;
+        public static final int username=0x7f0a0019;
+        public static final int usernumber=0x7f0a001a;
+        public static final int wishList=0x7f0a0013;
     }
     public static final class layout {
         public static final int activity_calendar=0x7f030000;
@@ -108,6 +110,8 @@ public final class R {
         public static final int hello_world=0x7f060004;
         public static final int login=0x7f060002;
         public static final int memberNames=0x7f060009;
+        public static final int password=0x7f060016;
+        public static final int phone=0x7f060015;
         public static final int settings=0x7f060012;
         public static final int title_activity_calendar=0x7f060003;
         public static final int title_activity_group_profile=0x7f060006;

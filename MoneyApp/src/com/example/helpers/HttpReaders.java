@@ -18,4 +18,10 @@ public class HttpReaders {
 		reader.read(buffer);
 		return new String(buffer);
 	}
+	
+	public static int readInt(InputStream stream, int len)
+			throws IOException, UnsupportedEncodingException {
+		return Integer.parseInt(readIt(stream,len));
+	}
+	
 }

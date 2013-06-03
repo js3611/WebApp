@@ -10,58 +10,77 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <Button
-        android:id="@+id/loginButton"
+    <QuickContactBadge
+        android:id="@+id/quickContactBadge1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/password"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:background="@drawable/custom_button"
-        android:shadowColor="@android:color/background_dark"
-        android:onClick="loginHandler"
-        android:text="@string/login" />
+        android:layout_marginTop="34dp" />
 
-    <EditText
-        android:id="@+id/password"
+    <CheckedTextView
+        android:id="@+id/checkedTextView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:ems="10"
-        android:inputType="textPassword" />
+        android:layout_above="@+id/password"
+        android:layout_alignRight="@+id/checkedTextView2"
+        android:text="@string/phone" />
 
     <CheckBox
         android:id="@+id/autologin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/password"
+        android:layout_above="@+id/loginButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         android:text="@string/autologin" />
 
-    <QuickContactBadge
-        android:id="@+id/quickContactBadge1"
+    <CheckedTextView
+        android:id="@+id/checkedTextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/password"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="44dp" />
+        android:layout_alignLeft="@+id/autologin"
+        android:layout_centerVertical="true"
+        android:text="@string/password" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/checkedTextView2"
+        android:layout_alignRight="@+id/errorView"
+        android:ems="10"
+        android:inputType="textPassword" />
 
     <TextView
         android:id="@+id/errorView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/password"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="53dp" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/errorView"
-        android:layout_alignTop="@+id/loginButton"
-        android:onClick="debugButton"
-        android:text="@string/debug" />
+        android:layout_above="@+id/errorView"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/custom_button"
+        android:onClick="loginHandler"
+        android:shadowColor="@android:color/background_dark"
+        android:text="@string/login" />
+
+    <EditText
+        android:id="@+id/phoneNumber"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/checkedTextView1"
+        android:layout_alignLeft="@+id/password"
+        android:ems="10"
+        android:inputType="phone" >
+
+        <requestFocus />
+    </EditText>
 
 </RelativeLayout>

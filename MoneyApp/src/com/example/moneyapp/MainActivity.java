@@ -38,6 +38,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		errorView = (TextView) findViewById(R.id.errorView);
 		debug ="";
+		errorView.setText("e.g. phone: 8001505129, pw:IP");
 	}
 
 	@Override
@@ -50,11 +51,13 @@ public class MainActivity extends Activity {
 	public void loginHandler(View view) {
 	
 		EditText passwordText = (EditText) findViewById(R.id.password);
+		EditText phoneText = (EditText) findViewById(R.id.phoneNumber);
 		String password = passwordText.getText().toString();
-		String phoneNo = "8001505129";
+		String phoneNo = phoneText.getText().toString();
 		if (checkNetworkConnection())
 			new PasswordVerifier().execute(phoneNo,password);
-				
+		else
+			errorView.setText("No network connection");
 	}
 
 	private class PasswordVerifier extends AsyncTask<String, Void, Boolean> {
@@ -70,10 +73,7 @@ public class MainActivity extends Activity {
 			if (result) {
 				Intent intent = new Intent(MainActivity.this, MainMenu.class);
 				startActivity(intent);
-			} else {
-				TextView errorView = (TextView) findViewById(R.id.errorView);
-				errorView.setText("invalid password");
-			}
+			} 
 		}
 		
 	}
@@ -87,7 +87,8 @@ public class MainActivity extends Activity {
 	private boolean varifyPassword(String phoneNo, String password) {
 		
 		HttpClient httpClient = new DefaultHttpClient();
-		HttpPost httpPost = new HttpPost("http://146.169.52.2:59999/login");
+		//Need to choose the right local host every time
+		HttpPost httpPost = new HttpPost("http://146.169.53.172:59999/login");
 		
 		try {
 			//Add data
@@ -99,9 +100,9 @@ public class MainActivity extends Activity {
 			//execute Post request
 			HttpResponse res = httpClient.execute(httpPost);
 			
-			String response = HttpReaders.readIt(res.getEntity().getContent(), 30);
-			debug = response;
-			return response.equals("valid");	
+			int response = HttpReaders.readInt(res.getEntity().getContent(), 1);
+			
+			return handleResponse(response);	
 		} catch (ClientProtocolException e) {
 			errorView.setText("ClientProtocolException");
 		} catch (IOException e) {
@@ -109,9 +110,24 @@ public class MainActivity extends Activity {
 		}		
 		return false;		
 	}
-	
-	public void debugButton() {
-		errorView.setText(debug);
+
+	private boolean handleResponse(int response) {
+		switch (response) {
+		case 1: //Correct password
+			return true;
+		case 2: //Wrong password
+			errorView.setText("invalid password");
+			return false;
+		default:
+			errorView.setText("something went wrong");
+			return false;
+		}
 	}
+	
+	/*
+	public void debugButton(View view) {
+		errorView.setText(debug +" and the length is "+debug.length());
+	}
+	*/
 	
 }

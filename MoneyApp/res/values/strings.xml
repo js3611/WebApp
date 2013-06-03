@@ -27,5 +27,7 @@
     <string name="amount">Amount</string>
     
     <string name="debug">Debug</string>
+    <string name="phone">Phone Number</string>
+    <string name="password">Password</string>
 
 </resources>
