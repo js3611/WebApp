@@ -20,7 +20,7 @@
     <!--  table rows, columns, etc -->
     <style name="HeaderRow">
         <item name="android:background">#3399CC</item>
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
     <style name="HeaderText">
@@ -34,7 +34,7 @@
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:background">@drawable/table_border</item>
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">"135dp"</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
     <style name="BodyRow">

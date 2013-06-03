@@ -25,8 +25,7 @@
     android:text="@string/transactions">
     <TextView android:text="@string/userName"
         style="@style/HeaderText" /> 
-    <TextView android:text="@string/transactions"
-        style="@style/HeaderText" />
+
     <TextView android:text="@string/amount"
         style="@style/HeaderText" />"
     
