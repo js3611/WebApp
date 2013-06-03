@@ -31,27 +31,27 @@ public class MainMenu extends Activity {
 		return true;
 	}
 
-	protected void toCalendar(View view){
+	public void toCalendar(View view){
 		Intent intent = new Intent(MainMenu.this, Calendar.class);
 		startActivity(intent);
 	}
 	
-	protected void toTransactions(View view){
+	public void toTransactions(View view){
 		Intent intent = new Intent(MainMenu.this, Transactions.class);
 		startActivity(intent);
 	}
 	
-	protected void toMessages(View view){
+	public void toMessages(View view){
 		Intent intent = new Intent(MainMenu.this, Messages.class);
 		startActivity(intent);
 	}
 	
-	protected void toWishList(View view){
+	public void toWishList(View view){
 		Intent intent = new Intent(MainMenu.this, WishList.class);
 		startActivity(intent);
 	}
 	
-	protected void toSettings(View view){
+	public void toSettings(View view){
 		Intent intent = new Intent(MainMenu.this, Settings.class);
 		startActivity(intent);
 	}
