@@ -8,6 +8,8 @@ import java.sql.*;
 
 public class Login extends HttpServlet {
 
+    int loginCount = 0;
+
     //A method to check existence 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response)
@@ -35,7 +37,11 @@ public class Login extends HttpServlet {
 							   "g1227132_u", "W0zFGMaqup" );
 	    Statement stmt = conn.createStatement();
 
+
 	    if (operation.equals("checkPassword")) {
+
+		//Check if userID exists
+		
 
 		String phoneNo = request.getParameter("phone");
 		String password = request.getParameter("password");
@@ -82,6 +88,18 @@ public class Login extends HttpServlet {
 							   "jdbc:postgresql://db.doc.ic.ac.uk/g1227132_u",
 							   "g1227132_u", "W0zFGMaqup" );
 	    Statement stmt = conn.createStatement();
+	    handleOperation(operation, stmt, request, out);
+
+	} catch (Exception e) {
+            out.println( "<h1>exception: "+e+e.getMessage()+"</h1>" );
+        }
+    }
+
+    private void handleOperation (String operation, Statement stmt, HttpServletRequest request, PrintWriter out) throws Exception {
+
+	    if (operation.equals("newAccount")) {
+		    //TODO
+	    }
 
 	    if (operation.equals("checkPassword")) {
 
@@ -90,15 +108,20 @@ public class Login extends HttpServlet {
 
 		ResultSet rs = stmt.executeQuery("SELECT password FROM appuser WHERE phonenumber='"+phoneNo+"'");
 
-		rs.next();
-		if (rs.getString("password").equals(password)) {
+		if (!rs.next()) { //User account with the phone Number doens't exist
+		    out.print( "3" );
+		} else if (rs.getString("password").equals(password)) { //correct password
 		    out.print( "1" );
-		} else {
-		    out.print( "2" );
+		} else { //wrong password
+		    loginCount++;
+		    if(loginCount >= 3) //tried too many
+			out.print("4");
+		    else 
+			out.print( "2" );
 		}
 	    }
-	} catch (Exception e) {
-            out.println( "<h1>exception: "+e+e.getMessage()+"</h1>" );
-        }
+
+
     }
+
 }
