@@ -10,6 +10,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -64,6 +65,14 @@
         <activity
             android:name="com.example.moneyapp.SignIn"
             android:label="@string/title_activity_sign_in" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.ExampleListActivity"
+            android:label="@string/title_activity_list" >
+        </activity>
+        <activity
+            android:name="com.example.tests.ListViewLoader"
+            android:label="@string/title_activity_list" >
         </activity>
     </application>
 

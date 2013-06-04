@@ -40,5 +40,7 @@
     <string name="date">jj/mm/yyyy</string>
     <string name="time">hh:mm</string>
     <string name="register">Register</string>
+    <string name="checkNewView">Check New View?</string>
+    <string name="title_activity_list">ListActivity</string>
 
 </resources>

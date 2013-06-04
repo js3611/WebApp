@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
 		errorMessage ="";
 		errorView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
 		errorView.setText("e.g. phone: 8001505129, pw:IP");
+		errorView.setTextColor(Color.RED);
 
 	}
 
