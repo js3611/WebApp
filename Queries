@@ -1,0 +1,90 @@
+
+PER PERSON MODE QUERIES
+
+(Q1, gets user details)
+SELECT userid
+FROM appuser
+WHERE phonenumber = SUPPLIED PHONE NUMBER
+
+(Q2, gets all the users who owe the current user)
+
+SELECT (owesuserid, amount) 
+FROM debt
+WHERE debt.userid = Q1.userid 
+GROUP BY debt.owesuserid
+
+(Q3, gets all users who the currnet user owes)
+SELECT (userid, amount) 
+FROM debt
+WHERE debt.owesuserid = Q1.userid
+GROUP BY debt.userid
+
+
+
+
+PER ITEM MODE QUERIES
+
+(Q4, gets the transaction details)
+SELECT (name, amount, date)
+FROM transactions
+ORDER BY date DESC
+
+(Q5, gets the additional details)
+SELECT * 
+FROM transactions
+WHERE VARIABLE = transid
+
+
+
+
+MESSAGING QUERIES
+
+(Q6, scrollbutton chat between two users [not groups])
+SELECT (conversationid, _date, _time, user1, user2)
+FROM message
+WHERE message.groupchat = 'False'
+
+(Q7, scrollbutton chat between user and group)
+SELECT (conversationid, _date, _time, user1, groupid)
+FROM message
+WHERE message.groupchat = 'True'
+
+(Q8, show all of the message details for a user to user)
+SELECT (content, _date, _time, firstname)
+FROM messagecontent INNER JOIN appuser on (appuser.userid = messagecontent.userid)
+WHERE conversationid = CONVOID FROM Q6 or Q7
+ORDER BY (messagecontent._time,messagecontent._date) DESC
+
+
+
+FRIENDSLIST QUERY
+
+(Q9, will get all friends, and their details, of this user)
+SELECT (friendid, firstname, surname, phonenumber) 
+FROM friends INNER JOIN appuser on (friends.friendid = appuser.userid)
+WHERE userid = Q1.userid
+ORDER BY firstname
+
+
+
+WISHLIST QUERIES
+
+(Q10, Will gather the subscribers to a wishlist)
+SELECT subscriber
+FROM wishsubscriber INNER JOIN appuser on (wishsubsciber.wishlist = appuser.wishlist)
+WHERE wishlist = SUPPLIED WISH LIST NUMBER
+
+(Q11 will gather wishlist items to their appropriate list)
+SELECT wishlist
+FROM appuser
+WHERE userID = supplied userid
+
+
+SELECT (itemid, item)
+FROM wishitems
+WHERE wishlist = PROVIDED WISHLIST 
+
+
+
+
+ 
