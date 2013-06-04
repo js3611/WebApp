@@ -24,7 +24,7 @@ public class ExampleListActivity extends ListActivity {
 		// no more this
 		// setContentView(R.layout.list_fruit);
 
-		ArrayAdapter<String> aa = new ArrayAdapter<String>(this, R.layout.activity_list,
+		ArrayAdapter<String> aa = new ArrayAdapter<String>(this, R.layout.adopter,
 				FRUITS);
 		
 		setListAdapter(aa);
