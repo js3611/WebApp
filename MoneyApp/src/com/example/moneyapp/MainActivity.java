@@ -13,9 +13,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -26,19 +29,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.helpers.HttpReaders;
+import com.example.helpers.StringFilter;
 
 public class MainActivity extends Activity {
 
 	TextView errorView;
 	String errorMessage;
 	
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		errorView = (TextView) findViewById(R.id.errorView);
 		errorMessage ="";
+		errorView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
 		errorView.setText("e.g. phone: 8001505129, pw:IP");
+
 	}
 
 	@Override
@@ -54,6 +61,12 @@ public class MainActivity extends Activity {
 		EditText phoneText = (EditText) findViewById(R.id.phoneNumber);
 		String password = passwordText.getText().toString();
 		String phoneNo = phoneText.getText().toString();
+		if (StringFilter.isIllegal(password) || StringFilter.isIllegal(phoneNo)) {
+			errorView.setText("Missing entries");
+			errorView.setTextColor(Color.RED);
+			return;
+		}
+		
 		if (checkNetworkConnection())
 			new PasswordVerifier().execute(phoneNo,password);
 		else
@@ -64,7 +77,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			return varifyPassword(params[0], params[1]);
+			return verifyPassword(params[0], params[1]);
 		}
 		
 		@Override
@@ -86,11 +99,12 @@ public class MainActivity extends Activity {
 		return networkInfo != null && networkInfo.isConnected();
 	}
 	
-	private boolean varifyPassword(String phoneNo, String password) {
+	private boolean verifyPassword(String phoneNo, String password) {
 		
 		HttpClient httpClient = new DefaultHttpClient();
 		//Need to choose the right local host every time
-		HttpPost httpPost = new HttpPost("http://146.169.53.172:59999/login");
+		//edge02: http://146.169.52.2:59999/login
+		HttpPost httpPost = new HttpPost("http://146.169.53.90:59999/login");
 		
 		try {
 			//Add data
@@ -118,10 +132,16 @@ public class MainActivity extends Activity {
 		case 1: //Correct password
 			return true;
 		case 2: //Wrong password
-			errorMessage = "invalid password";
+			errorMessage = "Invalid phone number or password (pass)";
+			return false;
+		case 3: //Wrong user
+			errorMessage = "Invalid phone number or password (phone)";
+			return false;
+		case 4: //Tried too often. 
+			errorMessage = "You've tried 3 times already. \n (Ideally shut down the app after dialog box)";
 			return false;
 		default:
-			errorMessage = "something went wrong";
+			errorMessage = "Something went wrong";
 			return false;
 		}
 	}
