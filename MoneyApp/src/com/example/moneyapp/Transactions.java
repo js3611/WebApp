@@ -23,7 +23,7 @@ public class Transactions extends Activity {
 	}
 
 	public void jumpToList(View view) {
-		Intent intent= new Intent(this, ExampleListActivity.class);
+		Intent intent= new Intent(this, PerPersonLog.class);
 		//		Intent intent= new Intent(this, ExampleListActivity.class);
 		startActivity(intent);
 	}

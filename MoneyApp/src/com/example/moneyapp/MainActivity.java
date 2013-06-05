@@ -60,6 +60,10 @@ public class MainActivity extends Activity {
 
 	public void loginHandler(View view) {
 	
+		//Temporal
+		Intent intente = new Intent(MainActivity.this, MainMenu.class);
+		startActivity(intente);
+		
 		EditText passwordText = (EditText) findViewById(R.id.password);
 		EditText phoneText = (EditText) findViewById(R.id.phoneNumber);
 		String password = passwordText.getText().toString();
