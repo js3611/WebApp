@@ -58,7 +58,7 @@ public class MessageAdapter extends BaseAdapter {
         if (name.equals("jo")) {
         	 image.setImageResource(R.drawable.jo);
         } else if (name.equals("thai")) {
-        	 image.setImageResource(R.drawable.thai);
+        	 image.setImageResource(R.drawable.thai); 
         } else {
         	 image.setImageResource(R.drawable.terence);
         }

@@ -6,6 +6,8 @@
 *~
 *.orig
 MoneyApp/bin/classes/
+MoneyApp/bin/jarlist.cache
+MoneyApp/bin/dexedLibs/
 MoneyApp/bin/dexedLibs/android-support-v4-fb591a*
 MoneyApp/gen/com/example/moneyapp/R.java
 MoneyApp/gen/com/example/moneyapp/R*.*

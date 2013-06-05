@@ -1,5 +1,7 @@
 package com.example.moneyapp;
 
+import com.example.moneyapp.message.MessageListActivity;
+import com.example.moneyapp.message.Messages;
 import com.example.moneyapp.transaction.Transactions;
 
 import android.annotation.SuppressLint;
@@ -44,7 +46,7 @@ public class MainMenu extends Activity {
 	}
 	
 	public void toMessages(View view){
-		Intent intent = new Intent(MainMenu.this, Messages.class);
+		Intent intent = new Intent(MainMenu.this, MessageListActivity.class);
 		startActivity(intent);
 	}
 	
