@@ -42,5 +42,6 @@
     <string name="register">Register</string>
     <string name="checkNewView">Check New View?</string>
     <string name="title_activity_list">ListActivity</string>
+    <string name="title_activity_per_person_log_profile">PerPersonLogProfile</string>
 
 </resources>

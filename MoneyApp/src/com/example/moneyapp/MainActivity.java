@@ -48,6 +48,8 @@ public class MainActivity extends Activity {
 		errorView.setTextColor(Color.RED);
 		EditText et = (EditText) findViewById(R.id.phoneNumber);
 		et.setText("8001505129");
+		EditText pt = (EditText) findViewById(R.id.password);
+		pt.setText("IP");
 
 	}
 

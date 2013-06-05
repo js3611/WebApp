@@ -1,5 +1,7 @@
 package com.example.moneyapp;
 
+import com.example.moneyapp.transaction.Transactions;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;

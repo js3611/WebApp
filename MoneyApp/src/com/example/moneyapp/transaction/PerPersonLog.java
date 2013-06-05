@@ -1,4 +1,4 @@
-package com.example.moneyapp;
+package com.example.moneyapp.transaction;
 
 import java.util.ArrayList;
 
@@ -8,8 +8,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.helpers.CustomAdapter;
-import com.example.helpers.MessageAdapter;
 import com.example.helpers.metadata.MessageDetails;
+import com.example.moneyapp.R;
+import com.example.moneyapp.R.drawable;
+import com.example.moneyapp.R.id;
+import com.example.moneyapp.R.layout;
 
 public class PerPersonLog extends Activity {
 

@@ -1,4 +1,4 @@
-package com.example.helpers;
+package com.example.moneyapp.transaction;
 
 import java.util.ArrayList;
 
@@ -70,6 +70,9 @@ public class MessageAdapter extends BaseAdapter {
 		return v;
 	}
 
+	public void onEntryClick(View view) {
+		 
+	}
 	
 	
 }

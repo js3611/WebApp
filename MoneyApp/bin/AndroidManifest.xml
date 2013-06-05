@@ -43,11 +43,11 @@
             android:label="@string/title_activity_main_menu" >
         </activity>
         <activity
-            android:name="com.example.moneyapp.PerPersonLog"
+            android:name="com.example.moneyapp.transaction.PerPersonLog"
             android:label="@string/title_activity_per_person_log" >
         </activity>
         <activity
-            android:name="com.example.moneyapp.Transactions"
+            android:name="com.example.moneyapp.transaction.Transactions"
             android:label="@string/title_activity_transactions" >
         </activity>
         <activity
@@ -73,6 +73,10 @@
         <activity
             android:name="com.example.tests.ListViewLoader"
             android:label="@string/title_activity_list" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.transaction.PerPersonLogProfile"
+            android:label="@string/title_activity_per_person_log_profile" >
         </activity>
     </application>
 
