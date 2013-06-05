@@ -43,5 +43,12 @@
     <string name="checkNewView">Check New View?</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_per_person_log_profile">PerPersonLogProfile</string>
+    <string name="title_activity_log_page_fragment">LogPageFragment</string>
+    
+    <string name="profile">Profile</string>
+    <string name="log">Log</string>
+    <string name="empty"> </string>
+     
+    
 
 </resources>

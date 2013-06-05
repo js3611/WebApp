@@ -78,6 +78,10 @@
             android:name="com.example.moneyapp.transaction.PerPersonLogProfile"
             android:label="@string/title_activity_per_person_log_profile" >
         </activity>
+        <activity
+            android:name="com.example.moneyapp.LogPageFragment"
+            android:label="@string/title_activity_log_page_fragment" >
+        </activity>
     </application>
 
 </manifest>

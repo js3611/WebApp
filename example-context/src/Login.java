@@ -9,6 +9,7 @@ import java.sql.*;
 public class Login extends HttpServlet {
 
     int loginCount = 0;
+    User user = new User();
 
     //A method to check existence 
     public void doGet(HttpServletRequest request,

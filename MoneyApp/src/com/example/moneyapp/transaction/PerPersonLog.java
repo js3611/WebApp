@@ -3,16 +3,16 @@ package com.example.moneyapp.transaction;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import com.example.helpers.CustomAdapter;
 import com.example.helpers.metadata.MessageDetails;
 import com.example.moneyapp.R;
-import com.example.moneyapp.R.drawable;
-import com.example.moneyapp.R.id;
-import com.example.moneyapp.R.layout;
 
 public class PerPersonLog extends Activity {
 
@@ -56,6 +56,23 @@ public class PerPersonLog extends Activity {
 	            details.add(Detail);        
 	            
 	            msgList.setAdapter(new MessageAdapter(details , this));
+	            
+	            registerForContextMenu(msgList);
+	            
+	            msgList.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> a, View v,
+							int pos, long id) {
+						
+						//TextView tv = (TextView) v.findViewById(R.id.From);
+						//String s = tv.getText().toString();
+						
+						startActivity(new Intent(PerPersonLog.this, PerPersonLogProfile.class));
+						
+					}
+				});
+	            
 	}
 
 }
