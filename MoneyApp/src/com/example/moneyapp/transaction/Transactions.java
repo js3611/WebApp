@@ -1,4 +1,8 @@
-package com.example.moneyapp;
+package com.example.moneyapp.transaction;
+
+import com.example.moneyapp.R;
+import com.example.moneyapp.R.layout;
+import com.example.moneyapp.R.menu;
 
 import tests.ListViewLoader;
 import android.app.Activity;
@@ -23,7 +27,8 @@ public class Transactions extends Activity {
 	}
 
 	public void jumpToList(View view) {
-		Intent intent= new Intent(this, ExampleListActivity.class);
+		Intent intent= new Intent(this, PerPerson.class);
+		//		Intent intent= new Intent(this, ExampleListActivity.class);
 		startActivity(intent);
 	}
 	

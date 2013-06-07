@@ -43,15 +43,15 @@
             android:label="@string/title_activity_main_menu" >
         </activity>
         <activity
-            android:name="com.example.moneyapp.PerPersonLog"
+            android:name="com.example.moneyapp.transaction.PerPerson"
             android:label="@string/title_activity_per_person_log" >
         </activity>
         <activity
-            android:name="com.example.moneyapp.Transactions"
+            android:name="com.example.moneyapp.transaction.Transactions"
             android:label="@string/title_activity_transactions" >
         </activity>
         <activity
-            android:name="com.example.moneyapp.Messages"
+            android:name="com.example.moneyapp.message.Messages"
             android:label="@string/title_activity_messages" >
         </activity>
         <activity
@@ -73,6 +73,32 @@
         <activity
             android:name="com.example.tests.ListViewLoader"
             android:label="@string/title_activity_list" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.transaction.PerPersonProfile"
+            android:label="@string/title_activity_per_person_log_profile"
+            android:uiOptions="splitActionBarWhenNarrow" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.transaction.LogPageFragment"
+            android:label="@string/title_activity_log_page_fragment"
+            android:uiOptions="splitActionBarWhenNarrow" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.message.MessageListActivity"
+            android:label="@string/title_person_list"
+            android:parentActivityName="com.example.moneyapp.MainMenu" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.moneyapp.MainMenu" />
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.message.MessageDetailActivity"
+            android:label="@string/title_person_detail"
+            android:parentActivityName="com.example.moneyapp.message.MessageListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PersonListActivity" />
         </activity>
     </application>
 

@@ -46,9 +46,20 @@ public class MainActivity extends Activity {
 		errorView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
 		errorView.setText("e.g. phone: 8001505129, pw:IP");
 		errorView.setTextColor(Color.RED);
+		EditText et = (EditText) findViewById(R.id.phoneNumber);
+		et.setText("8001505129");
+		EditText pt = (EditText) findViewById(R.id.password);
+		pt.setText("IP");
 
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		Intent intent = new Intent(MainActivity.this, MainMenu.class);
+		startActivity(intent);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -57,7 +68,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void loginHandler(View view) {
-	
+		
 		EditText passwordText = (EditText) findViewById(R.id.password);
 		EditText phoneText = (EditText) findViewById(R.id.phoneNumber);
 		String password = passwordText.getText().toString();
