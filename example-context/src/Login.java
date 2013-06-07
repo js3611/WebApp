@@ -15,7 +15,7 @@ public class Login extends HttpServlet {
                       HttpServletResponse response)
         throws IOException, ServletException
     {
-        response.setContentType("text/html");
+/*        response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
 	String operation = request.getParameter("op");
@@ -59,7 +59,7 @@ public class Login extends HttpServlet {
 	    }
 	} catch (Exception e) {
             out.println( "<h1>exception: "+e+e.getMessage()+"</h1>" );
-        }
+        }*/
     }
     
 
@@ -98,7 +98,13 @@ public class Login extends HttpServlet {
     private void handleOperation (String operation, Statement stmt, HttpServletRequest request, PrintWriter out) throws Exception {
 
 	    if (operation.equals("newAccount")) {
-		    //TODO
+		    String fname = request.getParameter("firstname");
+		    String sname = request.getParameter("surname");
+	            String pw = request.getParameter("password");
+                    String phoneNo = request.getParameter("phone");
+		    stms.executeQuery("INSERT INTO appuser(firstname, surname, password, phonenumber) values " ++
+					"'" ++ fname ++ "', '" ++ sname ++ "', '" ++ pw  ++ "', " ++ phoneNo);
+					
 	    }
 
 	    if (operation.equals("checkPassword")) {
