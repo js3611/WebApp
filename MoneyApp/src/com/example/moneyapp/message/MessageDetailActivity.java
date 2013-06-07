@@ -1,6 +1,5 @@
 package com.example.moneyapp.message;
 
-import com.example.moneyapp.PersonDetailFragment;
 import com.example.moneyapp.R;
 import com.example.moneyapp.R.id;
 import com.example.moneyapp.R.layout;

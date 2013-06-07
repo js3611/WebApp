@@ -13,13 +13,14 @@ import android.widget.TextView;
 
 import com.example.helpers.metadata.MessageDetails;
 import com.example.moneyapp.R;
+import com.example.moneyapp.message.MessageAdapter;
 
 public class PerPerson extends Activity {
 
 	//The List view
-	ListView msgList;
+	ListView transList;
 	//A list of data for each entry, which the adapter retrieves from.
-	ArrayList<MessageDetails> details;
+	ArrayList<PerPersonTransactionDetail> details;
 	//what is this?
 	//	AdapterView.AdapterContextMenuInfo info;
 
@@ -27,20 +28,20 @@ public class PerPerson extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.per_item_list_layout);
+		setContentView(R.layout.per_person_list_layout);
 
-		msgList = (ListView) findViewById(R.id.MessageList);
+		transList = (ListView) findViewById(R.id.PerPersonList);
 
 		//Create a list which holds data for each entry
-		details = new ArrayList<MessageDetails>();
+		details = new ArrayList<PerPersonTransactionDetail>();
 		//Fill the screen with dummy entries
 		details = addDummies(details);
 
-		msgList.setAdapter(new MessageAdapter(details, this));
+		transList.setAdapter(new PerPersonAdapter(details, this));
 
-		registerForContextMenu(msgList);
+		registerForContextMenu(transList);
 
-		msgList.setOnItemClickListener(new OnItemClickListener() {
+		transList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
@@ -55,30 +56,34 @@ public class PerPerson extends Activity {
 
 	}
 
-	private ArrayList<MessageDetails> addDummies(ArrayList<MessageDetails> details) {
-		MessageDetails Detail;
-		Detail = new MessageDetails();
+	public static ArrayList<PerPersonTransactionDetail> addDummies(ArrayList<PerPersonTransactionDetail> details) {
+		PerPersonTransactionDetail Detail;
+		Detail = new PerPersonTransactionDetail();
 		Detail.setIcon(R.drawable.jo);
-		Detail.setFrom("jo");
-		Detail.setSub("Dinner");
-		Detail.setDesc("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla auctor.");
-		Detail.setTime("12/12/2012 12:12");
+		Detail.setName("thai");
+		Detail.setSubject("Dinner");
+		Detail.setPrice(30);
 		details.add(Detail);
 
-		Detail = new MessageDetails();
-		Detail.setIcon(R.drawable.thai);
-		Detail.setFrom("thai");
-		Detail.setSub("Party");
-		Detail.setDesc("Dolor sit amet, consectetur adipiscing elit. Nulla auctor.");
-		Detail.setTime("13/12/2012 10:12");
+		Detail = new PerPersonTransactionDetail();
+		Detail.setIcon(R.drawable.jo);
+		Detail.setName("terence");
+		Detail.setSubject("lunch");
+		Detail.setPrice(50);
 		details.add(Detail);
-
-		Detail = new MessageDetails();
-		Detail.setIcon(R.drawable.terence);
-		Detail.setFrom("terence");
-		Detail.setSub("Mail");
-		Detail.setDesc("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-		Detail.setTime("13/12/2012 02:12");
+		
+		Detail = new PerPersonTransactionDetail();
+		Detail.setIcon(R.drawable.jo);
+		Detail.setName("jo");
+		Detail.setSubject("Malaga");
+		Detail.setPrice(340);
+		details.add(Detail);
+		
+		Detail = new PerPersonTransactionDetail();
+		Detail.setIcon(R.drawable.jo);
+		Detail.setName("terence"); 
+		Detail.setSubject("Dinner");
+		Detail.setPrice(30);
 		details.add(Detail);
 		
 		return details;

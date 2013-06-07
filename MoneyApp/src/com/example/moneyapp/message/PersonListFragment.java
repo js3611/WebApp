@@ -1,4 +1,6 @@
-package com.example.moneyapp;
+package com.example.moneyapp.message;
+
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,7 +9,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.helpers.metadata.MessageDetails;
+import com.example.moneyapp.R;
 import com.example.moneyapp.dummy.DummyContent;
+import com.example.moneyapp.transaction.PerPerson;
 
 /**
  * A list fragment representing a list of People. This fragment also supports
@@ -70,10 +75,18 @@ public class PersonListFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		ArrayList<MessageDetails> details;
+		details = new ArrayList<MessageDetails>();
+		//Fill the screen with dummy entries
+		details = addDummies(details);
+
+	
+		setListAdapter(new MessageAdapter(details, getActivity()));
+		/*
 		// TODO: replace with a real list adapter.
 		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, DummyContent.ITEMS));
+				android.R.id.text1, DummyContent.ITEMS)); */
 	}
 
 	@Override
@@ -149,4 +162,34 @@ public class PersonListFragment extends ListFragment {
 
 		mActivatedPosition = position;
 	}
+	
+	public static ArrayList<MessageDetails> addDummies(ArrayList<MessageDetails> details) {
+		MessageDetails Detail;
+		Detail = new MessageDetails();
+		Detail.setIcon(R.drawable.jo);
+		Detail.setFrom("jo");
+		Detail.setSub("Dinner");
+		Detail.setDesc("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla auctor.");
+		Detail.setTime("12/12/2012 12:12");
+		details.add(Detail);
+
+		Detail = new MessageDetails();
+		Detail.setIcon(R.drawable.thai);
+		Detail.setFrom("thai");
+		Detail.setSub("Party");
+		Detail.setDesc("Dolor sit amet, consectetur adipiscing elit. Nulla auctor.");
+		Detail.setTime("13/12/2012 10:12");
+		details.add(Detail);
+
+		Detail = new MessageDetails();
+		Detail.setIcon(R.drawable.terence);
+		Detail.setFrom("terence");
+		Detail.setSub("Mail");
+		Detail.setDesc("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+		Detail.setTime("13/12/2012 02:12");
+		details.add(Detail);
+		
+		return details;
+	}
+
 }

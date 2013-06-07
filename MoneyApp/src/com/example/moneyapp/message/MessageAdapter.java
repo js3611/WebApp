@@ -1,4 +1,4 @@
-package com.example.moneyapp.transaction;
+package com.example.moneyapp.message;
 
 import java.util.ArrayList;
 
@@ -44,7 +44,7 @@ public class MessageAdapter extends BaseAdapter {
 		View v = convertView;
 		if (v == null) {
 			LayoutInflater vi = (LayoutInflater)_c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = vi.inflate(R.layout.per_item_list_entry_layout, null);
+			v = vi.inflate(R.layout.message_list_entry, null);
 		
 		}
         ImageView image = (ImageView) v.findViewById(R.id.iconView);

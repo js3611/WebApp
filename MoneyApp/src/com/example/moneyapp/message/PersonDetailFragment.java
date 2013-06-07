@@ -1,4 +1,4 @@
-package com.example.moneyapp;
+package com.example.moneyapp.message;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,9 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.moneyapp.R;
+import com.example.moneyapp.R.id;
+import com.example.moneyapp.R.layout;
 import com.example.moneyapp.dummy.DummyContent;
-import com.example.moneyapp.message.MessageDetailActivity;
-import com.example.moneyapp.message.MessageListActivity;
 
 /**
  * A fragment representing a single Person detail screen. This fragment is

@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/person_list"
-        android:name="com.example.moneyapp.PersonListFragment"
+        android:name="com.example.moneyapp.message.PersonListFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
