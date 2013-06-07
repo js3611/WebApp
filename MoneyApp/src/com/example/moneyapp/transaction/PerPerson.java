@@ -20,7 +20,7 @@ public class PerPerson extends Activity {
 	//The List view
 	ListView transList;
 	//A list of data for each entry, which the adapter retrieves from.
-	ArrayList<PerPersonTransactionDetail> details;
+	ArrayList<TransactionDetail> details;
 	//what is this?
 	//	AdapterView.AdapterContextMenuInfo info;
 
@@ -28,12 +28,12 @@ public class PerPerson extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.per_person_list_layout);
+		setContentView(R.layout.transaction_per_person_list_layout);
 
 		transList = (ListView) findViewById(R.id.PerPersonList);
 
 		//Create a list which holds data for each entry
-		details = new ArrayList<PerPersonTransactionDetail>();
+		details = new ArrayList<TransactionDetail>();
 		//Fill the screen with dummy entries
 		details = addDummies(details);
 
@@ -56,32 +56,32 @@ public class PerPerson extends Activity {
 
 	}
 
-	public static ArrayList<PerPersonTransactionDetail> addDummies(ArrayList<PerPersonTransactionDetail> details) {
-		PerPersonTransactionDetail Detail;
-		Detail = new PerPersonTransactionDetail();
-		Detail.setIcon(R.drawable.jo);
-		Detail.setName("thai");
+	public static ArrayList<TransactionDetail> addDummies(ArrayList<TransactionDetail> details) {
+		TransactionDetail Detail;
+		Detail = new TransactionDetail();
+		Detail.setIcon(R.drawable.thai);
+		Detail.setFrom("Thai");
 		Detail.setSubject("Dinner");
 		Detail.setPrice(30);
 		details.add(Detail);
 
-		Detail = new PerPersonTransactionDetail();
-		Detail.setIcon(R.drawable.jo);
-		Detail.setName("terence");
+		Detail = new TransactionDetail();
+		Detail.setIcon(R.drawable.terence);
+		Detail.setFrom("Terence");
 		Detail.setSubject("lunch");
 		Detail.setPrice(50);
 		details.add(Detail);
 		
-		Detail = new PerPersonTransactionDetail();
+		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.jo);
-		Detail.setName("jo");
+		Detail.setFrom("Jo");
 		Detail.setSubject("Malaga");
 		Detail.setPrice(340);
 		details.add(Detail);
 		
-		Detail = new PerPersonTransactionDetail();
-		Detail.setIcon(R.drawable.jo);
-		Detail.setName("terence"); 
+		Detail = new TransactionDetail();
+		Detail.setIcon(R.drawable.terence);
+		Detail.setFrom("Terence"); 
 		Detail.setSubject("Dinner");
 		Detail.setPrice(30);
 		details.add(Detail);

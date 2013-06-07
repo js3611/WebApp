@@ -50,5 +50,7 @@
     <string name="title_person_list">People</string>
     <string name="title_person_detail">Person Detail</string>
     <string name="next"></string>
+    <string name="transaction_log">Transaction Log</string>
+    <string name="title_activity_per_item">PerItem</string>
 
 </resources>

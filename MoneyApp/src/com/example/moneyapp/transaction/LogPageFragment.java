@@ -29,14 +29,11 @@ public class LogPageFragment extends Fragment {
 		ViewGroup rootView;
 
 		// Set the title view to show the page number.
-		rootView = (ViewGroup) inflater.inflate(R.layout.fragment_log_view,
+		rootView = (ViewGroup) inflater.inflate(R.layout.transaction_fragment_log_view,
 				container, false);
 		// profile
-		((TextView) rootView.findViewById(android.R.id.text1)).setText("Log");
+		((TextView) rootView.findViewById(R.id.log_title)).setText("Log Transaction");
 		
-		((TextView) rootView.findViewById(R.id.price_view2))
-		.setText("Under construction.... \n Hopefully table goes here....:)");
-
 		return rootView;
 	}
 
