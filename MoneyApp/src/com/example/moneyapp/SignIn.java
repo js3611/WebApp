@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SignIn extends Activity {
 
@@ -93,6 +94,13 @@ private class registerUser extends AsyncTask<String, Void, Boolean> {
 		if (result) {
 			Intent intent = new Intent(SignIn.this, MainMenu.class);
 			startActivity(intent);
+			
+			Context context = getApplicationContext();
+			CharSequence feedbackMsg = "Sign up successful!";
+			int duration = Toast.LENGTH_SHORT;
+			
+			Toast toast = Toast.makeText(context, feedbackMsg, duration);
+			toast.show();
 		} else {
 			errorView.setText(errorMessage);
 		}
