@@ -8,86 +8,82 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SignIn" >
 
-    <EditText
-        android:id="@+id/enterName"
+    <Button
+        android:onClick="signupHandler"
+        android:id="@+id/signUpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/checkPassword"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="56dp"
+        android:background="@drawable/custom_button"
+        android:text="@string/register" />
+
+    
+    <EditText
+        android:id="@+id/enterSurname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="39dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/name"
-        android:textColor="@color/grey" />
-
-    <EditText
-        android:id="@+id/enterNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/enterName"
-        android:layout_below="@+id/enterName"
-        android:ems="10"
-        android:inputType="phone"
-        android:text="@string/phone"
+        android:text="@string/surname"
         android:textColor="@color/grey" />
     
+    <EditText
+        android:id="@+id/enterFirstName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/firstname"
+        android:textColor="@color/grey" />
+
     <EditText
         android:id="@+id/enterPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/enterNumber"
-        android:layout_below="@+id/enterNumber"
-        android:layout_marginTop="18dp"
-        android:ems="10"
-        android:inputType="textPassword" 
-        android:text="@string/password"
-        android:textColor="@color/grey"/>
-
-    <EditText
-        android:id="@+id/checkPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/enterPassword"
-        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/checkPassword"
+        android:layout_alignRight="@+id/enterSurname"
+        android:layout_marginBottom="36dp"
         android:ems="10"
         android:inputType="textPassword"
         android:text="@string/password"
         android:textColor="@color/grey" />
 
     <EditText
-        android:id="@+id/enterTime"
+        android:id="@+id/checkPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/enterDate"
-        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/signUpButton"
+        android:layout_alignLeft="@+id/enterPassword"
+        android:layout_marginBottom="26dp"
         android:ems="10"
-        android:inputType="time"
-        android:text="@string/time"
+        android:inputType="textPassword"
+        android:text="@string/password"
         android:textColor="@color/grey" >
 
         <requestFocus />
     </EditText>
-
     <EditText
-        android:id="@+id/enterDate"
+        android:id="@+id/enterNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/checkPassword"
-        android:layout_below="@+id/checkPassword"
-        android:layout_marginTop="28dp"
+        android:layout_above="@+id/enterPassword"
+        android:layout_alignLeft="@+id/enterPassword"
+        android:layout_marginBottom="42dp"
         android:ems="10"
-        android:inputType="date"
-        android:text="@string/date"
+        android:inputType="textPersonName"
+        android:text="@string/PhoneNumber"
         android:textColor="@color/grey" />
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@id/errorView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/enterTime"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/custom_button"
-        android:layout_marginTop="50dp"
-        android:text="@string/register" />
+        android:layout_above="@+id/enterPassword"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>

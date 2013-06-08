@@ -9,14 +9,13 @@ import java.sql.*;
 public class Login extends HttpServlet {
 
     int loginCount = 0;
-    User user = new User();
 
     //A method to check existence 
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response)
         throws IOException, ServletException
-    {
-/*        response.setContentType("text/html");
+    {/*
+        response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
 	String operation = request.getParameter("op");
@@ -103,12 +102,20 @@ public class Login extends HttpServlet {
 		    String sname = request.getParameter("surname");
 	            String pw = request.getParameter("password");
                     String phoneNo = request.getParameter("phone");
-		    stms.executeQuery("INSERT INTO appuser(firstname, surname, password, phonenumber) values " ++
-					"'" ++ fname ++ "', '" ++ sname ++ "', '" ++ pw  ++ "', " ++ phoneNo);
-					
-	    }
+		    
+		    ResultSet phoneResults = stmt.executeQuery("SELECT userid FROM appuser WHERE phonenumber = '" + phoneNo+"';");	
+		    if (phoneResults.next()) //It failed because phone number exists
+			out.print("6");
+		   else {	
+		     
+		     ResultSet rs = stmt.executeQuery("INSERT INTO appuser(firstname, surname, password, phonenumber) values ('" + fname + "', '" + sname + "', '" + pw  + "', '" + phoneNo + "') RETURNING userid;");
 
-	    if (operation.equals("checkPassword")) {
+
+		    out.print("5"); // Successful signup
+		    stmt.close();
+		}
+
+	    } else if (operation.equals("checkPassword")) {
 
 		String phoneNo = request.getParameter("phone");
 		String password = request.getParameter("password");
@@ -126,9 +133,8 @@ public class Login extends HttpServlet {
 		    else 
 			out.print( "2" );
 		}
+		
 	    }
 
-
-    }
-
+   }
 }

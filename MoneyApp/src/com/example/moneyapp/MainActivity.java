@@ -17,17 +17,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.helpers.AdminHelper;
+import com.example.helpers.ConnectionHelper;
 import com.example.helpers.HttpReaders;
 import com.example.helpers.StringFilter;
 
@@ -56,8 +57,8 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Intent intent = new Intent(MainActivity.this, MainMenu.class);
-		startActivity(intent);
+		/*Intent intent = new Intent(MainActivity.this, MainMenu.class);
+		startActivity(intent);*/
 	}
 	
 	@Override
@@ -79,7 +80,8 @@ public class MainActivity extends Activity {
 			return;
 		}
 		
-		if (checkNetworkConnection())
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (ConnectionHelper.checkNetworkConnection(connMgr))
 			new PasswordVerifier().execute(phoneNo,password);
 		else
 			errorView.setText("No network connection");
@@ -105,18 +107,13 @@ public class MainActivity extends Activity {
 		
 	}
 	
-	public boolean checkNetworkConnection() {
-		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		return networkInfo != null && networkInfo.isConnected();
-	}
 	
 	private boolean verifyPassword(String phoneNo, String password) {
 		
 		HttpClient httpClient = new DefaultHttpClient();
 		//Need to choose the right local host every time
 		//edge02: http://146.169.52.2:59999/login
-		HttpPost httpPost = new HttpPost("http://146.169.53.90:59999/login");
+		HttpPost httpPost = new HttpPost("http://146.169.53.189:59999/login");
 		
 		try {
 			//Add data
@@ -129,7 +126,10 @@ public class MainActivity extends Activity {
 			HttpResponse res = httpClient.execute(httpPost);
 			
 			int response = HttpReaders.readInt(res.getEntity().getContent(), 1);
-			return handleResponse(response);	
+			
+			Pair<String, Boolean> responseTuple = AdminHelper.handleResponse(response);
+			errorMessage = responseTuple.first;
+			return responseTuple.second;
 			
 		} catch (ClientProtocolException e) {
 			errorView.setText("ClientProtocolException"); 
@@ -139,25 +139,6 @@ public class MainActivity extends Activity {
 		return false;		
 	}
 
-	private boolean handleResponse(int response) {
-		switch (response) {
-		case 1: //Correct password
-			return true;
-		case 2: //Wrong password
-			errorMessage = "Invalid phone number or password (pass)";
-			return false;
-		case 3: //Wrong user
-			errorMessage = "Invalid phone number or password (phone)";
-			return false;
-		case 4: //Tried too often. 
-			errorMessage = "You've tried 3 times already. \n (Ideally shut down the app after dialog box)";
-			return false;
-		default:
-			errorMessage = "Something went wrong";
-			return false;
-		}
-	}
-	
 	public void signInHandler(View view) {
 		Intent intent = new Intent(MainActivity.this, SignIn.class);
 		startActivity(intent);
