@@ -36,8 +36,8 @@ super.onCreate(savedInstanceState);
 
 // Create a progress bar to display while the list loads
 ProgressBar progressBar = new ProgressBar(this);
-progressBar.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-        LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+progressBar.setLayoutParams(new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+        android.view.ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
 progressBar.setIndeterminate(true);
 getListView().setEmptyView(progressBar);
 
@@ -62,6 +62,7 @@ getLoaderManager().initLoader(0, null, this);
 }
 
 // Called when a new Loader needs to be created
+@Override
 public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 // Now create and return a CursorLoader that will take care of
 // creating a Cursor for the data being displayed.
@@ -70,6 +71,7 @@ return new CursorLoader(this, ContactsContract.Data.CONTENT_URI,
 }
 
 // Called when a previously created loader has finished loading
+@Override
 public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 // Swap the new cursor in.  (The framework will take care of closing the
 // old cursor once we return.)
@@ -77,6 +79,7 @@ mAdapter.swapCursor(data);
 }
 
 // Called when a previously created loader is reset, making the data unavailable
+@Override
 public void onLoaderReset(Loader<Cursor> loader) {
 // This is called when the last Cursor provided to onLoadFinished()
 // above is about to be closed.  We need to make sure we are no

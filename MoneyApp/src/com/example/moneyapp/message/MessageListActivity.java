@@ -1,10 +1,6 @@
 package com.example.moneyapp.message;
 
 import com.example.moneyapp.R;
-import com.example.moneyapp.R.id;
-import com.example.moneyapp.R.layout;
-import com.example.moneyapp.message.PersonListFragment.Callbacks;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;

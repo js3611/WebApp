@@ -1,9 +1,6 @@
 package com.example.moneyapp.message;
 
 import com.example.moneyapp.R;
-import com.example.moneyapp.R.layout;
-import com.example.moneyapp.R.menu;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;

@@ -1,7 +1,6 @@
 package com.example.moneyapp;
 
 import com.example.moneyapp.message.MessageListActivity;
-import com.example.moneyapp.message.Messages;
 import com.example.moneyapp.transaction.Transactions;
 
 import android.annotation.SuppressLint;
