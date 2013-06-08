@@ -1,10 +1,6 @@
 package com.example.moneyapp.transaction;
 
 import com.example.moneyapp.R;
-import com.example.moneyapp.R.layout;
-import com.example.moneyapp.R.menu;
-
-import tests.ListViewLoader;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

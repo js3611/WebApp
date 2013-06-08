@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/logContent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/big_profile_icon"
+            android:layout_width="144dp"
+            android:layout_height="192dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:contentDescription="@string/profile"
+            android:src="@drawable/terence" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@id/big_profile_icon"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:id="@+id/firstName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="First Name"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/surname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/firstName"
+                android:text="Surname" />
+
+            <TextView
+                android:id="@+id/oweDirection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/surname"
+                android:text="You Owe him:" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/oweDirection"
+                android:text="£30"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/nodge_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/surname"
+        android:text="Nodge" />
+
+    <Button
+        android:id="@+id/message_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/surname"
+        android:text="Message" />
+
+    <Button
+        android:id="@+id/call_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/surname"
+        android:text="Call" />
+
+    <Button
+        android:id="@+id/add_calender_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/surname"
+        android:text="Add Deadline" />
+
+    <Button
+        android:id="@+id/new_trans_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/surname"
+        android:text="New Transaction" />
+
+</LinearLayout>

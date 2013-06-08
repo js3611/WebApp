@@ -53,5 +53,7 @@
     <string name="firstname">Firstname</string>
     <string name="surname">Surname</string>
     <string name="PhoneNumber">Phone Number</string>
+    <string name="transaction_log">Transaction Log</string>
+    <string name="title_activity_per_item">PerItem</string>
 
 </resources>

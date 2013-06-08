@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.moneyapp.R;
-import com.example.moneyapp.R.id;
-import com.example.moneyapp.R.layout;
 import com.example.moneyapp.dummy.DummyContent;
 
 /**

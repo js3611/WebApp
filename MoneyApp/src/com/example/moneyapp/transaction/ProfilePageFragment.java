@@ -31,20 +31,8 @@ public class ProfilePageFragment extends Fragment {
 		ViewGroup rootView;
 
 		// Set the title view to show the page number.
-		rootView = (ViewGroup) inflater.inflate(R.layout.fragment_profile_view,
+		rootView = (ViewGroup) inflater.inflate(R.layout.transaction_fragment_profile_view,
 				container, false);
-		// profile
-		((TextView) rootView.findViewById(android.R.id.text1))
-				.setText("Profile");
-
-		//Dummy profile
-		((TextView) rootView.findViewById(R.id.price_view))
-		.setText("30");
-		((TextView) rootView.findViewById(R.id.profile_view))
-		.setText("Tserence");
-		
-		
-
 		
 		return rootView;
 	}
