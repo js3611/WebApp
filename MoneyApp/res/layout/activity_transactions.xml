@@ -21,7 +21,17 @@
         android:layout_below="@+id/surname"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="133dp"
-        android:onClick="jumpToList"
-        android:text="@string/checkNewView" />
+        android:onClick="jumpToPersonList"
+        android:text="PerPerson" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="39dp"
+        android:onClick="jumpToItemList"
+        android:text="PerItem" />
 
 </RelativeLayout>

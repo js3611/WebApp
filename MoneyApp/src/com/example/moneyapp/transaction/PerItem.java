@@ -47,9 +47,18 @@ public class PerItem extends Activity {
 
 				// TextView tv = (TextView) v.findViewById(R.id.From);
 				// String s = tv.getText().toString();
+				if (selectedNewTransaction(pos)) {
+					startActivity(new Intent(PerItem.this, MainMenu.class));
+				} else { //normail detail window
+					startActivity(new Intent(PerItem.this, Transactions.class));
+				}
+				
 
-				startActivity(new Intent(PerItem.this, MainMenu.class));
+			}
 
+			private boolean selectedNewTransaction(int pos) {
+				
+				return details.size() == pos;
 			}
 		});
 

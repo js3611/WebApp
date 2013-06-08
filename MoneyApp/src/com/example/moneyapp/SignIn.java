@@ -72,8 +72,12 @@ public void signupHandler (View view) {
 	{
 		new registerUser().execute(firstnameString, surnameString, enterPasswordString, phoneNum);
 	}
-	else
+	else if (!passwordsMatch(enterPasswordString, checkPasswordString)) {
+		errorView.setText("Entered Passwords do not match!");
+	}
+	else if (!ConnectionHelper.checkNetworkConnection(connMgr)){
 		errorView.setText("No network connection");
+	}
 
 }
 
@@ -87,7 +91,7 @@ private class registerUser extends AsyncTask<String, Void, Boolean> {
 	@Override
 	protected void onPostExecute(Boolean result) {
 		if (result) {
-			Intent intent = new Intent(SignIn.this, SignIn.class);
+			Intent intent = new Intent(SignIn.this, MainMenu.class);
 			startActivity(intent);
 		} else {
 			errorView.setText(errorMessage);
@@ -116,12 +120,8 @@ private boolean signUpWith(String firstname, String surname, String password, St
 		HttpResponse res = httpClient.execute(httpPost);
 		
 		int response = HttpReaders.readInt(res.getEntity().getContent(), 1);
-		
-		//String response = HttpReaders.readIt(res.getEntity().getContent(), 500);
 		Pair<String, Boolean> responseTuple =  AdminHelper.handleResponse(response);	
 		errorMessage = responseTuple.first;
-		//errorMessage = response;
-		//return false;
 		return responseTuple.second;
 		
 	} catch (ClientProtocolException e) {

@@ -22,8 +22,14 @@ public class Transactions extends Activity {
 		return true;
 	}
 
-	public void jumpToList(View view) {
+	public void jumpToPersonList(View view) {
 		Intent intent= new Intent(this, PerPerson.class);
+		//		Intent intent= new Intent(this, ExampleListActivity.class);
+		startActivity(intent);
+	}
+	
+	public void jumpToItemList(View view) {
+		Intent intent= new Intent(this, PerItem.class);
 		//		Intent intent= new Intent(this, ExampleListActivity.class);
 		startActivity(intent);
 	}
