@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
 		}
 		
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		if (ConnectionHelper.checkNetworkConnection(connMgr))
+		if (ConnectionHelper.checkNetworkConnection(connMgr)) 
 			new PasswordVerifier().execute(phoneNo,password);
 		else
 			errorView.setText("No network connection");
