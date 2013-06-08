@@ -12,17 +12,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.helpers.metadata.MessageDetails;
+import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
 import com.example.moneyapp.message.MessageAdapter;
 
 public class PerPerson extends Activity {
 
-	//The List view
+	// The List view
 	ListView transList;
-	//A list of data for each entry, which the adapter retrieves from.
+	// A list of data for each entry, which the adapter retrieves from.
 	ArrayList<TransactionDetail> details;
-	//what is this?
-	//	AdapterView.AdapterContextMenuInfo info;
+
+	// what is this?
+	// AdapterView.AdapterContextMenuInfo info;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +34,9 @@ public class PerPerson extends Activity {
 
 		transList = (ListView) findViewById(R.id.PerPersonList);
 
-		//Create a list which holds data for each entry
+		// Create a list which holds data for each entry
 		details = new ArrayList<TransactionDetail>();
-		//Fill the screen with dummy entries
+		// Fill the screen with dummy entries
 		details = addDummies(details);
 
 		transList.setAdapter(new PerPersonAdapter(details, this));
@@ -48,15 +50,26 @@ public class PerPerson extends Activity {
 
 				// TextView tv = (TextView) v.findViewById(R.id.From);
 				// String s = tv.getText().toString();
-
-				startActivity(new Intent(PerPerson.this, PerPersonProfile.class));
+				if (selectedNewTransaction(pos)) {
+					startActivity(new Intent(PerPerson.this, MainMenu.class));
+				} else { // normail detail window
+					startActivity(new Intent(PerPerson.this,
+							PerPersonProfile.class));
+				}
 
 			}
+
+			private boolean selectedNewTransaction(int pos) {
+
+				return details.size() == pos;
+			}
+
 		});
 
 	}
 
-	public static ArrayList<TransactionDetail> addDummies(ArrayList<TransactionDetail> details) {
+	public static ArrayList<TransactionDetail> addDummies(
+			ArrayList<TransactionDetail> details) {
 		TransactionDetail Detail;
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.thai);
@@ -71,21 +84,21 @@ public class PerPerson extends Activity {
 		Detail.setSubject("lunch");
 		Detail.setPrice(50);
 		details.add(Detail);
-		
+
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.jo);
 		Detail.setFrom("Jo");
 		Detail.setSubject("Malaga");
 		Detail.setPrice(340);
 		details.add(Detail);
-		
+
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.terence);
-		Detail.setFrom("Terence"); 
+		Detail.setFrom("Terence");
 		Detail.setSubject("Dinner");
 		Detail.setPrice(30);
 		details.add(Detail);
-		
+
 		return details;
 	}
 
