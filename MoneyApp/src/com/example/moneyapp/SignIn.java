@@ -26,6 +26,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -72,6 +73,7 @@ public void signupHandler (View view) {
 			passwordsMatch(enterPasswordString, checkPasswordString))
 	{
 		new registerUser().execute(firstnameString, surnameString, enterPasswordString, phoneNum);
+							
 	}
 	else if (!passwordsMatch(enterPasswordString, checkPasswordString)) {
 		errorView.setText("Entered Passwords do not match!");
@@ -92,15 +94,17 @@ private class registerUser extends AsyncTask<String, Void, Boolean> {
 	@Override
 	protected void onPostExecute(Boolean result) {
 		if (result) {
-			Intent intent = new Intent(SignIn.this, MainMenu.class);
-			startActivity(intent);
 			
+			// Toast message
 			Context context = getApplicationContext();
 			CharSequence feedbackMsg = "Sign up successful!";
 			int duration = Toast.LENGTH_SHORT;
-			
 			Toast toast = Toast.makeText(context, feedbackMsg, duration);
-			toast.show();
+			toast.setGravity(Gravity.CENTER,0,0);
+			toast.show();	
+			
+			Intent intent = new Intent(SignIn.this, MainMenu.class);
+			startActivity(intent);	
 		} else {
 			errorView.setText(errorMessage);
 		}

@@ -49,7 +49,7 @@ public class PerItem extends Activity {
 				// String s = tv.getText().toString();
 				if (selectedNewTransaction(pos)) {
 					startActivity(new Intent(PerItem.this, MainMenu.class));
-				} else { //normail detail window
+				} else { //normal detail window
 					startActivity(new Intent(PerItem.this, Transactions.class));
 				}
 				
