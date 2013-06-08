@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.helpers.metadata.MessageDetails;
 import com.example.moneyapp.MainMenu;
+import com.example.moneyapp.NewTransaction;
 import com.example.moneyapp.R;
 import com.example.moneyapp.message.MessageAdapter;
 
@@ -51,7 +52,7 @@ public class PerPerson extends Activity {
 				// TextView tv = (TextView) v.findViewById(R.id.From);
 				// String s = tv.getText().toString();
 				if (selectedNewTransaction(pos)) {
-					startActivity(new Intent(PerPerson.this, MainMenu.class));
+					startActivity(new Intent(PerPerson.this, NewTransaction.class));
 				} else { // normail detail window
 					startActivity(new Intent(PerPerson.this,
 							PerPersonProfile.class));

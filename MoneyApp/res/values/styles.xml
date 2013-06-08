@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!--
@@ -17,12 +18,13 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
-    <!--  table rows, columns, etc -->
+    <!-- table rows, columns, etc -->
     <style name="HeaderRow">
         <item name="android:background">#3399CC</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
     <style name="UsernameText">
         <item name="android:textColor">@color/black</item>
         <item name="android:shadowColor">#FFFFFF</item>
@@ -37,11 +39,13 @@
         <item name="android:layout_width">@dimen/column_width</item>
         <item name="android:layout_height">@dimen/column_height</item>
     </style>
+
     <style name="BodyRow">
         <item name="android:background">#FFFFFF</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
     <style name="OwingAmount">
         <item name="android:textColor">@color/red</item>
         <item name="android:shadowColor">#FFFFFF</item>
@@ -56,6 +60,7 @@
         <item name="android:layout_width">@dimen/column_width</item>
         <item name="android:layout_height">@dimen/column_height</item>
     </style>
+
     <style name="OwedAmount">
         <item name="android:textColor">@color/green</item>
         <item name="android:shadowColor">#FFFFFF</item>
@@ -70,5 +75,22 @@
         <item name="android:layout_width">@dimen/column_width</item>
         <item name="android:layout_height">@dimen/column_height</item>
     </style>
-    
+
+    <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="buttonBarStyle">@style/ButtonBar</item>
+        <item name="buttonBarButtonStyle">@style/ButtonBarButton</item>
+    </style>
+
+    <style name="ButtonBar">
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingRight">2dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:background">@android:drawable/bottom_bar</item>
+    </style>
+
+    <style name="ButtonBarButton" />
+
 </resources>

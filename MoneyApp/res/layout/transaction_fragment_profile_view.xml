@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/surname"
-        android:text="Nodge" />
+        android:text="Nudge" />
 
     <Button
         android:id="@+id/message_button"

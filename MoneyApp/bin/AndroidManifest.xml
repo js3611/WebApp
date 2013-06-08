@@ -104,6 +104,10 @@
             android:name="com.example.moneyapp.transaction.PerItem"
             android:label="@string/title_activity_per_item" >
         </activity>
+        <activity android:name="com.example.moneyapp.NewTransaction"
+            android:label="@string/title_activity_new_transaction"
+            >
+        </activity>
     </application>
 
 </manifest>

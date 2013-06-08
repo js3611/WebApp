@@ -3,6 +3,7 @@ package com.example.moneyapp.transaction;
 import java.util.ArrayList;
 
 import com.example.moneyapp.MainMenu;
+import com.example.moneyapp.NewTransaction;
 import com.example.moneyapp.R;
 import com.example.moneyapp.R.layout;
 import com.example.moneyapp.R.menu;
@@ -48,7 +49,7 @@ public class PerItem extends Activity {
 				// TextView tv = (TextView) v.findViewById(R.id.From);
 				// String s = tv.getText().toString();
 				if (selectedNewTransaction(pos)) {
-					startActivity(new Intent(PerItem.this, MainMenu.class));
+					startActivity(new Intent(PerItem.this, NewTransaction.class));
 				} else { //normail detail window
 					startActivity(new Intent(PerItem.this, Transactions.class));
 				}

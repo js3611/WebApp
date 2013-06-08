@@ -76,7 +76,7 @@ public class PerItemAdapter extends BaseAdapter {
 				break;
 
 			case TYPE_NEW_ENTRY:
-				v = mInflator.inflate(R.layout.new_transaction_layout, null);
+				v = mInflator.inflate(R.layout.new_transaction_entry_layout, null);
 
 				viewHolder.image = (ImageView) v.findViewById(R.id.add_icon);
 				viewHolder.subject_view = (TextView) v
