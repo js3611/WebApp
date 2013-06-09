@@ -1,22 +1,22 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/white"
-    tools:context=".MainMenu" >
-    
+    tools:context=".MainMenuLarge" >
+
     <Button
         android:id="@+id/calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_above="@+id/transactions"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginTop="38dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/calendar" 
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/convos"
         android:layout_alignLeft="@+id/calendar"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/transactions" 
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/wishList"
         android:layout_alignLeft="@+id/transactions"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/convos"
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/settings"
         android:layout_alignLeft="@+id/convos"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/wishList" 
@@ -64,11 +64,12 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/wishList"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="23dp"
+        android:layout_marginBottom="38dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/settings" 
         android:onClick="toSettings"
         />
 
-</LinearLayout>
+
+</RelativeLayout>
