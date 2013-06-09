@@ -5,9 +5,16 @@ public class UserDetails {
 	private String phoneNo;
 	private String surname;
 	private String firstName;
-	private String password;
-	private String someIDSTOFOLLOW;
+	private String password; // WHY?
+	private String someIDSTOFOLLOW; 
 	//...
+	
+	
+	public UserDetails(String phoneno,String surname,String firstname){
+		this.phoneNo = phoneno;
+		this.surname = surname;
+		this.firstName = firstname;
+	}
 	
 	public String getPhoneNo() {
 		return phoneNo;

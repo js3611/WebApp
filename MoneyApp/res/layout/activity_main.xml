@@ -19,11 +19,11 @@
         android:layout_marginTop="34dp" />
 
     <CheckedTextView
-        android:id="@+id/checkedTextView1"
+        android:id="@+id/phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/password"
-        android:layout_alignRight="@+id/checkedTextView2"
+        android:layout_alignRight="@+id/passw"
         android:text="@string/phone" />
 
     <CheckBox
@@ -36,7 +36,7 @@
         android:text="@string/autologin" />
 
     <CheckedTextView
-        android:id="@+id/checkedTextView2"
+        android:id="@+id/passw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/autologin"
@@ -47,7 +47,7 @@
         android:id="@+id/password"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/checkedTextView2"
+        android:layout_alignBottom="@+id/passw"
         android:layout_alignRight="@+id/errorView"
         android:ems="10"
         android:inputType="textPassword" />
@@ -64,7 +64,7 @@
         android:id="@+id/phoneNumber"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/checkedTextView1"
+        android:layout_alignBottom="@+id/phone"
         android:layout_alignLeft="@+id/password"
         android:ems="10"
         android:inputType="phone" >
