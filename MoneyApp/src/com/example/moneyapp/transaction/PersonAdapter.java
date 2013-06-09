@@ -80,4 +80,6 @@ public class PersonAdapter extends CustomAdapter<Pair<String, Double>> {
 		TextView name_view;
 		EditText price_text;
 	}
+	
+	
 }

@@ -1,16 +1,20 @@
-package com.example.moneyapp;
+package com.example.moneyapp.transaction;
 
 import java.util.ArrayList;
 
-import com.example.moneyapp.transaction.PerItemAdapter;
-import com.example.moneyapp.transaction.PerPerson;
-import com.example.moneyapp.transaction.PersonAdapter;
-import com.example.moneyapp.transaction.TransactionDetail;
+import com.example.moneyapp.R;
+import com.example.moneyapp.R.id;
+import com.example.moneyapp.R.layout;
+import com.example.moneyapp.R.menu;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Pair;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class NewTransaction extends Activity {
@@ -31,6 +35,24 @@ public class NewTransaction extends Activity {
 
 		personList.setAdapter(new PersonAdapter(person_cost_pairs, this));
 		registerForContextMenu(personList);
+		
+		personList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> a, View v, int pos,
+					long id) {
+				if (selectedNewTransaction(pos)) {
+					startActivity(new Intent(NewTransaction.this, NewPerson.class));
+				}				
+
+			}
+
+			private boolean selectedNewTransaction(int pos) {
+				
+				return person_cost_pairs.size() == pos;
+			}
+			
+		});
 
 	}
 

@@ -3,7 +3,6 @@ package com.example.moneyapp.transaction;
 import java.util.ArrayList;
 
 import com.example.moneyapp.MainMenu;
-import com.example.moneyapp.NewTransaction;
 import com.example.moneyapp.R;
 import com.example.moneyapp.R.layout;
 import com.example.moneyapp.R.menu;
