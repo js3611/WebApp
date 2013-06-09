@@ -14,15 +14,48 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp" />
+        android:layout_marginTop="90dp" />
 
     <CheckedTextView
-        android:id="@+id/checkedTextView1"
+        android:id="@+id/phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/password"
-        android:layout_alignRight="@+id/checkedTextView2"
+        android:layout_below="@id/quickContactBadge1"
+        android:layout_alignLeft="@+id/passw"
+        android:layout_marginTop="90dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/phone" />
+    
+    <EditText
+        android:id="@+id/phoneNumber"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/phone"
+        android:layout_alignLeft="@+id/password"
+        android:ems="10"
+        android:inputType="phone" >
+    </EditText>
+
+    <CheckedTextView
+        android:id="@+id/passw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/phone"
+        android:layout_above="@id/autologin"
+        android:layout_marginBottom="70dp"
+        android:layout_marginLeft="50dp"
+        android:text="@string/password" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/phoneNumber"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="50dp"
+        android:ems="10"
+        android:inputType="textPassword" />
 
     <CheckBox
         android:id="@+id/autologin"
@@ -30,46 +63,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/loginButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="30dp"
         android:text="@string/autologin" />
-
-    <CheckedTextView
-        android:id="@+id/checkedTextView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/autologin"
-        android:layout_centerVertical="true"
-        android:text="@string/password" />
-
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/checkedTextView2"
-        android:layout_alignRight="@+id/errorView"
-        android:ems="10"
-        android:inputType="textPassword" />
-
-    <TextView
-        android:id="@+id/errorView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="53dp" />
-
-    <EditText
-        android:id="@+id/phoneNumber"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/checkedTextView1"
-        android:layout_alignLeft="@+id/password"
-        android:ems="10"
-        android:inputType="phone" >
-
-        <requestFocus />
-    </EditText>
-
+    
     <Button
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
@@ -79,15 +75,28 @@
         android:background="@drawable/custom_button"
         android:onClick="loginHandler"
         android:shadowColor="@android:color/background_dark"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:layout_marginBottom="30dp"
+        android:textSize="25sp"
         android:text="@string/login" />
+    
+    <TextView
+        android:id="@+id/errorView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/signIn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
 
     <TextView
         android:id="@+id/signIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/errorView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="27dp"
+        android:layout_marginBottom="90dp"
+        android:layout_alignParentBottom="true"
         android:text="@string/signIn"
         android:onClick="signInHandler"
         android:clickable="true" />"
