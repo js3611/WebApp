@@ -18,6 +18,8 @@ import com.example.moneyapp.message.MessageAdapter;
 
 public class PerPerson extends Activity {
 
+	public final static String NAME_STR = "name";
+	public final static String PRICE_STR = "price";
 	// The List view
 	ListView transList;
 	// A list of data for each entry, which the adapter retrieves from.
@@ -53,8 +55,11 @@ public class PerPerson extends Activity {
 				if (selectedNewTransaction(pos)) {
 					startActivity(new Intent(PerPerson.this, NewTransaction.class));
 				} else { // normail detail window
-					startActivity(new Intent(PerPerson.this,
-							PerPersonProfile.class));
+					TransactionDetail detail = details.get(pos);
+					Intent intent = new Intent(PerPerson.this, PerPersonProfile.class);
+					intent.putExtra(NAME_STR, detail.getFrom());
+					intent.putExtra(PRICE_STR, detail.getPrice());
+					startActivity(intent);
 				}
 
 			}

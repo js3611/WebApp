@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.sax.TextElementListener;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
@@ -12,6 +13,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.moneyapp.R;
 
@@ -36,7 +38,7 @@ public class PerPersonProfile extends FragmentActivity {
 		// Enabling Up button
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-
+	
 		// Instantiate a ViewPager and a Pager Adapter
 		mPager = (ViewPager) findViewById(R.id.pager);
 		mPagerAdapter = new PerPersonLogProfileAdapter(getFragmentManager());
