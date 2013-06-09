@@ -131,10 +131,13 @@ private boolean signUpWith(String firstname, String surname, String password, St
 		//execute Post request
 		HttpResponse res = httpClient.execute(httpPost);
 		
+		//String response = HttpReaders.readIt(res.getEntity().getContent(), 500);
 		int response = HttpReaders.readInt(res.getEntity().getContent(), 1);
 		Pair<String, Boolean> responseTuple =  AdminHelper.handleResponse(response);	
 		errorMessage = responseTuple.first;
 		return responseTuple.second;
+		//errorMessage = response;
+		//return false;
 		
 	} catch (ClientProtocolException e) {
 		errorView.setText("ClientProtocolException"); 

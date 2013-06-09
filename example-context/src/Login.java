@@ -108,7 +108,7 @@ public class Login extends HttpServlet {
 			out.print("6");
 		   else {	
 		     
-		     ResultSet rs = stmt.executeQuery("INSERT INTO appuser(firstname, surname, password, phonenumber) values ('" + fname + "', '" + sname + "', '" + pw  + "', '" + phoneNo + "') RETURNING userid;");
+		     int rs = stmt.executeUpdate("INSERT INTO appuser(firstname, surname, password, phonenumber) values ('" + fname + "', '" + sname + "', '" + pw  + "', '" + phoneNo + "')" );//RETURNING userid;");
 
 
 		    out.print("5"); // Successful signup
