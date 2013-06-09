@@ -104,9 +104,17 @@
             android:name="com.example.moneyapp.transaction.PerItem"
             android:label="@string/title_activity_per_item" >
         </activity>
-        <activity android:name="com.example.moneyapp.NewTransaction"
-            android:label="@string/title_activity_new_transaction"
-            >
+        <activity
+            android:name="com.example.moneyapp.NewTransaction"
+            android:label="@string/title_activity_new_transaction" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.MainLargeActivity"
+            android:label="@string/title_activity_main_large" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.MainMenuLarge"
+            android:label="@string/title_activity_main_menu_large" >
         </activity>
     </application>
 
