@@ -105,7 +105,7 @@
             android:label="@string/title_activity_per_item" >
         </activity>
         <activity
-            android:name="com.example.moneyapp.NewTransaction"
+            android:name="com.example.moneyapp.transaction.NewTransaction"
             android:label="@string/title_activity_new_transaction" >
         </activity>
         <activity
@@ -115,6 +115,16 @@
         <activity
             android:name="com.example.moneyapp.MainMenuLarge"
             android:label="@string/title_activity_main_menu_large" >
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.transaction.NewPerson"
+            android:label="@string/title_activity_new_person" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/search_person" />
         </activity>
     </application>
 
