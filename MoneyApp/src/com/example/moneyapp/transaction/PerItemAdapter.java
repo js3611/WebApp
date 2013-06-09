@@ -12,37 +12,10 @@ import android.widget.TextView;
 
 import com.example.moneyapp.R;
 
-public class PerItemAdapter extends BaseAdapter {
-
-	private static final int TYPE_NORMAL_ENTRY = 0;
-	private static final int TYPE_NEW_ENTRY = 1;
-	private static final int TYPE_MAX_COUNT = 2;
-
-	private ArrayList<TransactionDetail> _data;
-	Context _c;
-	LayoutInflater mInflator;
+public class PerItemAdapter extends CustomAdapter<TransactionDetail> {
 
 	public PerItemAdapter(ArrayList<TransactionDetail> data, Context c) {
-		_data = data;
-		_c = c;
-		mInflator = (LayoutInflater) _c
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	}
-
-	// Returns the number of items in the Adapter
-	@Override
-	public int getCount() {
-		return _data.size() + 1;
-	}
-
-	@Override
-	public Object getItem(int position) {
-		return _data.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return position;
+		super(data, c);
 	}
 
 	/* Fill the entry with data here */
@@ -110,16 +83,6 @@ public class PerItemAdapter extends BaseAdapter {
 		TextView price_view;
 		TextView date_view;
 		TextView from_view;
-	}
-
-	@Override
-	public int getViewTypeCount() {
-		return TYPE_MAX_COUNT;
-	}
-
-	@Override
-	public int getItemViewType(int position) {
-		return position == _data.size() ? TYPE_NEW_ENTRY : TYPE_NORMAL_ENTRY;
 	}
 
 }

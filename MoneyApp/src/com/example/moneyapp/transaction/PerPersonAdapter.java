@@ -13,41 +13,10 @@ import android.widget.TextView;
 
 import com.example.moneyapp.R;
 
-public class PerPersonAdapter extends BaseAdapter {
-
-	private static final int TYPE_NORMAL_ENTRY = 0;
-	private static final int TYPE_NEW_ENTRY = 1;
-	private static final int TYPE_MAX_COUNT = 2;
-	LayoutInflater mInflator;
-
-	private ArrayList<TransactionDetail> _data;
-	Context _c;
+public class PerPersonAdapter extends CustomAdapter<TransactionDetail> {
 
 	public PerPersonAdapter(ArrayList<TransactionDetail> data, Context c) {
-		_data = data;
-		_c = c;
-		mInflator = (LayoutInflater) _c
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	}
-
-	/*
-	 * Returns the number of items in the Adapter. +1 for the "new transaction"
-	 * entry
-	 */
-	@Override
-	public int getCount() {
-		return _data.size() + 1;
-	}
-
-	/* If new transaction is selected, need to deal specially */
-	@Override
-	public Object getItem(int position) {
-		return _data.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return position;
+		super(data, c);
 	}
 
 	/* Fill the entry with data here */
@@ -107,17 +76,6 @@ public class PerPersonAdapter extends BaseAdapter {
 		public TextView price_view;
 		public TextView name_view;
 		ImageView image;
-
-	}
-
-	@Override
-	public int getViewTypeCount() {
-		return TYPE_MAX_COUNT;
-	}
-
-	@Override
-	public int getItemViewType(int position) {
-		return position == _data.size() ? TYPE_NEW_ENTRY : TYPE_NORMAL_ENTRY;
 	}
 
 }
