@@ -1,0 +1,2 @@
+Name:      /User.class
+Java-Bean: True
