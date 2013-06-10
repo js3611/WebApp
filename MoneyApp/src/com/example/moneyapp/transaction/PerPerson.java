@@ -62,6 +62,7 @@ public class PerPerson extends Activity {
 			private boolean selectedNewTransaction(int pos) {
 
 				return details.size() == pos;
+				
 			}
 
 		});
