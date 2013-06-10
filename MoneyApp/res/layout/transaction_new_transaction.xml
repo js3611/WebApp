@@ -51,6 +51,7 @@
         android:text="Equal Split" />
 
     <Button
+        android:onClick ="newTransactionHandler"
         android:id="@+id/done_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

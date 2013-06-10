@@ -1,4 +1,3 @@
-package restful;
 
 public class User {
 

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/logContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+    
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -71,11 +70,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/surname"
         android:background="@drawable/custom_button"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="60dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp"
+        android:layout_marginBottom="30dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:textSize="25sp"
         android:text="Nudge" />
 
     <Button
@@ -86,8 +87,10 @@
         android:background="@drawable/custom_button"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp"
+        android:layout_marginBottom="30dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:textSize="25sp"
         android:text="Message" />
 
     <Button
@@ -98,8 +101,10 @@
         android:background="@drawable/custom_button"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp"
+        android:layout_marginBottom="30dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:textSize="25sp"
         android:text="Call" />
 
     <Button
@@ -110,8 +115,10 @@
         android:background="@drawable/custom_button"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp"
+        android:layout_marginBottom="30dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:textSize="25sp"
         android:text="Add Deadline" />
 
     <Button
@@ -122,10 +129,10 @@
         android:background="@drawable/custom_button"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp"
-        android:text="New Transaction" 
-        android:layout_alignBottom="@+id/profileMenu" />
-    
+        android:layout_marginBottom="30dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:textSize="25sp"
+        android:text="New Transaction" />
 
 </LinearLayout>

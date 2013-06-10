@@ -71,6 +71,18 @@
                   <url-pattern>/login</url-pattern>
                 </servlet-mapping>
 
+<!-- user -->
+                <servlet>
+                  <servlet-name>simple2</servlet-name>
+                  <servlet-class>restful.Simple2</servlet-class>
+                  <load-on-startup>5</load-on-startup>
+                </servlet>
+
+                <servlet-mapping>
+                  <servlet-name>simple2</servlet-name>
+                  <url-pattern>/s2</url-pattern>
+                </servlet-mapping>
+
 
 
 </web-app>

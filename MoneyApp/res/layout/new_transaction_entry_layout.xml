@@ -11,8 +11,8 @@
 
         <ImageView
             android:id="@+id/add_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="50dp"
             android:contentDescription="@string/next"

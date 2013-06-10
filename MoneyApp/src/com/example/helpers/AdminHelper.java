@@ -24,6 +24,9 @@ public class AdminHelper {
 		case 6: // Phone number / Account already exists
 			errorMessage = "Phone Number is already registered!";
 			return new Pair<String, Boolean>(errorMessage, false);
+		case 7: // unknown error, nothing inserted
+			errorMessage = "There was an error with sign up! Please retry.";
+			return new Pair<String, Boolean>(errorMessage,false);
 		default:
 			errorMessage = "Something went wrong!";
 			break;
