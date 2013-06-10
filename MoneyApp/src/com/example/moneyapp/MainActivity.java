@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -21,9 +22,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.gson.ReturnCode;
+import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.StringFilter;
+import com.google.gson.Gson;
 
 public class MainActivity extends Activity {
 
@@ -122,7 +126,13 @@ public class MainActivity extends Activity {
 			// address should be the http address of the server side code.
 			String response = CustomHttpClient.executeHttpPost(url + "/login",
 					nameValueP, DEFAULT_DATA_LENGTH);
-			errorMessage = response;
+			
+			// Handle json string
+			Gson gson = new Gson();
+			ReturnCode ret = gson.fromJson(response, ReturnCode.class);
+			Pair<String, Boolean> pair = AdminHelper.handleResponse(ret.getRetCode());					
+			errorMessage = pair.first;
+			return pair.second;
 		} catch (Exception e) {
 			errorMessage = e.toString();
 		}

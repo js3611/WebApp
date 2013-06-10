@@ -10,7 +10,6 @@ import com.example.moneyapp.SignIn;
 import com.example.moneyapp.R.id;
 import com.example.moneyapp.R.layout;
 import com.example.moneyapp.R.menu;
-import com.example.moneyapp.SignIn.registerUser;
 
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -76,7 +75,7 @@ public class NewTransaction extends Activity {
 
 	
 	
-	
+	/*
 	public void newTransactionHandler (View view) {
 		EditText _transName = (EditText) findViewById(R.id.item_name);
 		EditText _transDesc = (EditText) findViewById(R.id.item_description);
@@ -137,18 +136,5 @@ public class NewTransaction extends Activity {
 			}
 		}
 	}	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	*/
 }
