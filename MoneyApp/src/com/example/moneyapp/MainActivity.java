@@ -22,10 +22,12 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
@@ -98,6 +100,14 @@ public class MainActivity extends Activity {
 		protected void onPostExecute(Boolean result) {
 			
 			if (result) {
+				// Toast message
+				Context context = getApplicationContext();
+				CharSequence feedbackMsg = "Log in successful!";
+				int duration = Toast.LENGTH_SHORT;
+				Toast toast = Toast.makeText(context, feedbackMsg, duration);
+				toast.setGravity(Gravity.CENTER,0,0);
+				toast.show();	
+				
 				Intent intent = new Intent(MainActivity.this, MainMenu.class);
 				startActivity(intent);
 			} else {
@@ -113,7 +123,7 @@ public class MainActivity extends Activity {
 		HttpClient httpClient = new DefaultHttpClient();
 		//Need to choose the right local host every time
 		//edge02: http://146.169.52.2:59999/login
-		HttpPost httpPost = new HttpPost("http://146.169.53.189:59999/login");
+		HttpPost httpPost = new HttpPost("http://146.169.53.13:59999/login");
 		
 		try {
 			//Add data
