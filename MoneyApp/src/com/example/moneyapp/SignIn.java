@@ -116,7 +116,8 @@ private boolean signUpWith(String firstname, String surname, String password, St
 	//Need to choose the right local host every time
 	//edge02: http://146.169.52.2:59999/login
 	//fusion21: 146.169.53.101
-	HttpPost httpPost = new HttpPost("http://146.169.53.189:59999/login");
+	//http://146.169.53.189:59999/login that one in the corner quiet labs
+	HttpPost httpPost = new HttpPost("http://146.169.53.13:59999/login");
 	
 	try {
 		//Add data

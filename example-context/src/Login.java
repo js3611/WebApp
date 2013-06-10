@@ -110,8 +110,11 @@ public class Login extends HttpServlet {
 		     
 		     int rs = stmt.executeUpdate("INSERT INTO appuser(firstname, surname, password, phonenumber) values ('" + fname + "', '" + sname + "', '" + pw  + "', '" + phoneNo + "')" );//RETURNING userid;");
 
+		    if (rs == 0)
+			out.print ("7");
+		    else
+		    	out.print("5"); // Successful signup
 
-		    out.print("5"); // Successful signup
 		    stmt.close();
 		}
 
