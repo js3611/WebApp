@@ -167,9 +167,9 @@ public class Transaction extends HttpServlet {
 							+ trans_desc
 							+ "', '"
 							+ trans_date
-							+ "', '£"
-							+ trans_amount
 							+ "', "
+							+ trans_amount
+							+ ", "
 							+ trans_urgency + ") RETURNING transid;");
 			// The transaction id of just added transaction above
 			int trans_id = new_trans.getInt("transid");

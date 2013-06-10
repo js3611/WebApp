@@ -27,7 +27,7 @@ import com.example.helpers.StringFilter;
 
 public class MainActivity extends Activity {
 
-	private static final int DEFAULT_DATA_LENGTH = 1000;
+	public static final int DEFAULT_DATA_LENGTH = 1000;
 	public static final String url = "http://146.169.53.14:59999";
 	private TextView errorView;
 	private String errorMessage;
