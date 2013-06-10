@@ -9,17 +9,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.example.helpers.metadata.MessageDetails;
-import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
-import com.example.moneyapp.message.MessageAdapter;
 
 public class PerPerson extends Activity {
-
-	public final static String NAME_STR = "name";
-	public final static String PRICE_STR = "price";
+	
 	// The List view
 	ListView transList;
 	// A list of data for each entry, which the adapter retrieves from.
@@ -54,11 +48,12 @@ public class PerPerson extends Activity {
 				// String s = tv.getText().toString();
 				if (selectedNewTransaction(pos)) {
 					startActivity(new Intent(PerPerson.this, NewTransaction.class));
-				} else { // normail detail window
+				} else { // normal detail window
 					TransactionDetail detail = details.get(pos);
 					Intent intent = new Intent(PerPerson.this, PerPersonProfile.class);
-					intent.putExtra(NAME_STR, detail.getFrom());
-					intent.putExtra(PRICE_STR, detail.getPrice());
+					intent.putExtra(Transactions.NAME_STR, detail.getFrom());
+					intent.putExtra(Transactions.PRICE_STR, detail.getPrice());
+					//intent.putExtra(Transactions.USER_STR, )
 					startActivity(intent);
 				}
 

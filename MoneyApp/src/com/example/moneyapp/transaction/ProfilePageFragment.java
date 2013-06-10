@@ -29,12 +29,33 @@ public class ProfilePageFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		ViewGroup rootView;
-
+		
 		// Set the title view to show the page number.
 		rootView = (ViewGroup) inflater.inflate(R.layout.transaction_fragment_profile_view,
 				container, false);
 		
+		//Fill in details
+		Bundle extras = getActivity().getIntent().getExtras();
+		if (extras != null) {
+			String name = extras.getString(Transactions.NAME_STR);
+			int price = extras.getInt(Transactions.PRICE_STR);
+			((TextView) rootView.findViewById(R.id.firstName)).setText(name);
+			((TextView) rootView.findViewById(R.id.surname)).setText(name);
+			((TextView) rootView.findViewById(R.id.price)).setText("£"+price);
+			((TextView) rootView.findViewById(R.id.oweDirection)).setText(setDirection(price,name));
+			
+			
+		}
+		
 		return rootView;
+	}
+
+	private CharSequence setDirection(int price, String name) {
+		if (price < 0) {
+			return "You owe "+name +": ";
+		} else {
+			return name +" owes you: ";
+		}
 	}
 
 }

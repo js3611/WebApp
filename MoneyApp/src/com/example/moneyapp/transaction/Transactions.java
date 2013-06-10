@@ -9,6 +9,12 @@ import android.view.View;
 
 public class Transactions extends Activity {
 
+	public final static String NAME_STR = "com.example.moneyapp.transaction.name";
+	public final static String PRICE_STR = "com.example.moneyapp.transaction.price";
+	public final static String PROFILEPIC_STR = "com.example.moneyapp.transaction.price";
+	public final static String USER_STR = "com.example.moneyapp.transaction.userdetails";
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,13 +30,11 @@ public class Transactions extends Activity {
 
 	public void jumpToPersonList(View view) {
 		Intent intent= new Intent(this, PerPerson.class);
-		//		Intent intent= new Intent(this, ExampleListActivity.class);
 		startActivity(intent);
 	}
 	
 	public void jumpToItemList(View view) {
 		Intent intent= new Intent(this, PerItem.class);
-		//		Intent intent= new Intent(this, ExampleListActivity.class);
 		startActivity(intent);
 	}
 	
