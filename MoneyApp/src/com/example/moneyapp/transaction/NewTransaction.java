@@ -80,6 +80,9 @@ public class NewTransaction extends Activity {
 		return true;
 	}
 
+	
+	
+	
 	public void newTransactionHandler (View view) {
 		EditText _transName = (EditText) findViewById(R.id.item_name);
 		EditText _transDesc = (EditText) findViewById(R.id.item_description);
