@@ -16,10 +16,13 @@
         android:layout_above="@+id/transactions"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="60dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/calendar" 
+        android:textSize="30sp"
         android:onClick="toCalendar"/>
     
     <Button
@@ -29,9 +32,12 @@
         android:layout_above="@+id/convos"
         android:layout_alignLeft="@+id/calendar"
         android:layout_marginBottom="50dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
-        android:text="@string/transactions" 
+        android:text="@string/transactions"
+        android:textSize="30sp" 
         android:onClick="toTransactions" />
     
     <Button
@@ -40,10 +46,14 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/wishList"
         android:layout_alignLeft="@+id/transactions"
+        android:layout_centerVertical="true"
         android:layout_marginBottom="50dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/convos"
+        android:textSize="30sp"
         android:onClick="toMessages" />
 
     <Button
@@ -53,9 +63,12 @@
         android:layout_above="@+id/settings"
         android:layout_alignLeft="@+id/convos"
         android:layout_marginBottom="50dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/wishList" 
+        android:textSize="30sp"
         android:onClick="toWishList"/>
     
     <Button
@@ -64,10 +77,13 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/wishList"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="38dp"
+        android:layout_marginBottom="60dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:background="@drawable/custom_button"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/settings" 
+        android:textSize="30sp"
         android:onClick="toSettings"
         />
 
