@@ -46,7 +46,7 @@ private void handleGetOperation(String operation, Connection conn,
 		Statement transStmt = conn.createStatement();
 		int userid = request.getParameter("userid");		
 
-		ResultSet transactionsSet = ("SELECT (t.transid, t.desciption, t._date, t.name, t.urgency t.total_amount, d.userid, d.owesuserid) FROM transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = " + userid + " OR d.owesuserid = " + userid +") AND t.total_paid_off = false GROUP BY t.transid, t.desciption, t._date, t.name, t.urgency, t.total_amount, d.userid, d.owesuserid ORDER BY t._date DESC");		
+		ResultSet transactionsSet = transStmt.executeQuery("SELECT (t.transid, t.name, t._date, t.total_amount, d.owesuserid) FROM transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = " + userid + " OR d.owesuserid = " + userid +") AND t.total_paid_off = false GROUP BY t.transid, t.name, t._date, t.total_amount, d.owesuserid ORDER BY t._date DESC");		
 		
 		if (!transactionSet.next()) {
 			out.print("4"); //NO CURRENT TRANSACTIONS
@@ -60,26 +60,42 @@ private void handleGetOperation(String operation, Connection conn,
 		Statement transStmt = conn.createStatement();
 		int userid = request.getParameter("userid");		
 
-		ResultSet transactionsSet = ("SELECT (t.transid, t.desciption, t._date, t.name, t.urgency t.total_amount, d.userid, d.owesuserid) FROM transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = " + userid + " OR d.owesuserid = " + userid +") AND t.total_paid_off = true GROUP BY t.transid, t.desciption, t._date, t.name, t.urgency, t.total_amount, d.userid, d.owesuserid ORDER BY t._date DESC");		
+		ResultSet transactionsSet = transStmt.executeQuery("SELECT (t.transid, t._date, t.name, t.total_amount, t.complete_date, d.userid, d.owesuserid) FROM transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = " + userid + " OR d.owesuserid = " + userid +") AND t.total_paid_off = true GROUP BY t.transid, t.desciption, t._date, t.name, t.total_amount, t.complete_date, d.userid, d.owesuserid ORDER BY t._date DESC");	
+
+		if (!transactionSet.next()) {
+			out.print("4"); //NO CURRENT TRANSACTIONS
+
+		while (transactionSet.next()) {
+			// TODO: So we got the transactions, now need to display them	
 	
-	} else if (operation.equals("transactionDetails"){
+
+	} else if (operation.equals("transactionLiveDetails"){
+		Statement detailsStmt = conn.createStatement();
+		Statement debtStmt = conon.createStatement();
+	
+//TODO Currently just gets the transactions in which the user is the one who is owed (not owes)
+		
+		int transid = request.getparameter("transid");
+		ResultSet detailsSet = detailsStmt.executeQuery("SELECT (transid, name, total_amount, _date, description, total_paid_off) FROM transactions WHERE transid = " + transid + " AND total_paid_off = false;");
+		
+		ResultSet rs = debtStmt.executeQuery("SELECT (d.transid, d.amount, a.userid, a.firstname, a.surname) FROM debt d INNER JOIN appuser a ON d.owesuserid = appuser.userid");
+
+		if (!rs.next())
+			out.print("5")
+		while(rs.next())
+			out.println(rs.getInt("transid") + ", " + rs.getInt("amount") + ", " + rs.getInt("userid") + ", " + rs.getInt("firstname") + ", " + rs.getString("firstname") + ", " + rs.getString("Surname")); 
+
+
+	} else if (operation.equals("transactionDeadDetails"){
 		Statement detailsStmt = conn.createStatement();
 		
 		int transid = request.getparameter("transid");
+		ResultSet detailsSet = detailsStmt.executeQuery("SELECT (transid, name, total_amount, _date, description, total_paid_off) FROM transactions WHERE transid = " + transid + " AND total_paid_off = true;");
 		
-
-
-	}
 
 
 
 }
-
-
-
-
-
-
 
 
 
