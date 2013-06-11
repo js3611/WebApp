@@ -153,7 +153,7 @@ public class Login extends HttpServlet {
     private boolean firstEntry = true;
 
     public StringBuilder getBuilder() {
-	StringBuilder str = new StringBuilder("{ ");
+	StringBuilder str = new StringBuilder("{");
 	return str;
     }
 
