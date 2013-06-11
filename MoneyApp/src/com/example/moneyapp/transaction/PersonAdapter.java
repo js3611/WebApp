@@ -3,15 +3,10 @@ package com.example.moneyapp.transaction;
 import java.util.ArrayList;
 
 import com.example.moneyapp.R;
-import com.example.moneyapp.transaction.PerItemAdapter.PerItemViewHolder;
-
 import android.content.Context;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;

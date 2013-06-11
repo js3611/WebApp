@@ -1,6 +1,7 @@
 package com.example.moneyapp;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,9 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
+import com.example.helpers.CustomHttpClient;
 import com.example.helpers.HttpReaders;
-import com.example.helpers.StringFilter;
-
+import com.example.json.JsonCustomReader;
 
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -37,7 +38,7 @@ public class SignIn extends Activity {
 
 	TextView errorView;
 	String errorMessage;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,105 +53,96 @@ public class SignIn extends Activity {
 		return true;
 	}
 
-	
-public void signupHandler (View view) {
-	EditText phonenumber = (EditText) findViewById(R.id.enterNumber);
-	EditText firstnameText = (EditText) findViewById(R.id.enterFirstName);
-	EditText surnameText = (EditText) findViewById(R.id.enterSurname);
-	EditText enterPasswordText = (EditText) findViewById(R.id.enterPassword);
-	EditText checkPasswordText = (EditText) findViewById(R.id.checkPassword);
-	
-	String enterPasswordString = enterPasswordText.getText().toString();
-	String checkPasswordString = checkPasswordText.getText().toString();
-	String firstnameString = firstnameText.getText().toString();
-	String surnameString = surnameText.getText().toString();
-	String phoneNum = phonenumber.getText().toString();
-	
+	/*
+	 * Invoked when the Register button is pressed. Reads input from user and
+	 * call asynchronous task to handle
+	 */
+	public void signupHandler(View view) {
+		EditText phonenumber = (EditText) findViewById(R.id.enterNumber);
+		EditText firstnameText = (EditText) findViewById(R.id.enterFirstName);
+		EditText surnameText = (EditText) findViewById(R.id.enterSurname);
+		EditText enterPasswordText = (EditText) findViewById(R.id.enterPassword);
+		EditText checkPasswordText = (EditText) findViewById(R.id.checkPassword);
 
-	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	
-	if (ConnectionHelper.checkNetworkConnection(connMgr) && 
-			passwordsMatch(enterPasswordString, checkPasswordString))
-	{
-		new registerUser().execute(firstnameString, surnameString, enterPasswordString, phoneNum);
-							
-	}
-	else if (!passwordsMatch(enterPasswordString, checkPasswordString)) {
-		errorView.setText("Entered Passwords do not match!");
-	}
-	else if (!ConnectionHelper.checkNetworkConnection(connMgr)){
-		errorView.setText("No network connection");
+		String enterPasswordString = enterPasswordText.getText().toString();
+		String checkPasswordString = checkPasswordText.getText().toString();
+		String firstnameString = firstnameText.getText().toString();
+		String surnameString = surnameText.getText().toString();
+		String phoneNum = phonenumber.getText().toString();
+
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		if (ConnectionHelper.checkNetworkConnection(connMgr)
+				&& passwordsMatch(enterPasswordString, checkPasswordString)) {
+			new registerUser().execute(firstnameString, surnameString,
+					enterPasswordString, phoneNum);
+
+		} else if (!passwordsMatch(enterPasswordString, checkPasswordString)) {
+			errorView.setText("Entered Passwords do not match!");
+		} else if (!ConnectionHelper.checkNetworkConnection(connMgr)) {
+			errorView.setText("No network connection");
+		}
+
 	}
 
-}
+	/* Asynchronous task to register user in database */
+	private class registerUser extends AsyncTask<String, Void, Boolean> {
 
-private class registerUser extends AsyncTask<String, Void, Boolean> {
-	
-	@Override
-	protected Boolean doInBackground(String... params) {
-		return signUpWith(params[0],params[1],params[2],params[3]);
-	}
-	
-	@Override
-	protected void onPostExecute(Boolean result) {
-		if (result) {
-			
-			// Toast message
-			Context context = getApplicationContext();
-			CharSequence feedbackMsg = "Sign up successful!";
-			int duration = Toast.LENGTH_SHORT;
-			Toast toast = Toast.makeText(context, feedbackMsg, duration);
-			toast.setGravity(Gravity.CENTER,0,0);
-			toast.show();	
-			
-			Intent intent = new Intent(SignIn.this, MainMenu.class);
-			startActivity(intent);	
-		} else {
-			errorView.setText(errorMessage);
+		@Override
+		protected Boolean doInBackground(String... params) {
+			return signUpWith(params[0], params[1], params[2], params[3]);
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			if (result) {
+				// Toast message
+				Context context = getApplicationContext();
+				CharSequence feedbackMsg = "Sign up successful!";
+				int duration = Toast.LENGTH_SHORT;
+				Toast toast = Toast.makeText(context, feedbackMsg, duration);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+
+				Intent intent = new Intent(SignIn.this, MainMenu.class);
+				startActivity(intent);
+			} else {
+				errorView.setText(errorMessage);
+			}
 		}
 	}
-}
 
-private boolean signUpWith(String firstname, String surname, String password, String phone) {
-	HttpClient httpClient = new DefaultHttpClient();
-	//Need to choose the right local host every time
-	//edge02: http://146.169.52.2:59999/login
-	//fusion21: 146.169.53.101
-	//http://146.169.53.189:59999/login that one in the corner quiet labs
-	HttpPost httpPost = new HttpPost("http://146.169.53.13:59999/login");
-	
-	try {
-		//Add data
+	private boolean signUpWith(String firstname, String surname,
+			String password, String phone) {
+		
 		List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(5);
 		nameValueP.add(new BasicNameValuePair("op", "newAccount"));
 		nameValueP.add(new BasicNameValuePair("firstname", firstname));
-		nameValueP.add(new BasicNameValuePair("surname",surname));
+		nameValueP.add(new BasicNameValuePair("surname", surname));
 		nameValueP.add(new BasicNameValuePair("password", password));
-		nameValueP.add(new BasicNameValuePair("phone", phone));						
-		
-		httpPost.setEntity(new UrlEncodedFormEntity(nameValueP));
-		//execute Post request
-		HttpResponse res = httpClient.execute(httpPost);
-		
-		//String response = HttpReaders.readIt(res.getEntity().getContent(), 500);
-		int response = HttpReaders.readInt(res.getEntity().getContent(), 1);
-		Pair<String, Boolean> responseTuple =  AdminHelper.handleResponse(response);	
-		errorMessage = responseTuple.first;
-		return responseTuple.second;
-		//errorMessage = response;
-		//return false;
-		
-	} catch (ClientProtocolException e) {
-		errorView.setText("ClientProtocolException"); 
-	} catch (IOException e) {
-		errorView.setText("IOException in postData");
-	}
-	return false;
-}
-	
-private boolean passwordsMatch (String entered, String check) {
-	return check.equals(entered);
-}
+		nameValueP.add(new BasicNameValuePair("phone", phone));
 
+		try {
+
+			InputStream in = CustomHttpClient.executeHttpPost(MainActivity.url+MainActivity.login, nameValueP);
+			// Handle JSONstring
+			int response = JsonCustomReader.readJsonRetCode(in);			
+			Pair<String, Boolean> pair = AdminHelper.handleResponse(response);
+			errorMessage = pair.first;
+			return pair.second;
+
+		} catch (ClientProtocolException e) {
+			errorView.setText("ClientProtocolException");
+		} catch (IOException e) {
+			errorView.setText("IOException in postData");
+		} catch (Exception e) {
+			errorView.setText("Unknown Error");
+		} 
+		return false;
+	}
+
+	private boolean passwordsMatch(String entered, String check) {
+		return check.equals(entered);
+	}
 
 }

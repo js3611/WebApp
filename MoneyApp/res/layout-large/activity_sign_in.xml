@@ -14,7 +14,7 @@
         android:layout_marginBottom="30dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/firstname"
+        android:hint="@string/firstname"
         android:textColor="@color/grey" />
     
     <EditText
@@ -26,8 +26,7 @@
         android:layout_marginBottom="50dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/surname"
-        android:textColor="@color/grey" />
+        android:hint="@string/surname" />
 
     <EditText
         android:id="@+id/enterNumber"
@@ -37,9 +36,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/PhoneNumber"
-        android:textColor="@color/grey" />
+        android:inputType="numberPassword"
+        android:hint="@string/PhoneNumber" />
     
      <View
         android:id="@+id/separate"
@@ -59,8 +57,7 @@
         android:layout_marginBottom="50dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="@string/password"
-        android:textColor="@color/grey" />
+        android:hint="@string/password" />
 
     <EditText
         android:id="@+id/checkPassword"
@@ -71,8 +68,7 @@
         android:layout_marginBottom="50dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="@string/password"
-        android:textColor="@color/grey" >
+        android:hint="@string/password" >
 
         <requestFocus />
     </EditText>
