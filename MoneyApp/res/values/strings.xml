@@ -63,5 +63,7 @@
     <string name="title_activity_main_menu_large">MainMenuLarge</string>
     <string name="title_activity_new_person">NewPerson</string>
     <string name="person_search_hint">Search Person</string>
+    <string name="example_phone_no">0123456789</string>
+    <string name="example_password">password</string>
 
 </resources>

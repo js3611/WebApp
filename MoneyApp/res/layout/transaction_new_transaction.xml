@@ -43,52 +43,7 @@
         android:layout_height="0dip"
         android:layout_weight="1" >
     </ListView>
-    
-     <RelativeLayout
-        android:id="@+id/total_layout"
-    	android:layout_width="match_parent"
-    	android:layout_height="wrap_content"
-    	android:orientation="vertical">
-         
-       <TextView
-        android:id="@+id/total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/amount"
-        android:text="Total: "
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-         
-      <TextView
-        android:id="@+id/amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="£30"
-        android:textAppearance="?android:attr/textAppearanceLarge" />    
-         
-     </RelativeLayout>
-    
-     <RelativeLayout
-        android:id="@+id/total_layout"
-    	android:layout_width="match_parent"
-    	android:layout_height="wrap_content"
-    	android:orientation="vertical">
-      
-     <TextView
-        android:id="@+id/urgence"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Urgency: "
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-     
-    <Spinner
-    	android:id="@+id/spinner"
-    	android:layout_width="match_parent"
-    	android:layout_height="wrap_content" 
-    	android:layout_toRightOf="@id/urgence"/>
-    
-    </RelativeLayout>
-     
+
     <Button
         android:id="@+id/eq_split_button"
         android:layout_width="match_parent"
@@ -96,6 +51,7 @@
         android:text="Equal Split" />
 
     <Button
+        android:onClick ="newTransactionHandler"
         android:id="@+id/done_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

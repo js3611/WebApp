@@ -33,7 +33,9 @@
         android:layout_alignBottom="@+id/phone"
         android:layout_alignLeft="@+id/password"
         android:ems="10"
+        android:hint="@string/example_phone_no"
         android:inputType="phone" >
+
     </EditText>
 
     <CheckedTextView
@@ -50,10 +52,11 @@
         android:id="@+id/password"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/phoneNumber"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/phoneNumber"
         android:layout_marginRight="50dp"
         android:ems="10"
+        android:hint="@string/example_password"
         android:inputType="textPassword" />
 
      <View
@@ -111,6 +114,6 @@
         android:layout_alignParentBottom="true"
         android:text="@string/signIn"
         android:onClick="signInHandler"
-        android:clickable="true" />"
+        android:clickable="true" />
 
 </RelativeLayout>

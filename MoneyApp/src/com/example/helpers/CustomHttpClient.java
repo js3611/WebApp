@@ -1,8 +1,6 @@
 package com.example.helpers;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.List;
 
@@ -76,6 +74,27 @@ public class CustomHttpClient {
         }
     }
 
+    public static InputStream executeHttpPost(String url, List<NameValuePair> postParameters) throws Exception {
+    	InputStream in = null;
+    	try {
+            HttpClient client = getHttpClient();
+            HttpPost request = new HttpPost(url);
+            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(postParameters);
+            request.setEntity(formEntity);
+            HttpResponse response = client.execute(request);
+            return response.getEntity().getContent();
+            
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
     /**
      * Performs an HTTP GET request to the specified url.
      *

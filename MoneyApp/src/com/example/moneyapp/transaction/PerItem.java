@@ -2,11 +2,7 @@ package com.example.moneyapp.transaction;
 
 import java.util.ArrayList;
 
-import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
-import com.example.moneyapp.R.layout;
-import com.example.moneyapp.R.menu;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;

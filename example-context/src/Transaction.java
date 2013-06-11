@@ -52,7 +52,7 @@ public class Transaction extends HttpServlet {
 							+ ") AND t.total_paid_off = false GROUP BY t.transid, t.name, t._date, t.total_amount, d.owesuserid ORDER BY t._date DESC");
 
 			if (!transactionSet.next()) {
-				out.print("4"); // NO CURRENT TRANSACTIONS
+				out.print(build(append(getBuilder(),"returnCode",4))); // NO CURRENT TRANSACTIONS
 
 				while (transactionSet.next()) {
 					// TODO: So we got the transactions, now need to display
@@ -93,8 +93,8 @@ public class Transaction extends HttpServlet {
 				ResultSet rs = debtStmt
 						.executeQuery("SELECT (d.transid, d.amount, a.userid, a.firstname, a.surname) FROM debt d INNER JOIN appuser a ON d.owesuserid = appuser.userid");
 
-				if (!rs.next())
-					out.print("5");
+				if (!rs.next()) 	//SELECT returned nothing, not transactions
+					out.print(build(append(getBuilder(),"returnCode",5)));
 				while (rs.next())
 					out.println(rs.getInt("transid") + ", "
 							+ rs.getInt("amount") + ", " + rs.getInt("userid")
@@ -167,9 +167,9 @@ public class Transaction extends HttpServlet {
 							+ trans_desc
 							+ "', '"
 							+ trans_date
-							+ "', '£"
-							+ trans_amount
 							+ "', "
+							+ trans_amount
+							+ ", "
 							+ trans_urgency + ") RETURNING transid;");
 			// The transaction id of just added transaction above
 			int trans_id = new_trans.getInt("transid");
@@ -198,10 +198,10 @@ public class Transaction extends HttpServlet {
 								+ owers_id
 								+ ", " + "'£" + ower_amount + "');");
 
-				if (result == 1)
-					out.print("1"); // SUCCESSFUL ADD
-				else
-					out.print("2"); // DATABASE INSERT WENT WRONG
+				if (result == 1) // SUCCESSFUL ADD
+					out.printbuild(append(getBuilder(),"returnCode",1)));  
+				else		// DATABASE INSERT WENT WRONG
+					out.printbuild(append(getBuilder(),"returnCode",2)));  
 			}
 			queryStmt.close();
 			insertStmt.close();
@@ -226,10 +226,10 @@ public class Transaction extends HttpServlet {
 							+ userid
 							+ " AND owesuserid = " + owesuserid + ";");
 
-			if (rs != 0)
-				out.print("8");
-			else
-				out.print("9");
+			if (rs != 0) // update correctly, debt marked as paid
+				out.printbuild(append(getBuilder(),"returnCode",8))); 
+			else  //update went wrong, nothing was changed
+				out.printbuild(append(getBuilder(),"returnCode",9))); 
 
 			ResultSet results = checkStmt
 					.executeQuery("SELECT * FROM debt WHERE transid = "
@@ -239,9 +239,8 @@ public class Transaction extends HttpServlet {
 				rs = updateStmt
 						.executeUpdate("UPDATE transactions SET paid_off = true WHERE transid = "
 								+ transid + ";");
-				if (rs == 0)
-					out.print("11"); // statement didnt work
-
+				if (rs == 0)	//Update didn't go through
+					out.printbuild(append(getBuilder(),"returnCode",12))); 
 			}
 
 			// WHEN THE USER WANTS TO DELETE A TRANSACTION
@@ -254,22 +253,24 @@ public class Transaction extends HttpServlet {
 					.executeQuery("SELECT userid FROM transactions WHERE transid = '"
 							+ transid + "';");
 
+			//TODO client side checks if transaction is users
+
 			int userid = Integer.parseInt(request.getParameter("userid"));
 			int useridcheck = rs.getInt("userid");
 
 			int result = dltStmt
 					.executeUpdate("DELETE FROM transactions WHERE transid = "
 							+ transid + ";");
-			if (result != 0)
-				out.print("10"); // User is the person who is owed money
-			else
-				out.print("11"); // The DELETE statement didnt execute correctly
+			if (result != 0)  // Delete worked
+				out.print(build(append(getBuilder(),"returnCode", 10)));
+			else		 // The DELETE statement didnt execute correctly
+				out.printbuild(append(getBuilder(),"returnCode",11))); 
 
 			dltStmt.close();
 			queryStmt.close();
 
 		} else
-			out.print("2"); // COULD NOT RECOGNISE OPERATION
+			out.print("3"); // COULD NOT RECOGNISE OPERATION
 
 	}
 
