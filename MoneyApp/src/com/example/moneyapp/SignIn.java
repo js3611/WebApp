@@ -74,7 +74,7 @@ public class SignIn extends Activity {
 
 		if (ConnectionHelper.checkNetworkConnection(connMgr)
 				&& passwordsMatch(enterPasswordString, checkPasswordString)) {
-			new registerUser().execute(firstnameString, surnameString,
+			new RegisterUser().execute(firstnameString, surnameString,
 					enterPasswordString, phoneNum);
 
 		} else if (!passwordsMatch(enterPasswordString, checkPasswordString)) {
@@ -86,7 +86,7 @@ public class SignIn extends Activity {
 	}
 
 	/* Asynchronous task to register user in database */
-	private class registerUser extends AsyncTask<String, Void, Boolean> {
+	private class RegisterUser extends AsyncTask<String, Void, Boolean> {
 
 		@Override
 		protected Boolean doInBackground(String... params) {
@@ -136,7 +136,7 @@ public class SignIn extends Activity {
 		} catch (IOException e) {
 			errorView.setText("IOException in postData");
 		} catch (Exception e) {
-			errorView.setText("Unknown Error");
+			errorView.setText("An Unknown error has occurred!");
 		} 
 		return false;
 	}

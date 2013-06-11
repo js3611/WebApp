@@ -114,7 +114,7 @@ public class Login extends HttpServlet {
 		out.print(build(append(getBuilder(),"returnCode",6)));//out.print("6");
 	    else {	
 		     
-		int rs = stmt.executeUpdate("INSERT INTO appuser(firstname, surname, password, phonenumber) values ('" + fname + "', '" + sname + "', '" + pw  + "', '" + phoneNo + "')" );//RETURNING userid;");
+		int rs = stmt.executeUpdate("INSERT INTO appuser(firstname, surname, password, phonenumber) values ('" + fname + "', '" + sname + "', '" + pw  + "', '" + phoneNo + "')" );
 
 		if (rs == 0)
 		    out.print(build(append(getBuilder(),"returnCode",7)));//out.print("7");

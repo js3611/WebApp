@@ -1,19 +1,10 @@
 package com.example.moneyapp;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.annotation.SuppressLint;
@@ -24,8 +15,6 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.JsonReader;
-import android.util.JsonToken;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
@@ -37,16 +26,16 @@ import android.widget.Toast;
 import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
-import com.example.helpers.HttpReaders;
 import com.example.helpers.StringFilter;
 import com.example.json.JsonCustomReader;
-import com.google.gson.Gson;
 
 public class MainActivity extends Activity {
 
 	public static final int DEFAULT_DATA_LENGTH = 1000;
+	
 	public static final String edge02 = "http://146.169.52.2:59999";
-	public static final String url = edge02;//"http://146.169.53.14:59999";
+	public static final String pixel20 = "http://146.169.53.180:59999";
+	public static final String url = pixel20;//"http://146.169.53.14:59999";
 	public static final String login = "/login";
 	private TextView errorView;
 	private String errorMessage;
@@ -85,6 +74,7 @@ public class MainActivity extends Activity {
 		EditText phoneText = (EditText) findViewById(R.id.phoneNumber);
 		String password = passwordText.getText().toString();
 		String phoneNo = phoneText.getText().toString();
+		
 		if (StringFilter.isIllegal(password) || StringFilter.isIllegal(phoneNo)) {
 			errorView.setText("Missing entries");
 			errorView.setTextColor(Color.RED);

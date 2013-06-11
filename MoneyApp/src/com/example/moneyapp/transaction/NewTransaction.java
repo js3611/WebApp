@@ -1,5 +1,6 @@
 package com.example.moneyapp.transaction;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -7,8 +8,11 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.TransactionHelper;
+import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
@@ -35,6 +39,8 @@ import android.widget.ListView;
 
 public class NewTransaction extends Activity {
 
+	String errorMessage;
+	
 	// The List view
 	ListView personList;
 	// A list of data for each entry, which the adapter retrieves from.
@@ -64,7 +70,6 @@ public class NewTransaction extends Activity {
 			}
 
 			private boolean selectedNewTransaction(int pos) {
-
 				return person_cost_pairs.size() == pos;
 			}
 
@@ -123,6 +128,7 @@ public class NewTransaction extends Activity {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
+			//Checks the result of running addToTransactions
 			if (result) {
 
 				// Toast message
@@ -137,7 +143,14 @@ public class NewTransaction extends Activity {
 						TransactionDetail.class);
 				startActivity(intent);
 			} else {
-				// TODO SOME ERROR HERE
+				
+				// Toast message
+				Context context = getApplicationContext();
+				CharSequence feedbackMsg = errorMessage;
+				int duration = Toast.LENGTH_SHORT;
+				Toast toast = Toast.makeText(context, feedbackMsg, duration);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
 			}
 		}
 	}
@@ -155,13 +168,17 @@ public class NewTransaction extends Activity {
 
 		try {
 			// address should be the http address of the server side code.
-			String response = CustomHttpClient.executeHttpPost(MainActivity.url
-					+ "/login", nameValueP, MainActivity.DEFAULT_DATA_LENGTH);
+			InputStream in = CustomHttpClient.executeHttpPost(MainActivity.url+MainActivity.login, nameValueP);
+			// Handle JSONstring
+			int response = JsonCustomReader.readJsonRetCode(in);			
+			Pair<String, Boolean> pair = TransactionHelper.handleResponse(response);
+			errorMessage = pair.first;
+			return pair.second;
 
 		} catch (Exception e) {
 			// Toast message
 			Context context = getApplicationContext();
-			CharSequence feedbackMsg = "An exception has occurred!";
+			CharSequence feedbackMsg = "An Unknown error has occurred!";
 			int duration = Toast.LENGTH_SHORT;
 			Toast toast = Toast.makeText(context, feedbackMsg, duration);
 			toast.setGravity(Gravity.CENTER, 0, 0);
