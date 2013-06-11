@@ -123,4 +123,23 @@ public class CustomHttpClient {
             }
         }
     }
+
+	public static InputStream executeHttpGet(String url) throws Exception {
+		InputStream in = null;
+        try {
+            HttpClient client = getHttpClient();
+            HttpGet request = new HttpGet();
+            request.setURI(new URI(url));
+            HttpResponse response = client.execute(request);
+            return response.getEntity().getContent();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+	}
 }
