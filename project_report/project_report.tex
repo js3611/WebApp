@@ -1,15 +1,116 @@
-\documentclass[a4paper,9t]{article}
-\usepackage[a4paper, includefoot, margin=1.3cm]{geometry}
+\documentclass[a4paper,11pt]{article}
+\usepackage[a4paper, includefoot]{geometry}
 \usepackage[parfill]{parskip}
+\usepackage{ctable}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{paralist}
+\usepackage{verbatim}
 
 \begin{document}
-\title{WebApps Group Project: Milestone Report} \date{29th May
+\title{WebApps Group Project: Project Report} \date{12th June
   2013} \author{
   Thai Tam Nguyen $<$ttn211@imperial.ac.uk$>$\\
   Jo Schlemper $<$js3611@imperial.ac.uk$>$\\
   Terence Tse  $<$tt1611@imperial.ac.uk$>$ }
 \maketitle
-\newpage
+%\newpage
+
+Where is my money App.
+\section*{Introduction (10\% Aim for half a page?)}
+
+Requirement:
+An app used by people in a shared environment, such as a flat or a university, to keep track of debts.
+Requirement \& target
+Target: 
+An app which supports people living together?  
+
+\section*{Project Management (30\% Aim for 1 ~ 1.5 pages)}
+Group Structure:\\
+Group Leader: \\
+Jo Schlemper\\
+Group members: \\
+Thai tam Nguyen \\
+Terence Tse\\
+Implementation Language:\\
+Client Side: Android \\
+Server Side: Java + Tomcat\\
+Database: Postgresql\\
+Design process:\\
+Feedback from the team members. \\
+Classic approach. Design on a paper? Dunno what to write here. \\
+Back-ups:\\
+GitHub \\
+
+\section*{Program (40\% Aim for 6 pages with pictures)}
+\subsection*{Description}
+Our final product is an android application which keeps track of debts. Once a user registers to the database, the user can create new transactions, view transactions and confirm the payment or the partial payment for transactions. The application provides the ability to make transactions to an individual or a group. It also supports messaging for individuals or a group, which can be used as a mean to communicate with each other, urge one another to pay and so on. The view of the transactions can be customised according to the users’ preference: per person or per item. Per person displays a list of people who you owe or who owes you and total amount of the debt. Clicking on the entry allows you to view a profile page, from which you can nudge, message, call and make a new transaction to the person. It also provides a log of transactions you have with the person.
+
+\subsection*{Design Patterns}
+Although the fundamental idea of the application is fairly simple, achieving the functionalities require careful considerations of design patterns. 
+
+\subsubsection*{Classic 3-tier architecture}
+For multiple users to interact with one another, it is necessary to have a convention for the communication of data. To achieve this we decided to deploy a classic 3-tier architecture as having a database on the server simplifies this communication process. Every time when a user requests to view or create transactions, the requests will be sent to the server through HTTP methods, GET or POST. For our application, it is unnecessary to serve a page; instead, we pass around a data between the client and the server in JSON format. The reason why we chose JSON is because it is a standard format for passing data through networks. It means that there are many third party libraries for encoding and decoding JSON string. For the client side, we used the standard library from Android to decode JSON string; on the client side, we wrote a code which builds a JSON string. 
+
+\begin{figure}[ht]
+\begin{center}
+\advance\leftskip-3cm
+\advance\rightskip-3cm
+\includegraphics[keepaspectratio=true,scale=0.5]{3tier}
+\caption{The 3-tier Architecutre}
+\label{visina8}
+\end{center}
+\end{figure}
+
+\subsubsection*{Builder pattern}
+To build a JSON string from the server side, we wrote a class \texttt{JSONBuilder.java} which lets you to build a JSON string. JSON string requires specific characters such as `$\lbrace$' `:' and writing the string manually could be erroneous so using the builder not only lets you make use of the pattern, it also simplifies the code and yet relatively easier to read. 
+
+\begin{verbatim}
+//... execute SQL query and obtain a set of results in transactionSet
+// Build JSON string
+JSONBuilder jb = new JSONBuilder();
+jb.beginObject().append("returnCode",1).beginArray();
+while (transactionSet.next()) {
+//...Obtain the result
+						
+jb.beginObject().append("transid", transId)
+                .append("name",transName)
+                .append("total_amount",transAmount)
+  .endObject();
+}
+jb.endArray().endObject();			
+writer.println(jb.build());
+\end{verbatim}
+
+\subsubsection*{Singleton}
+HttpClient as a singleton pattern. Use 
+
+\subsubsection*{Concurrency}
+ Future and AsyncTask
+ 
+\subsubsection*{Observer Pattern}
+onClickListener for listView 
+ 
+\subsubsection*{Template Method}
+CustomAdopter for list view.
+
+\subsubsection*{General Style}
+Encapsulation
+
+ 
+\section{Acknowledgement (doesn’t count, keep minimum)}
+Android SDK? Not sure if needed to mention here though.
+CustomHttpClient.java from Android Developers: http://developerrohit.blogspot.co.uk/2011/04/customhttpclientjava.html
+Took as an inspiration for our client side HTTP methods such as GET and POST.
+We created our own logo and icons so we should not have any problem for copyright. 
+\section*{Conclusion (20\% 1~1.5pages including acknowledgement)}
+
+We all love octopussy.\\
+
+
+BELOW HERE WHAT YOU WROTE BEFORE\\
+
+
 \section*{Preface}
 While sharing a flat with some friends, naturally, we decided to pool together money and share payments for things such as groceries, meals out and utility bills. Everyone who shares a flat knows the troubles associated with tracking payment to your friends, and even more so, chasing them down for your money. Our group intends to develop and application which will allow such situations to be resolved easily. This will be targeted, ideally, at students who are sharing a flat. Of course, we do not intend to restrict the application to this group - the application could be loosely used to help simply track debts in between friends, for example when they go out, share a meal and have one person foot the bill.
 

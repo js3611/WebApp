@@ -71,28 +71,28 @@ public class PerItem extends Activity {
 		TransactionDetail Detail;
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.thai);
-		Detail.setFrom("Thai");
+		Detail.setOwesuser("Thai");
 		Detail.setSubject("Dinner");
 		Detail.setPrice(30);
 		details.add(Detail);
 
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.terence);
-		Detail.setFrom("Terence");
+		Detail.setOwesuser("Terence");
 		Detail.setSubject("lunch");
 		Detail.setPrice(50);
 		details.add(Detail);
 		
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.jo);
-		Detail.setFrom("Jo");
+		Detail.setOwesuser("Jo");
 		Detail.setSubject("Malaga");
 		Detail.setPrice(340);
 		details.add(Detail);
 		
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.terence);
-		Detail.setFrom("Terence"); 
+		Detail.setOwesuser("Terence"); 
 		Detail.setSubject("Dinner");
 		Detail.setPrice(30);
 		details.add(Detail);

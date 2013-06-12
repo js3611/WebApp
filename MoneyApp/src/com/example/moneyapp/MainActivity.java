@@ -33,11 +33,11 @@ import com.example.json.JsonCustomReader;
 public class MainActivity extends Activity {
 
 	public static final int DEFAULT_DATA_LENGTH = 1000;
-	
+
 	public static final String edge02 = "http://146.169.52.2:59999";
 	public static final String pixel20 = "http://146.169.53.180:59999";
 	public static final String joMachine = "http://129.31.224.228:8080/MoneyDatabase";
-	public static final String url = joMachine;//"http://146.169.53.14:59999";
+	public static final String url = joMachine;// "http://146.169.53.14:59999";
 	public static final String login = "/Login";
 	private TextView errorView;
 	private String errorMessage;
@@ -57,10 +57,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		/*
-		 * Intent intent = new Intent(MainActivity.this, MainMenu.class);
-		 * startActivity(intent);
-		 */
+ 
+		Intent intent = new Intent(MainActivity.this, MainMenu.class);
+		startActivity(intent);
+
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class MainActivity extends Activity {
 		EditText phoneText = (EditText) findViewById(R.id.phoneNumber);
 		String password = passwordText.getText().toString();
 		String phoneNo = phoneText.getText().toString();
-		
+
 		if (StringFilter.isIllegal(password) || StringFilter.isIllegal(phoneNo)) {
 			errorView.setText("Missing entries");
 			errorView.setTextColor(Color.RED);
@@ -125,11 +125,12 @@ public class MainActivity extends Activity {
 		nameValueP.add(new BasicNameValuePair("password", password));
 
 		try {
-			InputStream in = CustomHttpClient.executeHttpPost(url+login, nameValueP);
-//			InputStream in = CustomHttpClient.executeHttpGet(url+login);
+			InputStream in = CustomHttpClient.executeHttpPost(url + login,
+					nameValueP);
+			// InputStream in = CustomHttpClient.executeHttpGet(url+login);
 			// Handle JSONstring
-//			errorMessage = HttpReaders.readIt(in, 1000);
-			int response = JsonCustomReader.readJsonRetCode(in);			
+			// errorMessage = HttpReaders.readIt(in, 1000);
+			int response = JsonCustomReader.readJsonRetCode(in);
 			Pair<String, Boolean> pair = AdminHelper.handleResponse(response);
 			errorMessage = pair.first;
 			return pair.second;
@@ -139,8 +140,6 @@ public class MainActivity extends Activity {
 
 		return false;
 	}
-
-
 
 	public void signInHandler(View view) {
 		Intent intent = new Intent(MainActivity.this, SignIn.class);

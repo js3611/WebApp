@@ -13,6 +13,7 @@ public class Transactions extends Activity {
 	public final static String PRICE_STR = "com.example.moneyapp.transaction.price";
 	public final static String PROFILEPIC_STR = "com.example.moneyapp.transaction.price";
 	public final static String USER_STR = "com.example.moneyapp.transaction.userdetails";
+	public static final String ICON_STR = "com.example.moneyapp.transaction.icon";
 	
 	
 	@Override
