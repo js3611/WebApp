@@ -48,7 +48,7 @@ public class Login extends javax.servlet.http.HttpServlet implements
 		jb.beginObject().append("returnCode",1).beginArray();
 		while(i < 3) {	
 			int amount = 30;
-			jb.beginObject().append("userfname", "joo")
+			jb.beginObject().append("userfname", "jo")
 							.append("owesfname","terence")
 							.append("price",amount)
 							.beginArray()
@@ -208,6 +208,9 @@ public class Login extends javax.servlet.http.HttpServlet implements
 				// );
 			} else if (rs.getString("password").equals(password)) { // correct
 				// password
+				//ResultSet userDetails = stmt.executeQuery("SELECT * from appuser Where phonenumber = " + phoneNo + ";");
+				//int userid = userDetails.getInt("userid");
+				//User user = new User();
 				out.print(build(append(getBuilder(), "returnCode", 1)));// out.print(
 				// "1"
 				// );
