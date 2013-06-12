@@ -7,19 +7,19 @@ public class TransactionDetail {
 	private String owesuser;
 	private String user;
 	private String subject;
-	private int price;
-	private int partial_pay;
+	private double price;
+	private double partial_pay;
 	private String date;
 	private String deadline;
 
 	public TransactionDetail(){}
 	
-	public TransactionDetail(int icon, String from, String to, String subject,
-			int price, String date, String deadline) {
+	public TransactionDetail(int icon, String owesuser, String user, String subject,
+			Double price, String date, String deadline) {
 		super();
 		this.icon = icon;
-		this.owesuser = from;
-		this.user = to;
+		this.owesuser = owesuser;
+		this.user = user;
 		this.subject = subject;
 		this.price = price;
 		this.date = date;
@@ -34,11 +34,11 @@ public class TransactionDetail {
 		this.owesuser = from;
 	}
 
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 
@@ -90,12 +90,23 @@ public class TransactionDetail {
 		this.transactionID = transactionID;
 	}
 
-	public int getPartial_pay() {
+	public double getPartial_pay() {
 		return partial_pay;
 	}
 
-	public void setPartial_pay(int partial_pay) {
+	public void setPartial_pay(double partial_pay) {
 		this.partial_pay = partial_pay;
 	}
 
+	@Override
+	public String toString() {
+		return "TransactionDetail [icon=" + icon + ", transactionID="
+				+ transactionID + ", owesuser=" + owesuser + ", user=" + user
+				+ ", subject=" + subject + ", price=" + price
+				+ ", partial_pay=" + partial_pay + ", date=" + date
+				+ ", deadline=" + deadline + "]";
+	}
+
+	
+	
 }

@@ -36,9 +36,10 @@ public class MainActivity extends Activity {
 
 	public static final String edge02 = "http://146.169.52.2:59999";
 	public static final String pixel20 = "http://146.169.53.180:59999";
-	public static final String joMachine = "http://129.31.224.228:8080/MoneyDatabase";
+	public static final String joMachine = "http://129.31.229.100:8080/MoneyDatabase";
 	public static final String url = joMachine;// "http://146.169.53.14:59999";
 	public static final String login = "/Login";
+	public static final String TRANSACTION = "/Transaction";
 	private TextView errorView;
 	private String errorMessage;
 
@@ -58,8 +59,8 @@ public class MainActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
  
-		Intent intent = new Intent(MainActivity.this, MainMenu.class);
-		startActivity(intent);
+//		Intent intent = new Intent(MainActivity.this, MainMenu.class);
+//		startActivity(intent);
 
 	}
 
