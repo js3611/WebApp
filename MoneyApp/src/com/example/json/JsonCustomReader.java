@@ -38,11 +38,9 @@ public class JsonCustomReader {
 				new InputStreamReader(in, "UTF-8")));
 		jr.setLenient(true);
 		jr.beginObject();
-		int returnCode;
-
 		String name = jr.nextName();
-		returnCode = jr.nextInt();
-		
+		int returnCode= jr.nextInt();
+		//skip name for array
 		jr.skipValue();//jr.nextName();
 
 		jr.beginArray();
@@ -60,7 +58,7 @@ public class JsonCustomReader {
 		String owesuser = null;
 		String user = null;
 		String subject = null;
-		int price = 0;
+		double price = 0;
 		String data = null;
 		String deadline = null;
 
@@ -74,7 +72,9 @@ public class JsonCustomReader {
 			} else if (name.equals("name")) {
 				subject = jr.nextString();
 			} else if (name.equals("price")) {
-				price = jr.nextInt();
+				price = jr.nextDouble();
+			} else {
+				jr.skipValue();
 			}
 		}
 		jr.endObject();

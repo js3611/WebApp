@@ -44,7 +44,7 @@ GitHub \\
 
 \section*{Program (40\% Aim for 6 pages with pictures)}
 \subsection*{Description}
-Our final product is an android application which keeps track of debts. Once a user registers to the database, the user can create new transactions, view transactions and confirm the payment or the partial payment for transactions. The application provides the ability to make transactions to an individual or a group. It also supports messaging for individuals or a group, which can be used as a mean to communicate with each other, urge one another to pay and so on. The view of the transactions can be customised according to the users’ preference: per person or per item. Per person displays a list of people who you owe or who owes you and total amount of the debt. Clicking on the entry allows you to view a profile page, from which you can nudge, message, call and make a new transaction to the person. It also provides a log of transactions you have with the person.
+Our final product is an android application which keeps track of debts. Once a user registers to the database, the user can create a new transaction, view transactions and make a payment or a partial payment for the transactions. The application provides the ability to make transactions to an individual or a group. It also supports messaging for individuals or a group, which can be used as a mean to communicate with each other, urge one another to pay and so on. The view of the transactions can be customised according to the users’ preference: per person or per item. Per person displays a list of people who you owe or who owes you and total amount of the debt. Clicking on the entry allows you to view a profile page, from which you can nudge, message, call and make a new transaction to the person. It also provides a log of transactions you have with the person.
 
 \subsection*{Design Patterns}
 Although the fundamental idea of the application is fairly simple, achieving the functionalities require careful considerations of design patterns. 
@@ -82,13 +82,42 @@ jb.endArray().endObject();
 writer.println(jb.build());
 \end{verbatim}
 
-\subsubsection*{Singleton}
-HttpClient as a singleton pattern. Use 
+\subsubsection*{Singleton Pattern}
+
+According to \texttt{apache.org}, it is recommended to have a single instance of a HttpClient per application. This is because instantiating a HttpClient is costly in resources. In our code, we decided to only instantiate a single instance of a HttpClient as we make a use of the client frequently. We wouldn't want the client to take up all the resources. In \texttt{CustomHttpClient.java}, one can see that we have a static \texttt{getHttpClient()} method to get the single instance of it. The \texttt{getHttpClient()} is declared private because it will only be used in the static GET and POST methods defined in the class. All the other classes will use the methods defined here. 
+
+\begin{verbatim}
+private static HttpClient getHttpClient() { //.... }
+
+public static InputStream executeHttpPost(String url, List<NameValuePair> postParameters) throws Exception {
+            HttpClient client = getHttpClient();
+            //... make a request
+}  
+\end{verbatim} 
 
 \subsubsection*{Concurrency}
- Future and AsyncTask
+
+Our program uses frequent network operations. However, these network operations could suffer from unpredictable delays; hence, we do not know when exactly the data arrives from the server. A thread executing the network operation needs to be blocked while waiting for the response from the server. In terms of the user experience, this is problematic because if the main thread executes the network operations, it could block itself until the response arrives. For android, the main thread is also responsible for generating user interaces and the views. Which implies that user will see your program freezing in every so often whenever the program performs network operations. In order to avoid this, we make a heavy use of \texttt{AsyncTask} class. \texttt{AsyncTask} is an abstract class defined by Android and can be used to perform background operations on another thread, which in our case is the network operations. By using this class user will not need to see the program freezing; instead, the view will be updated as the data arrives.     
+ 
+ \begin{verbatim}
+In MainActivity.java:
+public void loginHandler(View view) {
+
+	//obtain data from user input
+
+	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	if (ConnectionHelper.checkNetworkConnection(connMgr))
+	//Create a new asynchronous task to verify the password from the server
+		new PasswordVerifier().execute(phoneNo, password);
+	else
+		errorView.setText("No network connection");
+}
+ \end{verbatim}
  
 \subsubsection*{Observer Pattern}
+
+All the GUI components for android follows the observer pattern. All the GUI components are subscribed for an event. When a user interacts (e.g. click) with the component an event will be created. The components by default does nothing but we can specify the behaviour by overriding the methods such as "onClickListener". For example, on our "transaction" window, the user can see a list of people who he or she owes to how much one owes to different people.  
+
 onClickListener for listView 
  
 \subsubsection*{Template Method}
