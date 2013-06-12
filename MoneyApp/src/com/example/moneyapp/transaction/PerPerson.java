@@ -3,26 +3,35 @@ package com.example.moneyapp.transaction;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.example.helpers.CustomHttpClient;
+import com.example.helpers.HttpReaders;
 import com.example.json.JsonCustomReader;
+import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.R;
 
 public class PerPerson extends Activity {
-	
+
+	//Debug
+	private static final String TAG = "PerPerson";
 	private PerPerson thisActivity;
 	// The List view
 	ListView transList;
 	// A list of data for each entry, which the adapter retrieves from.
 	ArrayList<TransactionDetail> details;
+	String name = "jo";
 
 	// what is this?
 	// AdapterView.AdapterContextMenuInfo info;
@@ -88,12 +97,18 @@ public class PerPerson extends Activity {
 		@Override
 		protected ArrayList<TransactionDetail> doInBackground(String... params) {
 			try {
-				String str = "{\"returnCode\":1," +
-									"\"data\":[{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}," +
-									"{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}," +
-									"{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}]}";
-				InputStream in = new ByteArrayInputStream(str.getBytes());
-				details = JsonCustomReader.readJsonPerPerson(in);
+				int userid = 2;
+				String op = "viewFriendsGet";
+				
+				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+MainActivity.TRANSACTION+"?"+"op="+op+"&userid="+userid);
+				TransactionDetail Detail;
+				Detail = new TransactionDetail();
+				Detail.setIcon(R.drawable.ic_launcher);
+				Detail.setOwesuser(HttpReaders.readIt(in,500));
+				Detail.setPrice(0);
+				details.add(Detail);
+//				ArrayList<TransactionDetail> rawData = JsonCustomReader.readJsonPerPerson(in); 
+//				details = processPerPerson(rawData);
 			} catch (Exception e) {
 				TransactionDetail Detail;
 				Detail = new TransactionDetail();
@@ -106,6 +121,42 @@ public class PerPerson extends Activity {
 			return details;
 		}
 		
+		private ArrayList<TransactionDetail> processPerPerson(
+				ArrayList<TransactionDetail> rawData) {
+			ArrayList<TransactionDetail> newDetails = new ArrayList<TransactionDetail>();
+			Map<String, Double> personPriceMap = new HashMap<String, Double>();
+			Map<String, Integer> personIconMap = new HashMap<String, Integer>();
+
+			
+			
+			for (TransactionDetail transactionDetail : rawData) {
+				Log.v(TAG, transactionDetail.toString());
+				if(name.equals(transactionDetail.getUser())) {
+					String owesUser = transactionDetail.getOwesuser();
+					personIconMap.put(owesUser, transactionDetail.getIcon());
+					if(personPriceMap.containsKey(owesUser)) {
+						personPriceMap.put(owesUser, personPriceMap.get(owesUser)+transactionDetail.getPrice()-transactionDetail.getPartial_pay());
+					} else {
+						personPriceMap.put(owesUser, transactionDetail.getPrice());
+					}
+				} else {
+					String user = transactionDetail.getUser();
+					personIconMap.put(user, transactionDetail.getIcon());
+					if(personPriceMap.containsKey(user)) {
+						personPriceMap.put(user, personPriceMap.get(user)+transactionDetail.getPrice()-transactionDetail.getPartial_pay());
+					} else {
+						personPriceMap.put(user, transactionDetail.getPrice());
+					}
+				}
+			}
+			
+			for (Map.Entry<String, Double> entry : personPriceMap.entrySet()) {
+				TransactionDetail tDetail = new TransactionDetail(personIconMap.get(entry.getKey()),entry.getKey(),name,"",entry.getValue(),"","");
+				newDetails.add(tDetail);
+			}
+			return newDetails;
+		}
+
 		@Override
 		protected void onPostExecute(ArrayList<TransactionDetail> result) {
 			super.onPostExecute(result);
@@ -147,6 +198,14 @@ public class PerPerson extends Activity {
 		Detail.setPrice(30);
 		details.add(Detail);
 
+//		String str = "{\"returnCode\":1," +
+//		"\"data\":[{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}," +
+//		"{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}," +
+//		"{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}]}";
+//
+//InputStream in = new ByteArrayInputStream(str.getBytes());
+
+		
 		return details;
 	}
 

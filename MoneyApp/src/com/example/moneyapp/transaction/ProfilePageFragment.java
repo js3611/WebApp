@@ -39,12 +39,12 @@ public class ProfilePageFragment extends Fragment {
 		Bundle extras = getActivity().getIntent().getExtras();
 		if (extras != null) {
 			String name = extras.getString(Transactions.NAME_STR);
-			int price = extras.getInt(Transactions.PRICE_STR);
+			double price = extras.getDouble(Transactions.PRICE_STR);
 			int icon = extras.getInt(Transactions.ICON_STR);
 			((ImageView) rootView.findViewById(R.id.big_profile_icon)).setImageResource(icon);
 			((TextView) rootView.findViewById(R.id.firstName)).setText(name);
 			((TextView) rootView.findViewById(R.id.surname)).setText(name);
-			((TextView) rootView.findViewById(R.id.price)).setText("£"+price);
+			((TextView) rootView.findViewById(R.id.price)).setText("Â£"+Math.abs(price));
 			((TextView) rootView.findViewById(R.id.oweDirection)).setText(setDirection(price,name));
 			
 			
@@ -53,7 +53,7 @@ public class ProfilePageFragment extends Fragment {
 		return rootView;
 	}
 
-	private CharSequence setDirection(int price, String name) {
+	private CharSequence setDirection(double price, String name) {
 		if (price < 0) {
 			return "You owe "+name +": ";
 		} else {
