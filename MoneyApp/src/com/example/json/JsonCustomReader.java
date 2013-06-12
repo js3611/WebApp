@@ -65,13 +65,13 @@ public class JsonCustomReader {
 		jr.beginObject();
 		while (jr.hasNext()) {
 			String name = jr.nextName();
-			if (name.equals("userfname")) {
+			if (name.equals("userid")) {
 				user = jr.nextString();
-			} else if (name.equals("owesfname")) {
+			} else if (name.equals("owesuserid")) {
 				owesuser = jr.nextString();
 			} else if (name.equals("name")) {
 				subject = jr.nextString();
-			} else if (name.equals("price")) {
+			} else if (name.equals("amount")) {
 				price = jr.nextDouble();
 			} else {
 				jr.skipValue();

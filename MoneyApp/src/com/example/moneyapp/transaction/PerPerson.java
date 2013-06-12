@@ -99,8 +99,13 @@ public class PerPerson extends Activity {
 			try {
 				int userid = 2;
 				String op = "viewFriendsGet";
+				String viewMode = "perPerson";
 				
-				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+MainActivity.TRANSACTION+"?"+"op="+op+"&userid="+userid);
+				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+
+						MainActivity.TRANSACTION + "?"+
+						"op="+op+"&"+ 
+						"viewMode="+viewMode+"&"+
+						"userid="+userid );
 				TransactionDetail Detail;
 				Detail = new TransactionDetail();
 				Detail.setIcon(R.drawable.ic_launcher);
