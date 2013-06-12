@@ -48,9 +48,12 @@ public class Login extends javax.servlet.http.HttpServlet implements
 		jb.beginObject().append("returnCode",1).beginArray();
 		while(i < 3) {	
 			int amount = 30;
-			jb.beginObject().append("userfname", "jo")
+			jb.beginObject().append("userfname", "joo")
 							.append("owesfname","terence")
 							.append("price",amount)
+							.beginArray()
+								.appendArrVal("tae").appendArrVal("yeong")
+							.endArray()
 			  .endObject();
 			i++;
 		}

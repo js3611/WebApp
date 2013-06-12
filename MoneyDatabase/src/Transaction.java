@@ -1,4 +1,4 @@
-import java.awt.List;
+import java.util.List;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -58,97 +58,95 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 	private void handleGetOperation(String operation, String viewMode, Connection conn,
 			HttpServletRequest request, PrintWriter writer) throws Exception {
 		
-		if (viewMode.equals("perPerson")) {
-		
-		if (operation.equals("viewLiveTransactions")) {
-			Statement transStmt = conn.createStatement();
-			JSONBuilder jb = new JSONBuilder();
-			
-			int userid = Integer.parseInt(request.getParameter("userid"));
-			
-			// Shows all transactions that have yet to be completed
-			ResultSet transactionSet = transStmt
-					.executeQuery("SELECT (t.transid, t.name, t._date, t.total_amount, d.owesuserid) FROM transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = "
-							+ userid
-							+ " OR d.owesuserid = "
-							+ userid
-							+ ") AND t.total_paid_off = false GROUP BY t.transid, t.name, t._date, t.total_amount, d.owesuserid ORDER BY t._date DESC");
-
-			if (!transactionSet.next()) {
-				writer.println(jb.beginObject().append("returnCode",4).endObject().build());
-			}
-			else {
-				jb.beginObject().append("returnCode",1).beginArray();
-				while (transactionSet.next()) {
-					String transId = transactionSet.getString("transid");
-					String transName = transactionSet.getString("name");
-					String transDate = transactionSet.getString("_date");
-					String transAmount = transactionSet.getString("total_amount");
-					
-					jb.beginObject().append("transid", transId)
-									.append("name",transName)
-									.append("total_amount",transAmount)
-									.append("_date",transDate)
-					  .endObject();
-					}
-					jb.endArray().endObject();			
-					writer.println(jb.build());
+		if (viewMode.equals("perPerson")) {	
+			if (operation.equals("viewLiveTransactions")) {
+				Statement transStmt = conn.createStatement();
+				JSONBuilder jb = new JSONBuilder();
+				
+				int userid = Integer.parseInt(request.getParameter("userid"));
+				
+				// Shows all transactions that have yet to be completed
+				ResultSet transactionSet = transStmt
+						.executeQuery("SELECT (t.transid, t.name, t._date, t.total_amount, d.owesuserid) FROM transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = "
+								+ userid
+								+ " OR d.owesuserid = "
+								+ userid
+								+ ") AND t.total_paid_off = false GROUP BY t.transid, t.name, t._date, t.total_amount, d.owesuserid ORDER BY t._date DESC");
+	
+				if (!transactionSet.next()) {
+					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
 				}
-			
-		} else if (operation.equals("viewDeadTransactions")) {
-			Statement transStmt = conn.createStatement();
-			JSONBuilder jb = new JSONBuilder();
-			
-			int userid = Integer.parseInt(request.getParameter("userid"));
-
-			// Shows all transactions that have already been completed
-			ResultSet transactionSet = transStmt
-					.executeQuery("SELECT (t.transid, t.name, t.complete_date t.total_amount, d.owesuserid) FROM transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = "
-							+ userid
-							+ " OR d.owesuserid = "
-							+ userid
-							+ ") AND t.total_paid_off = true GROUP BY t.transid, t.name, t.complete_date, t.total_amount, d.owesuserid ORDER BY t._date DESC");
-
-			if (!transactionSet.next()) {
-				writer.println(jb.beginObject().append("returnCode",4).endObject().build());
-			}
-			else {
-				jb.beginObject().append("returnCode",1).beginArray();
-				while (transactionSet.next()) {
-					String transId = transactionSet.getString("transid");
-					String transName = transactionSet.getString("name");
-					String transCompleteDate = transactionSet.getString("complete_date");
-					String transAmount = transactionSet.getString("total_amount");
-					
-					jb.beginObject().append("transid", transId)
-									.append("name",transName)
-									.append("total_amount",transAmount)
-									.append("complete_date",transCompleteDate)
-					  .endObject();
+				else {
+					jb.beginObject().append("returnCode",1).beginArray();
+					while (transactionSet.next()) {
+						String transId = transactionSet.getString("transid");
+						String transName = transactionSet.getString("name");
+						String transDate = transactionSet.getString("_date");
+						String transAmount = transactionSet.getString("total_amount");
+						
+						jb.beginObject().append("transid", transId)
+										.append("name",transName)
+										.append("total_amount",transAmount)
+										.append("_date",transDate)
+						  .endObject();
+						}
+						jb.endArray().endObject();			
+						writer.println(jb.build());
 					}
-					jb.endArray().endObject();			
-					writer.println(jb.build());
+				
+			} else if (operation.equals("viewDeadTransactions")) {
+				Statement transStmt = conn.createStatement();
+				JSONBuilder jb = new JSONBuilder();
+				
+				int userid = Integer.parseInt(request.getParameter("userid"));
+	
+				// Shows all transactions that have already been completed
+				ResultSet transactionSet = transStmt
+						.executeQuery("SELECT (t.transid, t.name, t.complete_date t.total_amount, d.owesuserid) FROM transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = "
+								+ userid
+								+ " OR d.owesuserid = "
+								+ userid
+								+ ") AND t.total_paid_off = true GROUP BY t.transid, t.name, t.complete_date, t.total_amount, d.owesuserid ORDER BY t._date DESC");
+	
+				if (!transactionSet.next()) {
+					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
+				} else {
+					jb.beginObject().append("returnCode",1).beginArray();
+					while (transactionSet.next()) {
+						String transId = transactionSet.getString("transid");
+						String transName = transactionSet.getString("name");
+						String transCompleteDate = transactionSet.getString("complete_date");
+						String transAmount = transactionSet.getString("total_amount");
+						
+						jb.beginObject().append("transid", transId)
+										.append("name",transName)
+										.append("total_amount",transAmount)
+										.append("complete_date",transCompleteDate)
+						  .endObject();
+						}
+						jb.endArray().endObject();			
+						writer.println(jb.build());
 				}
-
-		} else if (operation.equals("transactionDetails")) {
+	
+			} else if (operation.equals("transactionDetails")) {
 				Statement detailsStmt = conn.createStatement();
 				Statement debtsStmt = conn.createStatement();
 				JSONBuilder jbDetails = new JSONBuilder();
 				JSONBuilder jbDebt = new JSONBuilder();
-				
+					
 				int transid = Integer.parseInt(request.getParameter("transid"));
 				// Gets the transaction details
 				ResultSet detailsSet = detailsStmt
 						.executeQuery("SELECT * FROM transactions WHERE transid = "
 								+ transid + " ;");				
-				
+					
 				// Gets the individual debts of each transaction (should have 1
 				// result if user owes, multiple if user is owed)
 				ResultSet debtSet = debtsStmt
 						.executeQuery("SELECT (d.transid, d.amount, a.userid, a.firstname, a.surname, amount) FROM" 
 								+ "  debt d INNER JOIN appuser a ON (d.owesuserid = a.userid OR d.userid = a.userid) AND d.transid = " 
 								+ transid +" ;" );
-
+				
 				if (!detailsSet.next() || debtSet.next()) { // SELECTs returned
 															// nothing , i.e.
 															// something went
@@ -166,7 +164,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				String details_complete_date = detailsSet.getString("complete_date");
 				String details_description = detailsSet.getString("description");
 				String details_paid_off = detailsSet.getString("total_paid_off");
-				
+					
 				jbDetails.beginObject().append("transid", details_transid)
 									   .append("name",details_name)
 									   .append("total_amount",details_amount)
@@ -192,7 +190,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 					}
 					jbDebt.endArray().endObject();			
 					writer.println(jbDebt.build());
-			}
+			}	
 		} else if (viewMode.equals("perItem")) {
 			if (operation.equals("viewFriendsPay")) {
 				Statement friendsGetStmt = conn.createStatement();
@@ -279,10 +277,10 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				
 				if (!friendsTrans.next()) {
 					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
-				}
-				// Gets a list of the live transactions involving user and
-				// friend selected
-				else {
+				} else {
+					// Gets a list of the live transactions involving user and
+					// friend selected
+				
 					jb.beginObject().append("returnCode",1).beginArray();
 					while (friendsTrans.next()) {
 						String transId = friendsTrans.getString("transid");
@@ -301,11 +299,11 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 										.append("partial_pay", transPartial)
 										.append("date",transDate)
 						  .endObject();
-						}
+					}
 						jb.endArray().endObject();			
 						writer.println(jb.build());
-					}
-			}			
+				}
+			}
 		}
 	}
 
@@ -322,9 +320,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
-			out
-					.println("<h1>Driver not found: " + e + e.getMessage()
-							+ "</h1>");
+			out.println("<h1>Driver not found: " + e + e.getMessage()+ "</h1>");
 		}
 
 		try {
@@ -344,170 +340,163 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 	private void handlePostOperation(String operation, Connection conn,
 	HttpServletRequest request, PrintWriter writer) throws Exception {
 
-// ADDS A NEW TRANSACTION TO THE DATABASE.
-if (operation.equals("newTransaction")) {
-	// Add to transactions table
-	Statement transStmt = conn.createStatement();
-	JSONBuilder jb = new JSONBuilder();
-	
-	int user_id = Integer.parseInt(request.getParameter("userid"));
-	String trans_name = request.getParameter("name");
-	String trans_desc = request.getParameter("desc");
-	int trans_date = Integer.parseInt(request.getParameter("date"));
-	BigDecimal trans_amount = new BigDecimal(request.getParameter(
-			"total_amount").replaceAll(",", ""));
-	int trans_urgency = Integer.parseInt(request
-			.getParameter("urgency"));
-
-	// Should return only 1 value
-	ResultSet new_trans = transStmt
-			.executeQuery("INSERT INTO transactions(name, description, _date, total_amount, urgency) values ('"
-					+ trans_name
-					+ "', '"
-					+ trans_desc
-					+ "', '"
-					+ trans_date
-					+ "', "
-					+ trans_amount
-					+ ", "
-					+ trans_urgency + ") RETURNING transid;");
-	// The transaction id of just added transaction above
-	int trans_id = new_trans.getInt("transid");
-	transStmt.close();
-
-	// use string.split and have one parameter, usersids etc.
-	// Add to debt table
-	List<Pair<String, BigDecimal>> trans_owersList = null;// request.getParameter("owersList");
-	// Iterator owersIterator = trans_owersList.iterator();
-
-	Statement insertStmt = conn.createStatement();
-	Statement queryStmt = conn.createStatement();
-
-	for (Pair<String, BigDecimal> ower : trans_owersList) {
-		String ower_phone = ower.first;
-		BigDecimal ower_amount = ower.second;
-		ResultSet rs = queryStmt
-				.executeQuery("SELECT * FROM appuser WHERE phonenumber = '"
-						+ ower_phone + "';");
-		int owers_id = rs.getInt("userid");
-		int result = insertStmt
-				.executeUpdate("INSERT INTO debt(transid, userid, owesuserid, amount) values("
-						+ trans_id + ", " + user_id + ", " + owers_id
-						+ ", " + "'£" + ower_amount + "');");
-
-		if (result != 0) // SUCCESSFUL ADD
-			writer.print(jb.beginObject().append("returnCode",1).endObject()); 
-		else		// DATABASE INSERT WENT WRONG NOTHING INSERTED
-			writer.print(jb.beginObject().append("returnCode",2).endObject()); 
-	}
-	queryStmt.close();
-	insertStmt.close();
-
-	// WHEN THE USER WANTS TO EDIT A TRANSACTION, E.G, A MISTAKE
-} else if (operation.equals("updateTransaction")) {
-	Statement updateTransStmt = conn.createStatement();
-	Statement updateDebtStmt = conn.createStatement();
-	Statement countStmt = conn.createStatement();
-	JSONBuilder jb = new JSONBuilder();
-	
-	// subOp is a pair which tells if this update is "normal" (just changing
-	// transaction details)
-	// or "delete"(removes a debtor) or "adds"(adds a debtor)
-	String subOp = request.getParameter("supOp");
-	
-	int transid = Integer.parseInt(request.getParameter("transid"));
-	String name = request.getParameter("name");
-	String description = request.getParameter("description");
-	int urgency = Integer.parseInt(request.getParameter("urgency"));
-	int total_amount = Integer.parseInt(request.getParameter("total_amount"));
-	
-	ResultSet rs = countStmt.executeQuery("SELECT count(userid) FROM transactions t INNER JOIN "
-							+" debt d ON (t.transid = d.transid) WHERE t.transid = " + transid + ";");
-	if (!rs.next()) // select statement error, something went wrong
-		writer.println(jb.beginObject().append("returnCode",3).endObject());
-	else {
-	// int
-	}
-	// CANNOT CONCENTRATE
-	
-} else if (operation.equals("partialRepay")){
-	
-} else if (operation.equals("personRepay")){
-	// This is for when in per person view, the whole thing is paid
-	// Statement updateStmt = conn.createStatement();
-	// JSONBuilder jb = new JSONBuilder();
-	
-	// int rs = updateStmt.executeUpdate("Update")
-	
-
-} else if (operation.equals("debtRepaid")) {
-	// WHEN A PERSON PAYS THEIR PART OF A TRANSACTION
-	Statement updateStmt = conn.createStatement();
-	Statement checkStmt = conn.createStatement();
-	JSONBuilder jb = new JSONBuilder();
-
-	int transid = Integer.parseInt(request.getParameter("transid"));
-	int userid = Integer.parseInt(request.getParameter("userid"));
-	int owesuserid = Integer.parseInt(request.getParameter("owesuserid"));
-	String date = request.getParameter("date");
-
-	int rs = updateStmt.executeUpdate("UPDATE debt SET paid_off = true,complete_date = "+ date+ " WHERE transid = "
-					+ transid + " AND userid = " + userid
-					+ " AND owesuserid = " + owesuserid + ";");
-
-	if (rs != 0) // update correctly, debt marked as paid
-		writer.print(jb.beginObject().append("returnCode",5).endObject());
-	else  // update went wrong, nothing was changed
-		writer.print(jb.beginObject().append("returnCode",6).endObject());
-
-	ResultSet results = checkStmt
-			.executeQuery("SELECT * FROM debt WHERE transid = "
-					+ transid + ";");
-
-	if (!results.next()) { // NO RESULTS SO ALL DEBTS HAVE BEEN PAID
-							// transaction completion
-		rs = updateStmt.executeUpdate("UPDATE transactions SET total_paid_off = true, complete_date = " + date + " WHERE transid = "
-						+ transid + ";");
+		// ADDS A NEW TRANSACTION TO THE DATABASE.
+		if (operation.equals("newTransaction")) {
+			// Add to transactions table
+			Statement transStmt = conn.createStatement();
+			JSONBuilder jb = new JSONBuilder();
+			
+			int user_id = Integer.parseInt(request.getParameter("userid"));
+			String trans_name = request.getParameter("name");
+			String trans_desc = request.getParameter("desc");
+			int trans_date = Integer.parseInt(request.getParameter("date"));
+			BigDecimal trans_amount = new BigDecimal(request.getParameter(
+					"total_amount").replaceAll(",", ""));
+			int trans_urgency = Integer.parseInt(request
+					.getParameter("urgency"));
 		
-		if (rs == 0)	// Update didn't go through
-			writer.print(jb.beginObject().append("returnCode",7).endObject());
-
-		// else do nothing
+			// Should return only 1 value
+			ResultSet new_trans = transStmt
+					.executeQuery("INSERT INTO transactions(name, description, _date, total_amount, urgency) values ('"
+							+ trans_name
+							+ "', '"
+							+ trans_desc
+							+ "', '"
+							+ trans_date
+							+ "', "
+							+ trans_amount
+							+ ", "
+							+ trans_urgency + ") RETURNING transid;");
+			// The transaction id of just added transaction above
+			int trans_id = new_trans.getInt("transid");
+			transStmt.close();
+		
+			// use string.split and have one parameter, usersids etc.
+			// Add to debt table
+			List<Pair<String, BigDecimal>> trans_owersList = null;// request.getParameter("owersList");
+			// Iterator owersIterator = trans_owersList.iterator();
+		
+			Statement insertStmt = conn.createStatement();
+			Statement queryStmt = conn.createStatement();
+		
+			for (Pair<String, BigDecimal> ower : trans_owersList) {
+				String ower_phone = ower.getFirst();
+				BigDecimal ower_amount = ower.getSecond();
+				ResultSet rs = queryStmt
+						.executeQuery("SELECT * FROM appuser WHERE phonenumber = '"
+								+ ower_phone + "';");
+				int owers_id = rs.getInt("userid");
+				int result = insertStmt
+						.executeUpdate("INSERT INTO debt(transid, userid, owesuserid, amount) values("
+								+ trans_id + ", " + user_id + ", " + owers_id
+								+ ", " + "'£" + ower_amount + "');");
+		
+				if (result != 0) // SUCCESSFUL ADD
+					writer.print(jb.beginObject().append("returnCode",1).endObject()); 
+				else		// DATABASE INSERT WENT WRONG NOTHING INSERTED
+					writer.print(jb.beginObject().append("returnCode",2).endObject()); 
+			}
+			queryStmt.close();
+			insertStmt.close();
+		
+			// WHEN THE USER WANTS TO EDIT A TRANSACTION, E.G, A MISTAKE
+		} else if (operation.equals("updateTransaction")) {
+			Statement updateTransStmt = conn.createStatement();
+			Statement updateDebtStmt = conn.createStatement();
+			Statement countStmt = conn.createStatement();
+			JSONBuilder jb = new JSONBuilder();
+			
+			// subOp is a pair which tells if this update is "normal" (just changing
+			// transaction details)
+			// or "delete"(removes a debtor) or "adds"(adds a debtor)
+			String subOp = request.getParameter("supOp");
+			
+			int transid = Integer.parseInt(request.getParameter("transid"));
+			String name = request.getParameter("name");
+			String description = request.getParameter("description");
+			int urgency = Integer.parseInt(request.getParameter("urgency"));
+			int total_amount = Integer.parseInt(request.getParameter("total_amount"));
+			
+			ResultSet rs = countStmt.executeQuery("SELECT count(userid) FROM transactions t INNER JOIN "
+									+" debt d ON (t.transid = d.transid) WHERE t.transid = " + transid + ";");
+			if (!rs.next()) // select statement error, something went wrong
+				writer.println(jb.beginObject().append("returnCode",3).endObject());
+			else {
+			// int
+			}
+			// CANNOT CONCENTRATE
+			
+		} else if (operation.equals("partialRepay")){
+			
+		} else if (operation.equals("personRepay")){
+			// This is for when in per person view, the whole thing is paid
+			// Statement updateStmt = conn.createStatement();
+			// JSONBuilder jb = new JSONBuilder();
+			
+			// int rs = updateStmt.executeUpdate("Update")
+			
+		
+		} else if (operation.equals("debtRepaid")) {
+			// WHEN A PERSON PAYS THEIR PART OF A TRANSACTION
+			Statement updateStmt = conn.createStatement();
+			Statement checkStmt = conn.createStatement();
+			JSONBuilder jb = new JSONBuilder();
+		
+			int transid = Integer.parseInt(request.getParameter("transid"));
+			int userid = Integer.parseInt(request.getParameter("userid"));
+			int owesuserid = Integer.parseInt(request.getParameter("owesuserid"));
+			String date = request.getParameter("date");
+		
+			int rs = updateStmt.executeUpdate("UPDATE debt SET paid_off = true,complete_date = "+ date+ " WHERE transid = "
+							+ transid + " AND userid = " + userid
+							+ " AND owesuserid = " + owesuserid + ";");
+		
+			if (rs != 0) // update correctly, debt marked as paid
+				writer.print(jb.beginObject().append("returnCode",5).endObject());
+			else  // update went wrong, nothing was changed
+				writer.print(jb.beginObject().append("returnCode",6).endObject());
+		
+			ResultSet results = checkStmt
+					.executeQuery("SELECT * FROM debt WHERE transid = "
+							+ transid + ";");
+		
+			if (!results.next()) { // NO RESULTS SO ALL DEBTS HAVE BEEN PAID
+									// transaction completion
+				rs = updateStmt.executeUpdate("UPDATE transactions SET total_paid_off = true, complete_date = " + date + " WHERE transid = "
+								+ transid + ";");
+				
+				if (rs == 0)	// Update didn't go through
+					writer.print(jb.beginObject().append("returnCode",7).endObject());
+		
+				// else do nothing
+			}
+		
+			
+		} else if (operation.equals("deleteTransaction")) {
+			// WHEN THE USER WANTS TO DELETE A TRANSACTION
+			// TODO check that the delete button only appears if transaction is owned by
+			// user
+			Statement dltStmt = conn.createStatement();
+			JSONBuilder jb = new JSONBuilder();
+			
+			int transid = Integer.parseInt(request.getParameter("transid"));
+		
+			int result = dltStmt.executeUpdate("DELETE FROM transactions WHERE transid = " + transid + ";");
+			
+			if (result != 0)  // Delete worked
+				writer.print(jb.beginObject().append("returnCode",8).endObject());
+			else		 // The DELETE statement didnt execute correctly
+				writer.print(jb.beginObject().append("returnCode",9).endObject());
+		
+			dltStmt.close();
+		
+		} else {
+			JSONBuilder jb = new JSONBuilder();
+			writer.print(jb.beginObject().append("returnCode",10).endObject());; // COULD
+																					// NOT
+																					// RECOGNISE
+																					// OPERATION
+		
+		}
 	}
-
-	
-} else if (operation.equals("deleteTransaction")) {
-	// WHEN THE USER WANTS TO DELETE A TRANSACTION
-	// TODO check that the delete button only appears if transaction is owned by
-	// user
-	Statement dltStmt = conn.createStatement();
-	JSONBuilder jb = new JSONBuilder();
-	
-	int transid = Integer.parseInt(request.getParameter("transid"));
-
-	int result = dltStmt.executeUpdate("DELETE FROM transactions WHERE transid = " + transid + ";");
-	
-	if (result != 0)  // Delete worked
-		writer.print(jb.beginObject().append("returnCode",8).endObject());
-	else		 // The DELETE statement didnt execute correctly
-		writer.print(jb.beginObject().append("returnCode",9).endObject());
-
-	dltStmt.close();
-
-} else {
-	JSONBuilder jb = new JSONBuilder();
-	writer.print(jb.beginObject().append("returnCode",10).endObject());; // COULD
-																			// NOT
-																			// RECOGNISE
-																			// OPERATION
-
-}
-	
-	class Pair<S, T> {
-
-		public BigDecimal second;
-		public String first;
-
-	}
-
 }
