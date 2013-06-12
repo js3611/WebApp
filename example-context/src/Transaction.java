@@ -141,6 +141,13 @@ public class Transaction extends HttpServlet {
 		}
 
 	}
+    /* TODO operations for doPost
+       1.New Transaction 
+       2.Update/Edit Transaction
+       3.Per person repay
+       5.Partial payment
+     */
+
 
 	private void handlePostOperation(String operation, Connection conn,
 			HttpServletRequest request, PrintWriter out) throws Exception {
