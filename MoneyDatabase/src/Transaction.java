@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import JSONBuilder.JSONBuilder;
+import 
 
 /**
  * Servlet implementation class for Servlet: Transaction
@@ -67,7 +68,8 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				
 				// Shows all transactions that have yet to be completed
 				ResultSet transactionSet = transStmt
-						.executeQuery("SELECT (t.transid, t.name, t._date, t.total_amount, d.owesuserid) FROM transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = "
+						.executeQuery("SELECT (t.transid, t.name, t._date, t.total_amount, d.owesuserid) FROM "
+								+ "transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = "
 								+ userid
 								+ " OR d.owesuserid = "
 								+ userid
@@ -102,7 +104,8 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 	
 				// Shows all transactions that have already been completed
 				ResultSet transactionSet = transStmt
-						.executeQuery("SELECT (t.transid, t.name, t.complete_date t.total_amount, d.owesuserid) FROM transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = "
+						.executeQuery("SELECT (t.transid, t.name, t.complete_date t.total_amount, d.owesuserid) FROM "
+								+"transactions t INNER JOIN debt d on t.transid = d.transid WHERE (t. userid = "
 								+ userid
 								+ " OR d.owesuserid = "
 								+ userid
@@ -307,6 +310,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 		}
 	}
 
+
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		PrintWriter out = response.getWriter();
@@ -350,66 +354,65 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			String trans_name = request.getParameter("name");
 			String trans_desc = request.getParameter("desc");
 			int trans_date = Integer.parseInt(request.getParameter("date"));
-			BigDecimal trans_amount = new BigDecimal(request.getParameter(
-					"total_amount").replaceAll(",", ""));
-			int trans_urgency = Integer.parseInt(request
-					.getParameter("urgency"));
-		
-			// Should return only 1 value
-			ResultSet new_trans = transStmt
-					.executeQuery("INSERT INTO transactions(name, description, _date, total_amount, urgency) values ('"
-							+ trans_name
-							+ "', '"
-							+ trans_desc
-							+ "', '"
-							+ trans_date
-							+ "', "
-							+ trans_amount
-							+ ", "
+			double trans_amount = Double.parseDouble(request.getParameter("total_amount"));
+			int trans_urgency = Integer.parseInt(request.getParameter("urgency"));
+			// Client Side counter please to coutn how many people owe in this transaction
+			int user_owes_count = Integer.parseInt(request.getParameter("user_owes_count"));			
+
+			//Store all the userids into one string and split it to get all the things to add
+			//format is like ("1:8,2:10,3:2") in the form (userid:amount)
+			String owerids = request.getParameter("oweridList");			
+			String[] owerList = owerids.split(",");		
+
+			//Need to return the new transid to use
+			ResultSet new_trans = transStmt.executeQuery("INSERT INTO transactions(name, description, _date, total_amount, urgency) values ('"
+							+ trans_name + "', '"
+							+ trans_desc + "', '"
+							+ trans_date + "', "
+							+ trans_amount + ", "
 							+ trans_urgency + ") RETURNING transid;");
-			// The transaction id of just added transaction above
-			int trans_id = new_trans.getInt("transid");
-			transStmt.close();
-		
-			// use string.split and have one parameter, usersids etc.
-			// Add to debt table
-			List<Pair<String, BigDecimal>> trans_owersList = null;// request.getParameter("owersList");
-			// Iterator owersIterator = trans_owersList.iterator();
-		
-			Statement insertStmt = conn.createStatement();
-			Statement queryStmt = conn.createStatement();
-		
-			for (Pair<String, BigDecimal> ower : trans_owersList) {
-				String ower_phone = ower.getFirst();
-				BigDecimal ower_amount = ower.getSecond();
-				ResultSet rs = queryStmt
-						.executeQuery("SELECT * FROM appuser WHERE phonenumber = '"
-								+ ower_phone + "';");
-				int owers_id = rs.getInt("userid");
-				int result = insertStmt
-						.executeUpdate("INSERT INTO debt(transid, userid, owesuserid, amount) values("
-								+ trans_id + ", " + user_id + ", " + owers_id
-								+ ", " + "'£" + ower_amount + "');");
-		
-				if (result != 0) // SUCCESSFUL ADD
-					writer.print(jb.beginObject().append("returnCode",1).endObject()); 
-				else		// DATABASE INSERT WENT WRONG NOTHING INSERTED
-					writer.print(jb.beginObject().append("returnCode",2).endObject()); 
+
+			if (!new_trans.next())
+				writer.print(jb.beginObject().append("returnCode",1).endObject());
+			else {
+				// The transaction id of just added transaction above
+				int trans_id = new_trans.getInt("transid");
+
+				transStmt.close();
+
+				Statement individualStmt = conn.createStatement();
+
+				for (int i = 0; i < user_owes_amount; i++) {
+					String[] userPair = owerList[i].split(":");
+
+					int rs = individualStmt.executeUpdate("INSERT INTO debt(transid, userid, owesuserid, amount) VALUES ( "
+														+ trans_id + " " 
+														+ user_id + " " 
+														+ userPair[0] + " "
+														+ userPair[1] + ";");
+					if (rs != 0) //SUCCESSFUL ADD	
+						writer.print(jb.beginObject().append("returnCode",1).endObject()); 
+					else {		// DATABASE INSERT WENT WRONG NOTHING INSERTED
+						writer.print(jb.beginObject().append("returnCode",2).endObject());
+						break;
+					}
+				}
 			}
+	
 			queryStmt.close();
 			insertStmt.close();
 		
-			// WHEN THE USER WANTS TO EDIT A TRANSACTION, E.G, A MISTAKE
+			
 		} else if (operation.equals("updateTransaction")) {
+			// WHEN THE USER WANTS TO EDIT A TRANSACTION, E.G, A MISTAKE			
+		
 			Statement updateTransStmt = conn.createStatement();
 			Statement updateDebtStmt = conn.createStatement();
 			Statement countStmt = conn.createStatement();
 			JSONBuilder jb = new JSONBuilder();
 			
-			// subOp is a pair which tells if this update is "normal" (just changing
-			// transaction details)
-			// or "delete"(removes a debtor) or "adds"(adds a debtor)
-			String subOp = request.getParameter("supOp");
+			// subOp is a pair which describes the nature of the update
+			int subOp = Integer.parseInt(request.getParameter("supOp"));
 			
 			int transid = Integer.parseInt(request.getParameter("transid"));
 			String name = request.getParameter("name");
@@ -417,24 +420,96 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			int urgency = Integer.parseInt(request.getParameter("urgency"));
 			int total_amount = Integer.parseInt(request.getParameter("total_amount"));
 			
+/*
 			ResultSet rs = countStmt.executeQuery("SELECT count(userid) FROM transactions t INNER JOIN "
 									+" debt d ON (t.transid = d.transid) WHERE t.transid = " + transid + ";");
 			if (!rs.next()) // select statement error, something went wrong
 				writer.println(jb.beginObject().append("returnCode",3).endObject());
 			else {
-			// int
+			  	int 
 			}
+*/
+			// These subops can be handled with buttons, ensuring a single query each time, de-complicating the process
+			// 
+			switch (subOp)
+			
+			// OMG THIS PROBLEM I DONT KNOW
+
+
+			if (subOp.equals("deletePerson"){
+				//delets a person from the transaction
+			} else if (subOp.equals("updatePerson"){
+				//changes a person on the transaction
+			} else if (subOp.equals("addPerson"){
+				//adds another person to transaction
+			}
+			
+
 			// CANNOT CONCENTRATE
 			
 		} else if (operation.equals("partialRepay")){
+			Statement updateStmt = conn.createStatement();
+			JSONBuilder jb = new JSONBuilder();
+
+			// NEED TO ALSO HAVE THE CURRENT DATE IN THIS REQUEST
+			int transid = Integer.parseInt(request.getParameter("transid"));
+			int userid = Integer.parseInt(request.getParameter("userid"));
+			int owesuserid = Integer.parseInt(request.getParameter("owesuserid"));
+			//THIS DOUBLE NEEDS TO BE WORKED OUT CLIENT SIDE
+			double new_partial_pay = Double.parseDouble(request.getParameter("new_partial_pay"));			
+			String paid_off = request.getParameter("paid_off");
+	
+			int rs = updateStmt.executeQuery("UPDATE debt SET partial_pay = "
+											+ new_partial_pay 
+											+ " WHERE transid = " 
+											+ transid 
+											+ " AND userid = "
+											+ userid
+											+ " AND owesuerid = "
+											+ owesuserid 
+											+ "; ");
+
+			//If this payment compeltes the debt we can delegate to the debtRepaid operation
+			if (paid_off.equals("true"))
+				handlePostOperation("debtRepaid", Connection conn, HttpServletRequest request, PrintWriter writer); 
+									
+			if (rs != 0) 	//Update was successful
+				writer.println(jb.beginObjet().append("returnCode",3).endObject());
+			else			//Update went wrong
+				writer.println(jb.beginObject().append("returnCode",4).endObject());
+
 			
 		} else if (operation.equals("personRepay")){
 			// This is for when in per person view, the whole thing is paid
-			// Statement updateStmt = conn.createStatement();
-			// JSONBuilder jb = new JSONBuilder();
+			Statement updateStmt = conn.createStatement();
+			JSONBuilder jb = new JSONBuilder();
 			
-			// int rs = updateStmt.executeUpdate("Update")
+			int owesuserid = Integer.parseInt(request.getParameter("owesuserid"));
+			int userid = Integer.parseInt(request.getParameter("userid"));
+
+			ResultSet allTransactions = updateStmt.executeQuery("SELECT transid FROM debt WHERE userid = "
+									+ userid + " AND owesuserid = "
+									+ owesuserid + ";");  
 			
+			if (allTransactions != 0){ // The select statement returned correctly
+				while (allTransactions.next()){
+					int current_transid = allTransactions.getInt(transid);
+					HttpServletRequest modifiedReq = request;
+					modifiedReq.set
+					
+										
+					handlePostOperation("debtRepaid", 
+				}
+			} else { // Something went wrong, there should be a debt alive
+				writer.println(jb.beginObject().append("returnCode",69).endObject());			
+			}
+			 
+Class specialsomething extends Class						
+						
+						method(specialsomething THIS)
+						
+method(Class something)
+
 		
 		} else if (operation.equals("debtRepaid")) {
 			// WHEN A PERSON PAYS THEIR PART OF A TRANSACTION
@@ -456,6 +531,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			else  // update went wrong, nothing was changed
 				writer.print(jb.beginObject().append("returnCode",6).endObject());
 		
+			//This is if the last debt has been repaid of a transaction and we can ALSO complete the transaction
 			ResultSet results = checkStmt
 					.executeQuery("SELECT * FROM debt WHERE transid = "
 							+ transid + ";");
