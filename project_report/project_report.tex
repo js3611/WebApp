@@ -47,7 +47,7 @@ We have chosen to work with a PostgreSQL database as it is a very reliable and r
 As members of society, we feel a need to interact with one another, sometimes leading to requests. A common request, especially amongst friends, is “Could you please lend me x pounds?”, thus leading to debts. However, tracking the amount of money your friends owe you, as well as the amount you owe them can become a very cumbersome task. In order to resolve this problem, we have decided to create a system that would allow some user to track his debts easily. \\
 Our society is one of technology and innovations – phones, computers, machines are now part of our everyday lives. As such, we have decided that developing a technological application would be able to reach the most number of users, and therefore, satisfy the majority. However, each individual has different views of what to consider “ideal”. We therefore had to spend time studying and revising the content of our application: should we include a full-fledged instant messaging system? Will the users need it? Should we add this feature? How should this feature and your friends’ accounts interact? After asking ourselves these questions, we have concluded that our application would include the following features: a transaction tracking system that would include the setting of new transactions, a calendar that would allow transaction deadlines, an instant messaging system, a synchronised wish list, user profiles, as well as a settings button that would enable the user to switch between two kinds of transaction views (see Program). We then sketched on paper the main activities’ screen so everyone would have a concrete idea of what would be included in each one of the features available in our application.
 
-\subsubsection*{Implementation and testing}:
+\subsubsection*{Implementation and testing}
 We started up by, on one hand, setting up the database with all the necessary relations (users, etc), as well as the server, and on the other hand, creating the basic graphics for the activities corresponding to the features stated above. We populated the database with dummies in order to test the correctness of our application and especially that of the login screen (Can you log in if you enter the right phone number and the right password? What happens if one of the attributes is incorrect?), and implemented the database-user input interactions. We meanwhile also ameliorated the graphics of the activity, scaling it, at first, for Nexus7 tablet screen size. We then repeated this cycle over all the relevant activities.
 
 
@@ -79,6 +79,7 @@ For multiple users to interact with one another, it is necessary to have a conve
 To build a JSON string from the server side, we wrote a class \texttt{JSONBuilder.java} which lets you to build a JSON string. JSON string requires specific characters such as `$\lbrace$' `:' and writing the string manually could be erroneous so using the builder not only lets you make use of the pattern, it also simplifies the code and yet relatively easier to read. 
 
 \begin{verbatim}
+In JSONBuilder.java:
 //... execute SQL query and obtain a set of results in transactionSet
 // Build JSON string
 JSONBuilder jb = new JSONBuilder();
@@ -100,6 +101,7 @@ writer.println(jb.build());
 According to \texttt{apache.org}, it is recommended to have a single instance of a HttpClient per application. This is because instantiating a HttpClient is costly in resources. In our code, we decided to only instantiate a single instance of a HttpClient as we make a use of the client frequently. We wouldn't want the client to take up all the resources. In \texttt{CustomHttpClient.java}, one can see that we have a static \texttt{getHttpClient()} method to get the single instance of it. The \texttt{getHttpClient()} is declared private because it will only be used in the static GET and POST methods defined in the class. All the other classes will use the methods defined here. 
 
 \begin{verbatim}
+In CustomHttpClient.java:
 private static HttpClient getHttpClient() { //.... }
 
 public static InputStream executeHttpPost(String url, 
@@ -112,20 +114,23 @@ List<NameValuePair> postParameters) throws Exception {
 \subsubsection*{Concurrency}
 
 Our program uses frequent network operations. However, these network operations could suffer from unpredictable delays; hence, we do not know when exactly the data arrives from the server. A thread executing the network operation needs to be blocked while waiting for the response from the server. In terms of the user experience, this is problematic because if the main thread executes the network operations, it could block itself until the response arrives. For android, the main thread is also responsible for generating user interaces and the views. Which implies that user will see your program freezing in every so often whenever the program performs network operations. In order to avoid this, we make a heavy use of \texttt{AsyncTask} class. \texttt{AsyncTask} is an abstract class defined by Android and can be used to perform background operations on another thread, which in our case is the network operations. By using this class user will not need to see the program freezing; instead, the view will be updated as the data arrives.     
- 
- \begin{verbatim}
+  \begin{verbatim}
 In MainActivity.java:
 public void loginHandler(View view) {
+    ...obtain data from user input
 
-	//obtain data from user input
+    // Ensure the network connection
+    ConnectivityManager connMgr = (ConnectivityManager) 
+    getSystemService(Context.CONNECTIVITY_SERVICE);
+    if (ConnectionHelper.checkNetworkConnection(connMgr))
+    //Create a new asynchronous task to verify the password from the server
+        new PasswordVerifier().execute(phoneNo, password);
+    else
+        errorView.setText("No network connection");
+}
 
-	ConnectivityManager connMgr = (ConnectivityManager) 
-	getSystemService(Context.CONNECTIVITY_SERVICE);
-	if (ConnectionHelper.checkNetworkConnection(connMgr))
-	//Create a new asynchronous task to verify the password from the server
-		new PasswordVerifier().execute(phoneNo, password);
-	else
-		errorView.setText("No network connection");
+private class PasswordVerifier extends AsyncTask<String,Void,Boolean>{
+...
 }
  \end{verbatim}
  
@@ -135,21 +140,15 @@ All the GUI components for android follows the observer pattern. All the GUI com
 
 \begin{center}
 \begin{verbatim}
-		transList = (ListView) findViewById(R.id.PerPersonList);
-		details = new ArrayList<TransactionDetail>();
-
-		new DownloadContent().execute("");
-		
-		transList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
+In PerPeron.java:
+	transList = (ListView) findViewById(R.id.PerPersonList);
+	transList.setOnItemClickListener(new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
 			...
-			}
+		}
 \end{verbatim}
-Java - OnItemClickListener implementation
 \end{center}
- 
 \subsubsection*{Template Method}
 Our program uses adapters in order to display the different transactions in two ways: per item and per person. However, these two modes essentially encapture the same behaviour: they display the amount that the user owes or is owed on the screen, and allows them to look into the details of each transaction. As such, we have implemented a template: 
 \begin{verbatim}
@@ -158,8 +157,7 @@ public abstract class CustomAdapter<T>
 This class is extended by the PerPersonAdapter and the PerItemAdapter.
 
 \subsubsection*{General Style}
-Encapsulation
-
+In general, we tried to follow the basic design principle as much as possible, such as SOLID. Each classes has a single responsibility to one activity. Common methods such as Http methods are extracted out in a specific class. The project is Open to adding new features as this would only require adding new classes representing new activity or a process. In our project, we have a class which represents the data of transaction: \texttt{TransactionDetail.java}. We have considered encapsulation the fields in the class. We were required to pass data in \texttt{TransactionDetail} to different classes; for this, we used \texttt{Intent}, which is a class defined by Android. When passing data betweeen different activities, one can put data into Intent on one side, retrieve data from Intent on the other side. This strategy respects the Law of demeter; we do not need to know anything about the neighbours but simply know the "key" to retrieve the data we need. In this way we have achieved both good encapsulation and low coupling between different classes.
  
 \section{Acknowledgement (doesn’t count, keep minimum)}
 Android SDK? Not sure if needed to mention here though.
