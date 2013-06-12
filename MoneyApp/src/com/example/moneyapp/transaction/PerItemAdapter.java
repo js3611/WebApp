@@ -63,7 +63,7 @@ public class PerItemAdapter extends CustomAdapter<TransactionDetail> {
 			return v;
 		TransactionDetail detail = _data.get(position);
 		viewHolder.image.setImageResource(detail.getIcon());
-		viewHolder.date_view.setText(detail.getDate());
+		viewHolder.date_view.setText(""/*detail.getDate()*/);
 		viewHolder.subject_view.setText(detail.getSubject());
 		viewHolder.from_view.setText(detail.getOwesuser());
 		viewHolder.price_view.setText("" + detail.getPrice());

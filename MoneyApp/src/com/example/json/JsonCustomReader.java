@@ -55,30 +55,38 @@ public class JsonCustomReader {
 
 	private static TransactionDetail readData(JsonReader jr) throws IOException {
 		int icon = R.drawable.ic_launcher;
+		int transactionID = 0;
 		String owesuser = null;
 		String user = null;
 		String subject = null;
 		double price = 0;
-		String data = null;
+		double partial_pay =0;
+		String date = null;
 		String deadline = null;
 
 		jr.beginObject();
 		while (jr.hasNext()) {
 			String name = jr.nextName();
-			if (name.equals("userfname")) {
+			if (name.equals("transid")) {
+				transactionID = jr.nextInt();
+			} else if (name.equals("userid")) {
 				user = jr.nextString();
-			} else if (name.equals("owesfname")) {
+			} else if (name.equals("owesuserid")) {
 				owesuser = jr.nextString();
 			} else if (name.equals("name")) {
 				subject = jr.nextString();
-			} else if (name.equals("price")) {
+			} else if (name.equals("amount") || name.equals("total_amount")) {
 				price = jr.nextDouble();
+			} else if (name.equals("partial_pay")) {
+				partial_pay = jr.nextDouble();
+			} else if (name.equals("_date")){
+				date = jr.nextString();
 			} else {
 				jr.skipValue();
 			}
 		}
 		jr.endObject();
-		return new TransactionDetail(icon, owesuser, user, subject, price, data,
+		return new TransactionDetail(icon, transactionID, owesuser, user, subject, price, partial_pay, date,
 				deadline);
 	}
 

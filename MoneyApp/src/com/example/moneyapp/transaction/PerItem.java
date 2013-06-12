@@ -1,23 +1,36 @@
 package com.example.moneyapp.transaction;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.example.moneyapp.R;
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+
+import com.example.helpers.CustomHttpClient;
+import com.example.json.JsonCustomReader;
+import com.example.moneyapp.MainActivity;
+import com.example.moneyapp.R;
 
 public class PerItem extends Activity {
 
+	//Debug
+	private static final String TAG = "PerItem";
+	private PerItem thisActivity;
 	//The List view
 	ListView transList;
 	//A list of data for each entry, which the adapter retrieves from.
 	ArrayList<TransactionDetail> details;
+	String name = "Jo";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +38,13 @@ public class PerItem extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.transaction_per_person_list_layout);
 
+		thisActivity = this;
+		
 		transList = (ListView) findViewById(R.id.PerPersonList);
-
 		//Create a list which holds data for each entry
 		details = new ArrayList<TransactionDetail>();
-		//Fill the screen with dummy entries
-		details = addDummies(details);
 
-		transList.setAdapter(new PerItemAdapter(details, this));
+		new DownloadContent().execute("");
 
 		registerForContextMenu(transList);
 
@@ -41,25 +53,55 @@ public class PerItem extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
 
-				// TextView tv = (TextView) v.findViewById(R.id.From);
-				// String s = tv.getText().toString();
 				if (selectedNewTransaction(pos)) {
 					startActivity(new Intent(PerItem.this, NewTransaction.class));
 				} else { //normail detail window
 					startActivity(new Intent(PerItem.this, Transactions.class));
 				}
-				
-
 			}
 
 			private boolean selectedNewTransaction(int pos) {
-				
 				return details.size() == pos;
 			}
 		});
 
 	}
 
+	private class DownloadContent extends AsyncTask<String, Void, ArrayList<TransactionDetail>> {
+
+		@Override
+		protected ArrayList<TransactionDetail> doInBackground(String... params) {
+			try {
+				int userid = 2;
+				String op = "viewLiveTransactions";
+				String viewMode = "perItem";
+				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+
+						MainActivity.TRANSACTION + "?"+
+						"op="+op+"&"+ 
+						"viewMode="+viewMode+"&"+
+						"userid="+userid );
+
+				details = JsonCustomReader.readJsonPerPerson(in);
+			} catch (Exception e) {
+				TransactionDetail Detail;
+				Detail = new TransactionDetail();
+				Detail.setIcon(R.drawable.ic_launcher);
+				Detail.setOwesuser("ERROR"+e.getMessage());
+				Detail.setPrice(0);
+				details.add(Detail);
+			}
+
+			return details;
+		}
+		
+		@Override
+		protected void onPostExecute(ArrayList<TransactionDetail> result) {
+			super.onPostExecute(result);
+			
+			transList.setAdapter(new PerItemAdapter(result, thisActivity));
+			registerForContextMenu(transList);
+		}
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

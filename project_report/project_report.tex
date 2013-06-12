@@ -16,14 +16,13 @@
 \maketitle
 %\newpage
 
-Where is my money App.
 \section*{Introduction (10\% Aim for half a page?)}
 
-The main focus of our application is to allow users  keep track of money that is owed to them by,as well as the amount that they owe to their friends. Originally inspired by such problems arising amongst flatmates and friends at university, we wanted to broaden the scope of potential users of our app. In addition to this, additional features he had in mind were, the messaging system, "wishlists" and shared calendar.
+     The main focus of our application is to allow users  keep track of money that is owed to them by their friends or, indeed, how much they owe them. Originally inspired by such problems arising amongst flatmates and friends at university, we wanted to broaden the scope of potential users of our app. In addition to this, additional features he had in mind were, a messaging system, "wishlists" and shared calendars.
 \\
-Our minimum requirement was to fulfil and provide this functionality, offering a simple, pleasing and comprehensive visual feedback to the user. The other main requirement was to complete the messaging feature of the application as it greatly enhances the applications overall viability as something worth using - communication is key when dealing with money.
+\\     Our minimum requirement was to fulfil and provide the debt tracking functionality, offering a comprehensive visual feedback to the user. The other main requirement was to complete the messaging feature of the application as it enhances the applications overall usability - communication is key when dealing with money and we didn't want the user to have to delegate to a separate messaging application.
 \\
-We also set targets, most of which were just about completing the other embellishing features, i.e. the "wishlists" and the calendar. Other targets we set for ourselves included personalised user profiles, which could be changed in the app settings, as well as making the app as visually pleasing and informative as possible to the user. Many sketches and revisions were made to try and arrive at the most graceful user interface.
+\\     We also set secondary targets, most of which were just about completing the embellishing features, i.e. the "wishlists" and the calendar. Other targets we set for ourselves included personalised user profiles, which could be changed in the app settings, as well as making the app include solutions to common problems users would face (i.e. our equal split function for a transaction total). 
 
 
 
@@ -53,7 +52,7 @@ Our society is one of technology and innovations – phones, computers, machines
 We started up by, on one hand, setting up the database with all the necessary relations (users, etc), as well as the server, and on the other hand, creating the basic graphics for the activities corresponding to the features stated above. We populated the database with dummies in order to test the correctness of our application and especially that of the login screen (Can you log in if you enter the right phone number and the right password? What happens if one of the attributes is incorrect?), and implemented the database-user input interactions. We meanwhile also ameliorated the graphics of the activity, scaling it, at first, for Nexus7 tablet screen size. We then repeated this cycle over all the relevant activities.
 
 
-\subsection{Back-ups}
+\subsection*{Back-ups}
 We have used Git as our version control for the whole duration of our project, and set up the repository on GitHub. This has allowed us to work in parallel, easily compare different versions of our project, as well as come back to a previous one if necessary.
 
 
@@ -104,7 +103,8 @@ According to \texttt{apache.org}, it is recommended to have a single instance of
 \begin{verbatim}
 private static HttpClient getHttpClient() { //.... }
 
-public static InputStream executeHttpPost(String url, List<NameValuePair> postParameters) throws Exception {
+public static InputStream executeHttpPost(String url, 
+List<NameValuePair> postParameters) throws Exception {
             HttpClient client = getHttpClient();
             //... make a request
 }  
@@ -120,7 +120,8 @@ public void loginHandler(View view) {
 
 	//obtain data from user input
 
-	ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	ConnectivityManager connMgr = (ConnectivityManager) 
+	getSystemService(Context.CONNECTIVITY_SERVICE);
 	if (ConnectionHelper.checkNetworkConnection(connMgr))
 	//Create a new asynchronous task to verify the password from the server
 		new PasswordVerifier().execute(phoneNo, password);
@@ -131,12 +132,31 @@ public void loginHandler(View view) {
  
 \subsubsection*{Observer Pattern}
 
-All the GUI components for android follows the observer pattern. All the GUI components are subscribed for an event. When a user interacts (e.g. click) with the component an event will be created. The components by default does nothing but we can specify the behaviour by overriding the methods such as "onClickListener". For example, on our "transaction" window, the user can see a list of people who he or she owes to how much one owes to different people.  
+All the GUI components for android follows the observer pattern. All the GUI components are subscribed for an event. When a user interacts (e.g. click) with the component an event will be created. The components by default does nothing but we can specify the behaviour by overriding the methods such as "onClickListener", or calling them from the XML using "android:onClick". For example, on our "transaction" window, the user can see a list of people who he or she owes to know how much one owes to different people.  
 
-onClickListener for listView 
+\begin{center}
+\begin{verbatim}
+		transList = (ListView) findViewById(R.id.PerPersonList);
+		details = new ArrayList<TransactionDetail>();
+
+		new DownloadContent().execute("");
+		
+		transList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
+			...
+			}
+\end{verbatim}
+Java - OnItemClickListener implementation
+\end{center}
  
 \subsubsection*{Template Method}
-CustomAdopter for list view.
+Our program uses adapters in order to display the different transactions in two ways: per item and per person. However, these two modes essentially encapture the same behaviour: they display the amount that the user owes or is owed on the screen, and allows them to look into the details of each transaction. As such, we have implemented a template: 
+\begin{verbatim}
+public abstract class CustomAdapter<T> 
+\end{verbatim}.
+This class is extended by the PerPersonAdapter and the PerItemAdapter.
 
 \subsubsection*{General Style}
 Encapsulation
@@ -155,86 +175,27 @@ However, if we were to commercialise the app, we would need to license all our w
 Unless we wanted to let our application be open sourced, we would also need to remove, or hide our Git repository on GitHub. Otherwise, we would need to license our product with an open source license.
 
 \section*{Conclusion (20\% 1~1.5pages including acknowledgement)}
-Although we have reached the end of this project, there are many reflections we have to make about our progress and what we have to show. 
-
-What we have done
-Our app meets all of our main requirements. We have managed to implement both the transaction logs and the messaging system within the app. Our transaction log is able to be viewed in two modes, per person and per transaction and the user may make additions and adjustments to transactions. The app clearly displays the transactions in chronological order whilst in per transaction mode and allows the user to view detailed information about the transaction easily. Whilst in per item mode, our app accurately displays the overall debt balance between the user and their friends, allowing a much more laid back and simplistic view on transactions between them.
-
-We have also managed to reach a couple of our targets, including the two view mode above, and the "wishlist", the neat feature of being able to place all your desired items onto a shared list so your friends may buy them if they are in the vicinity of a supermarket. We also have included the equal split button while adding a new Transaction, another handy tool we thought our app should offer. We've managed to also add in reminders for users to send to those friends who aren't quite so prompt with their payments via the messaging system.
-
-What we haven't done
-Unfortunately, some of our targets have not managed to be met. Our main regret is not being able to fully implement the shared Calendar feature our group envisioned. Though it is indeed a loss, it does not exactly detract from the main functionality of the app and can be substituted for something more tangible in real life for example an actual calendar, although at the expense of paper!
-
-Our other main regret was that we were unable to add some nicer features to the settings of the app. It renders the user unable to customise the look of the application but in their taste. 
-
-What we will take away
-We envisioned our app to be simple and easy to use, as a result we also envisioned the implementation to not be so difficult. This was not the case, getting to grips with new and unfamiliar development tools consumed a lot of time. There was a lot of frustration with how intuitive it was to design the GUI of the app via the android developer toolkit. We learnt that there are any things to consider when designing such a simple app and should definitely not underestimate the workload in the future. 
-From this project we have definitely gained a lot of useful tools. Designing for an android app has taught us a lot about making a web based application. We can also take away the skills to integrate a database into such an application.  Learning PSQL was also beneficial to our skillset. 
-
-What we will do in the future
-In the future, we would definitely improve our time management on this task. We had underestimated the amount of code and thought that actually would go into integrating a database into a web application, all of which we had little to no prior experience.
-This way, we would have had more time to complete the targets that we had set at the beginning and maybe even extend the app further and make it more visually appealing. 
+Although we have reached the end of this project, there are several reflections we have to make about our progress and what we have to show. 
+\\
+\\Our app meets all of our main requirements. We have managed to implement both the transaction logs and the messaging system within the app. Our transaction log is able to be viewed in two modes, per person and per transaction and the user may make additions and adjustments to transactions. The app clearly displays the transactions in chronological order whilst in per transaction mode and allows the user to view detailed information about the transaction easily. Whilst in per item mode, our app accurately displays the overall debt balance between the user and their friends, allowing a much more laid back and simplistic view on transactions between them.
+\\
+\\We have additionally managed to reach a couple of our targets, including the two view mode mentioned above, and the "wishlist", the neat feature of being able to place all your desired items onto a shared list so your friends may buy them if they are in the vicinity of a supermarket. We included the equal split button while adding a new transaction, another handy tool we thought our app should offer. We've managed to also add in reminders, preset messages for users to send to those friends who aren't quite so prompt with their payments, via the messaging system.
+\\
+\\Unfortunately, some of our targets have not been managed to be met. Our main regret is not being able to fully implement the shared Calendar feature our group envisioned. Though it is indeed a loss, it does not exactly detract from the main functionality of the app and can be substituted for something more tangible in real life; for example, an actual calendar, though at the expense of paper!
+\\
+\\Our other main regret was that we were unable to add personalised views to the settings of the app. It renders the user unable to customise the look of the application in their taste. 
+\\
+\\
+We envisioned our app to be simple and easy to use, as a result we fell into the trap of also envisioning the implementation to not be so difficult, as a result. This was not the case. Getting to grips with new and unfamiliar development tools consumed a lot of time. There was a lot of frustration with how unintuitive it was to design the GUI of the app via the android developer toolkit.
+\\
+\\ We learnt that there are any things to consider when designing such a simple app and should definitely not underestimate the workload in the future. 
+From this project we have definitely gained a lot of useful skills. Designing for an android app has taught us a lot about making a web based application. We can also take away the ability to work with a server and integrate a database into such an application. Learning PSQL was also beneficial to our skillset and should come in handy in the future; 
+\\
+\\In the future, we would definitely improve our time management on such a task. We had underestimated the amount of work and thought that actually would go into integrating a database into a web application, all of which we had little to no prior experience.
+This way, we would have had more time to complete the targets that we had set at the beginning and maybe even extend the app further.
+\\
+\\ 
 We'd also spend a lot more time in the design and overall flow of the application or whatever similar task we decide to embark on in the future. There were time in this project where specific implementations of app features that we had mixed opinions about and sometimes were unclear ofwhat we all wanted it to be like in the final version.
 
-BELOW HERE WHAT YOU WROTE BEFORE\\
-
-
-\section*{Preface}
-While sharing a flat with some friends, naturally, we decided to pool together money and share payments for things such as groceries, meals out and utility bills. Everyone who shares a flat knows the troubles associated with tracking payment to your friends, and even more so, chasing them down for your money. Our group intends to develop and application which will allow such situations to be resolved easily. This will be targeted, ideally, at students who are sharing a flat. Of course, we do not intend to restrict the application to this group - the application could be loosely used to help simply track debts in between friends, for example when they go out, share a meal and have one person foot the bill.
-
-\section*{Group arrangement}
-Although we shall all be helping one another in every aspect of the project, we found it to be a good idea to split the problem into 3 main parts for each of us to "take charge" of. If one part gets finished before the others, then of course we will collaborate to finish the remaining bits.\\ 
-Thai Tam shall be managing the app GUI and the general graphical representation and visual aspects of the application.\\
-Jo shall be in charge of the core of the application such as how to link the database to the application and how different sections of the application interact with one another and the database and web server.\\
-Terence shall be in charge of managing the database and its updates as well as its maintenance and any other general issues that they may involve.
-
-\section*{Implementation Language}
-
-After a short discussion, we decided to develop an application for Android phones. One reason for this was that to develop for android you need to use Java which is the programming language we are, collectively, most proficient in. Choosing to develop an iOS application requires knowledge, or learning, of Objective-C and this could detract us from more interesting options, such as extending the application. Furthermore, there are many existing templates for android applications which will save us time in the design stage of the project as we can draw inspiration from the templates. \\
-We have also decided to design for mobile devices as it would be more flexible than having the software situated on the web, while still allowing us the possibility of adding a web version of the application at a later date.
-
-\section*{The Idea}
-
-\subsection*{Application Basics}
-The main focus of the application is to keep track of money that is owed to the user as well as the amount that he owes to other friends. All users will have an account when using this application, which will allow them to link with each other. If an involved person does not have the app, it will serve as a stripped down version of the app, resembling a memo.
-
-The debt tracking part of the application can be thought of in two modes: a per item mode or a per person mode. The user can switch between these two modes within the settings of the application.  
-Additional parts of the application we thought of which greatly extend its functionality and motivation for use include a messaging system, a calendar and 'wish lists' for the time being. 
-
-'Reminders' in the app act as the 'Where's my money?' question we want to yell at our friends all too much. We all feel a little awkward pestering each other to return money so this app does it for you!
-The reminders will be automatic or user incurred. Every time the user opens up the application, they will be reminded of any outstanding debts to pay. Since that may not be enough, we also decided to allow users to send reminders to others that money is due to be paid, manually. 
-
-\subsubsection*{Per Item Mode}
-We consider a 'transaction' or some form of payment as an 'item'. Thus, transactions of money in real life will be logged in a database and presented to the user on screen. It shall be displayed as a 'log' in a chronological list format. 
-A transaction will hold the following pieces of data about it:
-\begin{itemize}
-\item{Date created}
-\item{Transaction name (a short note about what the payment concerns)}
-\item{Total sum of money to be collected}
-\item{Person(s) involved in the transaction}
-\item{Extra notes, a section for user input}
-\end{itemize}
-The idea is to have the list display just the core details: transaction name, persons involved (or a somewhat cut off list) and the debt amount. The user can then look up further information about the transaction by simply selecting the entry in the log. A new window displaying the information shall then pop up. When a transaction concerns multiple people, the extended information will show the user how much each person of the group owes as a portion of the total.
-The log shall be displayed in chronological order but may be edited slightly based on urgency of payment collection. This will be useful for emergency situations, such as when you need the money for a utility bill, or simply because the person who owes you is leaving the country for an extended period.
-
-\subsubsection*{Per Person Mode}
-Per person mode differs from the per item mode by its 'contact list'-type log, where every person you have entered into the application will have an monetary value affiliated with their name. This value will be the overall total amount you owe to or are owed by that person as a result of the agglomerated transactions. 
-We found that this is a very useful and actually quite popular method of keeping track of the debt between friends; people will usually keep track of the overall amount they owe each other, in absence of an application like ours. For example, I owed Jo \pounds5, I might have paid for the next meal which equated to \pounds7 and thus he'd just pay me \pounds2. 
-The rest of this mode shall follow suit of the per item mode. When you click on a person you shall get a new pop up window, or 'profile' page, which will show you a log of all the transactions between you and the person you have selected.
-
-\subsection*{User Interaction}
-Obviously, to add a new transaction into the database of the app, the user has manually input data, i.e. the amount to be paid. The input method will be made as simple as possible. There will also be the option to form a 'group payment' involving multiple users for one transaction. There will also be an 'equal split' button which allows for quick calculation of how much each person owes as part of the bill if it were split evenly. This does not necessarily need to be used to hold the data as a transaction, but simply splitting a bill equally.
-
-\subsubsection*{Messaging}
-The messaging feature of this application was initially to supplement the 'reminders' that the application offers. For example, if someone kept bothering you with reminders but you had the valid reason that your pay check doesn't arrive until Friday, then a message could be sent to explain that.
-We saw that this was necessary but we also realised it would be quite easy to extend this feature to emulate a fully fledged messenger application, such as group chats. This will allow communication for those transactions that involve multiple people, and therefore, whatever compromises they may reach, or insults they throw about, to be accommodated.
-
-\subsubsection*{Calender}
-The Calendar feature allows for a richening of the debt tracking feature. We intend to use this feature to add deadlines to payments which can then synthesize with our idea of an urgency rate on debts. The deadline feature can also collaborate with the reminders the app already provides.
-There are other uses we are planning for this feature such as pinning events or things like utility bill deadlines.
-
-\subsubsection*{Wish list}
-The Wish List is a small trinket we all thought would be a nice addition to our application. In essence, it is a shared shopping list. A user may also conjoin lists with a friend who owns the app so that each may view the others' wish list. This means that if a certain flat member is out at the supermarket, they can check their conjoined lists and help buy things the other needs, in order to save multiple trips to the supermarket.
-This will require the implementation of a synchronisation measure for these wish lists. The lists will need to update on all devices whenever someone adds to it. At the moment, we are proposing this update check takes place every time the user starts the application. However we are still contemplating this due to the overhead this will incur.
 
 \end{document}

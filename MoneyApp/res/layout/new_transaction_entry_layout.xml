@@ -11,10 +11,12 @@
 
         <ImageView
             android:id="@+id/add_icon"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="7dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="100dp"
             android:contentDescription="@string/next"
             android:src="@drawable/add_button" />
 
