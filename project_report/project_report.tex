@@ -26,21 +26,34 @@ Target:
 An app which supports people living together?  
 
 \section*{Project Management (30\% Aim for 1 ~ 1.5 pages)}
-Group Structure:\\
-Group Leader: \\
-Jo Schlemper\\
-Group members: \\
-Thai tam Nguyen \\
-Terence Tse\\
-Implementation Language:\\
-Client Side: Android \\
-Server Side: Java + Tomcat\\
-Database: Postgresql\\
-Design process:\\
-Feedback from the team members. \\
-Classic approach. Design on a paper? Dunno what to write here. \\
-Back-ups:\\
-GitHub \\
+\subsection*{Group Structure}
+In order to implement our application efficiently, we have decided to split the work between the team members, under Jo Schlemper’s leadership. \\
+Terence worked mainly on the database, its state and maintenance, and helped with the interactions between the database and the application itself.
+Thai tam worked mainly on the graphics of the application, including its scaling on multiple screens, and its user-friendliness aspects, and helped with the implementation of operations to be executed after user input.
+Jo worked mainly on the interactions between the database and the application, as well as the operations resulting from user input. Being the leader of the group, he overlooked the work in general, and was key to linking the different parts of the application together.
+ 
+\subsection*{Implementation Language}
+We have chosen to develop an application for Android devices, including tablets such as the Nexus7 tablet, as they are currently very common, and used very frequently in our current society – it is easy to spot someone in public transports, playing with their phone or other device. Their democratisation has led us to thinking that creating an application with such a target would induce a large range of users, and hence a strong usage of the application, which is, as developers, a goal to reach. \\
+The Java IDE platform for Android development includes many useful libraries and templates, which render making basic graphics for an android application very easy. This means that it would be possible to implement interactions between the graphic elements of the application and the database early in the design process, while still being able to ameliorate the visual aspects of the application at a later date – the time gain is considerable. Furthermore, the resources on Java based android developing are far more abundant and consistent than on any other language – this would become very helpful in manipulating code. We have therefore decided to choose Java as our implementation language.\\
+
+\subsubsection*{Server}
+We have chosen Tomcat as a server, as it is the most extensively application server used in the world, and allows easy build and check of connected applications, especially when working with Java and its associated JREs. Furthermore, it offers some kind of flexibility, as Tomcat is part of the Apache Jakarta Project - it is possible to run Apache on a server, but use Tomcat on another machine. This would be useful if we were to grow our project, or if we wanted to offer a high level of security and stability.
+
+\subsubsection*{Database}
+We have chosen to work with a PostgreSQL database as it is a very reliable and robust system. It is also compatible with a large range of platforms, including Windows and Unix, making it easy to work with and extend. Furthermore, PostgreSQL is very efficient and easy to use for operations such as adding or deleting a column. It also allows composite keys and sequences (generating a pseudo-unique id), which are very useful. Lastly, the error messages are more useful and informative than for instance MySQL.
+
+\subsection*{Design Process}
+\subsubsection*{Planning}
+As members of society, we feel a need to interact with one another, sometimes leading to requests. A common request, especially amongst friends, is “Could you please lend me x pounds?”, thus leading to debts. However, tracking the amount of money your friends owe you, as well as the amount you owe them can become a very cumbersome task. In order to resolve this problem, we have decided to create a system that would allow some user to track his debts easily. \\
+Our society is one of technology and innovations – phones, computers, machines are now part of our everyday lives. As such, we have decided that developing a technological application would be able to reach the most number of users, and therefore, satisfy the majority. However, each individual has different views of what to consider “ideal”. We therefore had to spend time studying and revising the content of our application: should we include a full-fledged instant messaging system? Will the users need it? Should we add this feature? How should this feature and your friends’ accounts interact? After asking ourselves these questions, we have concluded that our application would include the following features: a transaction tracking system that would include the setting of new transactions, a calendar that would allow transaction deadlines, an instant messaging system, a synchronised wish list, user profiles, as well as a settings button that would enable the user to switch between two kinds of transaction views (see Program). We then sketched on paper the main activities’ screen so everyone would have a concrete idea of what would be included in each one of the features available in our application.
+
+\subsubsection*{Implementation and testing}:
+We started up by, on one hand, setting up the database with all the necessary relations (users, etc), as well as the server, and on the other hand, creating the basic graphics for the activities corresponding to the features stated above. We populated the database with dummies in order to test the correctness of our application and especially that of the login screen (Can you log in if you enter the right phone number and the right password? What happens if one of the attributes is incorrect?), and implemented the database-user input interactions. We meanwhile also ameliorated the graphics of the activity, scaling it, at first, for Nexus7 tablet screen size. We then repeated this cycle over all the relevant activities.
+
+
+\subsection{Back-ups}
+We have used Git as our version control for the whole duration of our project, and set up the repository on GitHub. This has allowed us to work in parallel, easily compare different versions of our project, as well as come back to a previous one if necessary.
+
 
 \section*{Program (40\% Aim for 6 pages with pictures)}
 \subsection*{Description}
@@ -132,6 +145,13 @@ Android SDK? Not sure if needed to mention here though.
 CustomHttpClient.java from Android Developers: http://developerrohit.blogspot.co.uk/2011/04/customhttpclientjava.html
 Took as an inspiration for our client side HTTP methods such as GET and POST.
 We created our own logo and icons so we should not have any problem for copyright. 
+
+\subsection*{Copyright}
+The images and icons we have used have all been created by our group, and therefore, we should not have any third-party copyright issue in those regards.
+Some of our code used template code provided by Android Developers when downloading the Android SDK. As such, it is not subject to copyright issues. Furthermore, little "skill and labour" were used in the process of using these templates, and their usage is therefore not liable for pursuit.\\
+However, if we were to commercialise the app, we would need to license all our work, including our database set up, in order for third parties not to steal our work. We would also need to get database rights in order to form a database of all users and their relevant informations, such as phone numbers, friend lists, etc. \\
+Unless we wanted to let our application be open sourced, we would also need to remove, or hide our Git repository on GitHub. Otherwise, we would need to license our product with an open source license.
+
 \section*{Conclusion (20\% 1~1.5pages including acknowledgement)}
 
 We all love octopussy.\\
