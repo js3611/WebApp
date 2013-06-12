@@ -265,7 +265,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				// TODO CHECK ALL QUERIES AGAINST DATABASE JUST IN CASE
 				
 				JSONBuilder jb = new JSONBuilder();
-				ResultSet debtSet = friendsGetStmt.executeQuery("SELECT d.userid, d.owesuserid, d.amount FROM"+
+				ResultSet debtSet = friendsGetStmt.executeQuery("SELECT d.userid, d.owesuserid, d.amount, d.partial_pay FROM"+
 				" transactions t INNER JOIN debt d on (t.transid=d.transid)"+
 				"  WHERE (d.owesuserid = " + userid +" OR d.userid = " + userid +");");
 
@@ -275,10 +275,12 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 					String user_firstname = IDtoFirstnameMap.get(debtSet.getInt("userid"));
 					String payuser_firstname = IDtoFirstnameMap.get(debtSet.getInt("owesuserid"));
 					Double debtAmount = debtSet.getDouble("amount");
+					Double partial_pay = debtSet.getDouble("partial_pay");
 					
 					jb.beginObject().append("owesuserid", payuser_firstname)
 									.append("userid", user_firstname)
 									.append("amount",debtAmount)
+									.append("partial_pay", partial_pay)
 					  .endObject();
 					}
 					jb.endArray().endObject();			
@@ -453,7 +455,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 
 			//Store all the userids into one string and split it to get all the things to add
 			//format is like ("1:8,2:10,3:2") in the form (userid:amount-partial_pay)
-			//another parameter if it is update in the form ("1-0,2-0,3-0") (userid-partialpay)
+			//another parameter if it is update in the form ("1-0,2-0,3-0") (userid-partial_pay)
 			String owerIdAmount = request.getParameter("oweridIdAmount");			
 			String[] owerList = owerIdAmount.split(",");
 			String owerIdPartialPairs = request.getParameter("owerIdPartialPairs");
