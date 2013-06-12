@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.moneyapp.R;
@@ -39,6 +40,8 @@ public class ProfilePageFragment extends Fragment {
 		if (extras != null) {
 			String name = extras.getString(Transactions.NAME_STR);
 			int price = extras.getInt(Transactions.PRICE_STR);
+			int icon = extras.getInt(Transactions.ICON_STR);
+			((ImageView) rootView.findViewById(R.id.big_profile_icon)).setImageResource(icon);
 			((TextView) rootView.findViewById(R.id.firstName)).setText(name);
 			((TextView) rootView.findViewById(R.id.surname)).setText(name);
 			((TextView) rootView.findViewById(R.id.price)).setText("£"+price);

@@ -1,34 +1,24 @@
 package com.example.moneyapp.transaction;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.JsonReader;
-import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.example.helpers.AdminHelper;
-import com.example.helpers.ConnectionHelper;
-import com.example.helpers.CustomHttpClient;
-import com.example.helpers.HttpReaders;
 import com.example.json.JsonCustomReader;
-import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.R;
 
 public class PerPerson extends Activity {
 	
+	private PerPerson thisActivity;
 	// The List view
 	ListView transList;
 	// A list of data for each entry, which the adapter retrieves from.
@@ -42,19 +32,14 @@ public class PerPerson extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.transaction_per_person_list_layout);
-
+		
+		thisActivity = this;
+		
 		transList = (ListView) findViewById(R.id.PerPersonList);
-
-		// Create a list which holds data for each entry
 		details = new ArrayList<TransactionDetail>();
 
-		// Fill the screen with dummy entries
-		details = addDummies(details);
-
-		transList.setAdapter(new PerPersonAdapter(details, this));
-
-		registerForContextMenu(transList);
-
+		new DownloadContent().execute("");
+		
 		transList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -67,8 +52,9 @@ public class PerPerson extends Activity {
 				} else { // normal detail window
 					TransactionDetail detail = details.get(pos);
 					Intent intent = new Intent(PerPerson.this, PerPersonProfile.class);
-					intent.putExtra(Transactions.NAME_STR, detail.getFrom());
+					intent.putExtra(Transactions.NAME_STR, detail.getOwesuser());
 					intent.putExtra(Transactions.PRICE_STR, detail.getPrice());
+					intent.putExtra(Transactions.ICON_STR, detail.getIcon());
 					//intent.putExtra(Transactions.USER_STR, )
 					startActivity(intent);
 				}
@@ -102,22 +88,17 @@ public class PerPerson extends Activity {
 		@Override
 		protected ArrayList<TransactionDetail> doInBackground(String... params) {
 			try {
-				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url
-						+ MainActivity.login);
-				// Handle JSONstring
-				// errorMessage = HttpReaders.readIt(in, 1000);
-				TransactionDetail Detail;
-				Detail = new TransactionDetail();
-				Detail.setIcon(R.drawable.ic_launcher);
-				Detail.setFrom(HttpReaders.readIt(in, 100));
-				Detail.setPrice(30);
-				details.add(Detail);
-				// details = JsonCustomReader.readJsonPerPerson(in);
+				String str = "{\"returnCode\":1," +
+									"\"data\":[{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}," +
+									"{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}," +
+									"{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}]}";
+				InputStream in = new ByteArrayInputStream(str.getBytes());
+				details = JsonCustomReader.readJsonPerPerson(in);
 			} catch (Exception e) {
 				TransactionDetail Detail;
 				Detail = new TransactionDetail();
 				Detail.setIcon(R.drawable.ic_launcher);
-				Detail.setFrom(""+e.getMessage());
+				Detail.setOwesuser("ERROR"+e.getMessage());
 				Detail.setPrice(0);
 				details.add(Detail);
 			}
@@ -128,6 +109,9 @@ public class PerPerson extends Activity {
 		@Override
 		protected void onPostExecute(ArrayList<TransactionDetail> result) {
 			super.onPostExecute(result);
+			
+			transList.setAdapter(new PerPersonAdapter(result, thisActivity));
+			registerForContextMenu(transList);
 		}
 		
 	}
@@ -137,28 +121,28 @@ public class PerPerson extends Activity {
 		TransactionDetail Detail;
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.thai);
-		Detail.setFrom("Thai");
+		Detail.setOwesuser("Thai");
 		Detail.setSubject("Dinner");
 		Detail.setPrice(30);
 		details.add(Detail);
 
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.terence);
-		Detail.setFrom("Terence");
+		Detail.setOwesuser("Terence");
 		Detail.setSubject("lunch");
 		Detail.setPrice(50);
 		details.add(Detail);
 
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.jo);
-		Detail.setFrom("Jo");
+		Detail.setOwesuser("Jo");
 		Detail.setSubject("Malaga");
 		Detail.setPrice(340);
 		details.add(Detail);
 
 		Detail = new TransactionDetail();
 		Detail.setIcon(R.drawable.terence);
-		Detail.setFrom("Terence");
+		Detail.setOwesuser("Terence");
 		Detail.setSubject("Dinner");
 		Detail.setPrice(30);
 		details.add(Detail);
