@@ -15,13 +15,14 @@ public class TransactionDetail {
 	public TransactionDetail(){}
 	
 	public TransactionDetail(int icon, String owesuser, String user, String subject,
-			Double price, String date, String deadline) {
+			Double price, Double partial_pay, String date, String deadline) {
 		super();
 		this.icon = icon;
 		this.owesuser = owesuser;
 		this.user = user;
 		this.subject = subject;
 		this.price = price;
+		this.partial_pay = partial_pay;
 		this.date = date;
 		this.deadline = deadline;
 	}

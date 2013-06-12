@@ -28,10 +28,10 @@ public class PerPerson extends Activity {
 	private static final String TAG = "PerPerson";
 	private PerPerson thisActivity;
 	// The List view
-	ListView transList;
+	private ListView transList;
 	// A list of data for each entry, which the adapter retrieves from.
-	ArrayList<TransactionDetail> details;
-	String name = "jo";
+	private ArrayList<TransactionDetail> details;
+	private String name = "Jo";
 
 	// what is this?
 	// AdapterView.AdapterContextMenuInfo info;
@@ -98,7 +98,7 @@ public class PerPerson extends Activity {
 		protected ArrayList<TransactionDetail> doInBackground(String... params) {
 			try {
 				int userid = 2;
-				String op = "viewFriendsGet";
+				String op = "viewFriendsOwe";
 				String viewMode = "perPerson";
 				
 				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+
@@ -106,14 +106,14 @@ public class PerPerson extends Activity {
 						"op="+op+"&"+ 
 						"viewMode="+viewMode+"&"+
 						"userid="+userid );
-				TransactionDetail Detail;
-				Detail = new TransactionDetail();
-				Detail.setIcon(R.drawable.ic_launcher);
-				Detail.setOwesuser(HttpReaders.readIt(in,500));
-				Detail.setPrice(0);
-				details.add(Detail);
-//				ArrayList<TransactionDetail> rawData = JsonCustomReader.readJsonPerPerson(in); 
-//				details = processPerPerson(rawData);
+//				TransactionDetail Detail;
+//				Detail = new TransactionDetail();
+//				Detail.setIcon(R.drawable.ic_launcher);
+//				Detail.setOwesuser(HttpReaders.readIt(in,500));
+//				Detail.setPrice(0);
+//				details.add(Detail);
+				ArrayList<TransactionDetail> rawData = JsonCustomReader.readJsonPerPerson(in); 
+				details = processPerPerson(rawData);
 			} catch (Exception e) {
 				TransactionDetail Detail;
 				Detail = new TransactionDetail();
@@ -132,19 +132,17 @@ public class PerPerson extends Activity {
 			Map<String, Double> personPriceMap = new HashMap<String, Double>();
 			Map<String, Integer> personIconMap = new HashMap<String, Integer>();
 
-			
-			
 			for (TransactionDetail transactionDetail : rawData) {
 				Log.v(TAG, transactionDetail.toString());
 				if(name.equals(transactionDetail.getUser())) {
 					String owesUser = transactionDetail.getOwesuser();
 					personIconMap.put(owesUser, transactionDetail.getIcon());
 					if(personPriceMap.containsKey(owesUser)) {
-						personPriceMap.put(owesUser, personPriceMap.get(owesUser)+transactionDetail.getPrice()-transactionDetail.getPartial_pay());
+						personPriceMap.put(owesUser, personPriceMap.get(owesUser)-transactionDetail.getPrice()+transactionDetail.getPartial_pay());
 					} else {
 						personPriceMap.put(owesUser, transactionDetail.getPrice());
 					}
-				} else {
+				} else { //If user owes someone, then add
 					String user = transactionDetail.getUser();
 					personIconMap.put(user, transactionDetail.getIcon());
 					if(personPriceMap.containsKey(user)) {
@@ -156,7 +154,7 @@ public class PerPerson extends Activity {
 			}
 			
 			for (Map.Entry<String, Double> entry : personPriceMap.entrySet()) {
-				TransactionDetail tDetail = new TransactionDetail(personIconMap.get(entry.getKey()),entry.getKey(),name,"",entry.getValue(),"","");
+				TransactionDetail tDetail = new TransactionDetail(personIconMap.get(entry.getKey()),entry.getKey(),name,"",entry.getValue(),(double)0,"","");
 				newDetails.add(tDetail);
 			}
 			return newDetails;

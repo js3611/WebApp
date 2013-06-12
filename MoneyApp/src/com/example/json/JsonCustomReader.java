@@ -59,6 +59,7 @@ public class JsonCustomReader {
 		String user = null;
 		String subject = null;
 		double price = 0;
+		double partial_pay =0;
 		String data = null;
 		String deadline = null;
 
@@ -73,12 +74,14 @@ public class JsonCustomReader {
 				subject = jr.nextString();
 			} else if (name.equals("amount")) {
 				price = jr.nextDouble();
+			} else if (name.equals("partial_pay")) {
+				partial_pay = jr.nextDouble();
 			} else {
 				jr.skipValue();
 			}
 		}
 		jr.endObject();
-		return new TransactionDetail(icon, owesuser, user, subject, price, data,
+		return new TransactionDetail(icon, owesuser, user, subject, price, partial_pay, data,
 				deadline);
 	}
 
