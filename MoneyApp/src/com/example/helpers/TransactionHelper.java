@@ -18,15 +18,15 @@ public class TransactionHelper {
 				errorMessage = "Something went wrong!";
 				break;
 			case 4: 
-				errorMessage = 
+				//errorMessage = 
 				break;
 			case 5: 
 				return goodResult;
 			case 6: 
-				errorMessage = 
+				//errorMessage = 
 				break;
 			case 7: 
-				errorMessage = 
+				//errorMessage = 
 				break;
 			case 8: //DEBT SUCCESSFULLY REPAID
 				return goodResult;
@@ -50,4 +50,4 @@ public class TransactionHelper {
 		}
 
 	}
-}
+

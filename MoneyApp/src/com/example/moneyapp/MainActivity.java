@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.HttpReaders;
 import com.example.helpers.StringFilter;
 import com.example.json.JsonCustomReader;
 
@@ -35,8 +36,9 @@ public class MainActivity extends Activity {
 	
 	public static final String edge02 = "http://146.169.52.2:59999";
 	public static final String pixel20 = "http://146.169.53.180:59999";
-	public static final String url = pixel20;//"http://146.169.53.14:59999";
-	public static final String login = "/login";
+	public static final String joMachine = "http://129.31.224.228:8080/MoneyDatabase";
+	public static final String url = joMachine;//"http://146.169.53.14:59999";
+	public static final String login = "/Login";
 	private TextView errorView;
 	private String errorMessage;
 
@@ -124,7 +126,9 @@ public class MainActivity extends Activity {
 
 		try {
 			InputStream in = CustomHttpClient.executeHttpPost(url+login, nameValueP);
+//			InputStream in = CustomHttpClient.executeHttpGet(url+login);
 			// Handle JSONstring
+//			errorMessage = HttpReaders.readIt(in, 1000);
 			int response = JsonCustomReader.readJsonRetCode(in);			
 			Pair<String, Boolean> pair = AdminHelper.handleResponse(response);
 			errorMessage = pair.first;
