@@ -14,9 +14,10 @@ public class TransactionDetail {
 
 	public TransactionDetail(){}
 	
-	public TransactionDetail(int icon, String owesuser, String user, String subject,
+	public TransactionDetail(int icon, int transactionID, String owesuser, String user, String subject,
 			Double price, Double partial_pay, String date, String deadline) {
 		super();
+		this.transactionID = transactionID;
 		this.icon = icon;
 		this.owesuser = owesuser;
 		this.user = user;

@@ -45,8 +45,6 @@ public class PerItem extends Activity {
 		details = new ArrayList<TransactionDetail>();
 
 		new DownloadContent().execute("");
-		
-		transList.setAdapter(new PerItemAdapter(details, this));
 
 		registerForContextMenu(transList);
 
@@ -75,20 +73,14 @@ public class PerItem extends Activity {
 		protected ArrayList<TransactionDetail> doInBackground(String... params) {
 			try {
 				int userid = 2;
-				String op = "viewFriendsOwe";
-				String viewMode = "perPerson";
-				
+				String op = "viewLiveTransactions";
+				String viewMode = "perItem";
 				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+
 						MainActivity.TRANSACTION + "?"+
 						"op="+op+"&"+ 
 						"viewMode="+viewMode+"&"+
 						"userid="+userid );
-//				TransactionDetail Detail;
-//				Detail = new TransactionDetail();
-//				Detail.setIcon(R.drawable.ic_launcher);
-//				Detail.setOwesuser(HttpReaders.readIt(in,500));
-//				Detail.setPrice(0);
-//				details.add(Detail); 
+
 				details = JsonCustomReader.readJsonPerPerson(in);
 			} catch (Exception e) {
 				TransactionDetail Detail;
@@ -100,6 +92,14 @@ public class PerItem extends Activity {
 			}
 
 			return details;
+		}
+		
+		@Override
+		protected void onPostExecute(ArrayList<TransactionDetail> result) {
+			super.onPostExecute(result);
+			
+			transList.setAdapter(new PerItemAdapter(result, thisActivity));
+			registerForContextMenu(transList);
 		}
 	}
 	@Override

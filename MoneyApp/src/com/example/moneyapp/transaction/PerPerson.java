@@ -112,13 +112,14 @@ public class PerPerson extends Activity {
 //				Detail.setOwesuser(HttpReaders.readIt(in,500));
 //				Detail.setPrice(0);
 //				details.add(Detail);
-				ArrayList<TransactionDetail> rawData = JsonCustomReader.readJsonPerPerson(in); 
+				ArrayList<TransactionDetail> rawData = JsonCustomReader
+						.readJsonPerPerson(in);
 				details = processPerPerson(rawData);
 			} catch (Exception e) {
 				TransactionDetail Detail;
 				Detail = new TransactionDetail();
 				Detail.setIcon(R.drawable.ic_launcher);
-				Detail.setOwesuser("ERROR"+e.getMessage());
+				Detail.setOwesuser("ERROR" + e.getMessage());
 				Detail.setPrice(0);
 				details.add(Detail);
 			}
@@ -154,7 +155,9 @@ public class PerPerson extends Activity {
 			}
 			
 			for (Map.Entry<String, Double> entry : personPriceMap.entrySet()) {
-				TransactionDetail tDetail = new TransactionDetail(personIconMap.get(entry.getKey()),entry.getKey(),name,"",entry.getValue(),(double)0,"","");
+				TransactionDetail tDetail = new TransactionDetail(
+						personIconMap.get(entry.getKey()), 0, entry.getKey(),
+						name, "", entry.getValue(), (double) 0, "", "");
 				newDetails.add(tDetail);
 			}
 			return newDetails;
