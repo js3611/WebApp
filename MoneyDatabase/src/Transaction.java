@@ -277,8 +277,10 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 					Double debtAmount = debtSet.getDouble("amount");
 					Double partial_pay = debtSet.getDouble("partial_pay");
 					
-					jb.beginObject().append("owesuserid", payuser_firstname)
-									.append("userid", user_firstname)
+					jb.beginObject().append("userid", debtSet.getInt("userid"))
+									.append("owesuserid", debtSet.getInt("owesuserid"))
+									.append("user_fname", user_firstname)
+									.append("payuser_fname", payuser_firstname)
 									.append("amount",debtAmount)
 									.append("partial_pay", partial_pay)
 					  .endObject();
@@ -335,14 +337,29 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				
 			} else if (operation.equals("viewFriendsProfile")){
 				Statement friendsProfStmt = conn.createStatement();
-				int friendid = Integer.parseInt(request.getParameter("friendid"));
-				
 				JSONBuilder jb = new JSONBuilder();
-				ResultSet friendSet = friendsProfStmt.executeQuery("SELECT userid as friendid, firstname,"+
-									   " surname FROM appuser WHERE userid = "+ friendid +";");
+
+//				int friendid = Integer.parseInt(request.getParameter("friendid"));		
+//				ResultSet friendSet 
+//				  = friendsProfStmt.executeQuery(
+//						  "SELECT userid as friendid, firstname, surname " +
+//						  "FROM appuser " +
+//						  "WHERE userid = "+ friendid +";");
+				String firstname = request.getParameter("firstname");		
+				ResultSet friendSet 
+				  = friendsProfStmt.executeQuery(
+						  "SELECT userid as friendid, firstname, surname " +
+						  "FROM appuser " +
+						  "WHERE firstname = '"+ firstname +"';");
+
+				
 				// TODO MUST JOIN WITH THE AMOUNT SOMEHOW FROM A PRVIOUS QUERY
 				// OR ANOTHER QUERY
 				// currently only gets the user profile details not the amount
+				if (friendSet.isBeforeFirst()) {
+					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
+				}
+				
 				
 				if (friendSet.next()) {
 					jb.beginObject().append("returnCode",1);
@@ -366,11 +383,23 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				int userid = Integer.parseInt(request.getParameter("userid"));
 				
 				JSONBuilder jb = new JSONBuilder();
-				ResultSet friendsTrans = friendsLogStmt.executeQuery("SELECT d.transid, t.name, d.userid,d.owesuserid, " +
-						"d.amount, d.partial_pay, t._date from debt d INNER JOIN transactions t ON (t.transid =" +
-						" d.transid) WHERE d.owesuserid = "+ friendid +" OR (d.userid = "+friendid + " AND d.owesuserid = " + userid + ") AND total_paid_off = false;");
+				ResultSet friendsTrans 
+				  = friendsLogStmt.executeQuery(
+						"SELECT d.transid, t.name, d.userid,d.owesuserid, d.amount, d.partial_pay, t._date " +
+						"FROM debt d INNER JOIN transactions t " +
+						"ON (t.transid = d.transid) " +
+						"WHERE d.owesuserid = "+ friendid +" " +
+						"OR (d.userid = "+friendid + " AND d.owesuserid = " + userid + ") " +
+					    "AND total_paid_off = false" + " UNION " +
+					    "SELECT d.transid, t.name, d.userid,d.owesuserid, d.amount, d.partial_pay, t._date " +
+						"FROM debt d INNER JOIN transactions t " +
+						"ON (t.transid = d.transid) " +
+						"WHERE d.owesuserid = "+ userid +" " +
+						"OR (d.userid = "+ userid + " AND d.owesuserid = " + friendid + ") " +
+					    "AND total_paid_off = false;"
+						);
 				
-				if (!friendsTrans.next()) {
+				if (!friendsTrans.isBeforeFirst()) {
 					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
 				} else {
 					// Gets a list of the live transactions involving user and

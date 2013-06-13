@@ -39,7 +39,7 @@ public class JSONBuilder {
 	}
 	
 	private void addObjComma() {
-		if (endedObj)
+		if (endedObj || btwnEntry)
 			str.append(COMMA);
 		endedObj = false;
 	}
@@ -50,6 +50,7 @@ public class JSONBuilder {
 		str.append(DOUBLE_QUOTE+"data"+DOUBLE_QUOTE+COLON+"[");
 		btwnEntry = false;
 		startedArray = true;
+
 		return this;
 	}
 
@@ -65,10 +66,12 @@ public class JSONBuilder {
 
 	public JSONBuilder beginObject() {
 		addObjComma();
+		if (!startedArray && nestedObjCount>0) str.append("\"object\":");
 		str.append("{");
 		startedObj = true;
 		endedObj = false;
 		btwnEntry = false;
+		nestedObjCount++;
 		return this;
 	}
 
