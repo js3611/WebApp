@@ -1,9 +1,17 @@
 package com.example.moneyapp.transaction;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
+import com.example.helpers.CustomHttpClient;
+import com.example.helpers.metadata.UserDetails;
+import com.example.json.JsonCustomReader;
+import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.R;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.Activity;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +27,9 @@ public class LogPageFragment extends Fragment {
 	ListView logList;
 	//A list of data for each entry, which the adapter retrieves from.
 	ArrayList<TransactionDetail> details;
+	private Activity thisActivity;
+	private UserDetails user;
+	
 	
 	public static LogPageFragment create() {
 		LogPageFragment fragment = new LogPageFragment();
@@ -32,21 +43,18 @@ public class LogPageFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		ViewGroup rootView;
-
-		// Set the title view to show the page number.
 		rootView = (ViewGroup) inflater.inflate(R.layout.transaction_fragment_log_view,
 				container, false);
-		
+
+		/* Set fields */
+		thisActivity = getActivity();
+		user = (UserDetails) thisActivity.getIntent().getExtras().getSerializable(MainActivity.USER_KEY);
+
 		// profile
 		((TextView) rootView.findViewById(R.id.log_title)).setText("Log Transaction");
 		logList = (ListView) rootView.findViewById(R.id.log_list);
 
-		//Create a list which holds data for each entry
-		details = new ArrayList<TransactionDetail>();
-		//Fill the screen with dummy entries
-		details = PerPerson.addDummies(details);
-
-		logList.setAdapter(new PerItemAdapter(details, getActivity()));
+		new DownloadContent().execute("");
 
 		registerForContextMenu(logList);
 
@@ -65,5 +73,44 @@ public class LogPageFragment extends Fragment {
 		
 		return rootView;
 	}
+	
+	private class DownloadContent extends AsyncTask<String, Void, ArrayList<TransactionDetail>> {
+
+		@Override
+		protected ArrayList<TransactionDetail> doInBackground(String... params) {
+			try {
+				int friendid = 4;
+				int userid = user.getUserid();
+				String op = "viewFriendsLog";
+				String viewMode = "perPerson";
+				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+
+						MainActivity.TRANSACTION + "?"+
+						"op="+op+"&"+ 
+						"viewMode=" + viewMode + "&"+
+						"userid=" + userid + "&" +
+						"friendid=" + friendid);
+
+				details = JsonCustomReader.readJsonPerPerson(in);
+			} catch (Exception e) {
+				TransactionDetail Detail;
+				Detail = new TransactionDetail();
+				Detail.setIcon(R.drawable.ic_launcher);
+				Detail.setOwesuser("ERROR"+e.getMessage());
+				Detail.setPrice(0);
+				details.add(Detail);
+			}
+
+			return details;
+		}
+		
+		@Override
+		protected void onPostExecute(ArrayList<TransactionDetail> result) {
+			super.onPostExecute(result);
+			
+			logList.setAdapter(new PerItemAdapter(result, thisActivity));
+			//registerForContextMenu(transList);
+		}
+	}
+
 
 }

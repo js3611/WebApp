@@ -88,9 +88,9 @@
         android:layout_marginRight="15dp"
         android:text="£30"
         android:textAppearance="?android:attr/textAppearanceLarge" />    
-         
      </RelativeLayout>
-    
+<!--       
+     
      <RelativeLayout
         android:id="@+id/total_layout"
         android:layout_width="match_parent"
@@ -117,7 +117,7 @@
         android:layout_toRightOf="@id/urgence"/>
     
     </RelativeLayout>
-     
+ -->
     <Button
         android:id="@+id/eq_split_button"
         android:layout_width="match_parent"
@@ -139,6 +139,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/custom_button"
         android:textSize="25sp"
-        android:text="DONE" />
+        android:text="DONE" 
+        android:onClick="newTransactionHandler"/>
 
 </LinearLayout>

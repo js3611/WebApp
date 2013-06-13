@@ -100,6 +100,10 @@ public class TransactionDetail {
 		this.partial_pay = partial_pay;
 	}
 
+	public double getRemainingToPay() {
+		return price - partial_pay;
+	}
+	
 	@Override
 	public String toString() {
 		return "TransactionDetail [icon=" + icon + ", transactionID="

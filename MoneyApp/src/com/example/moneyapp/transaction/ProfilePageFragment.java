@@ -54,7 +54,7 @@ public class ProfilePageFragment extends Fragment {
 	}
 
 	private CharSequence setDirection(double price, String name) {
-		if (price < 0) {
+		if (price > 0) {
 			return "You owe "+name +": ";
 		} else {
 			return name +" owes you: ";
