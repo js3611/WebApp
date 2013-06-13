@@ -12,6 +12,7 @@ import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.TransactionHelper;
+import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.MainMenu;
@@ -40,17 +41,19 @@ import android.widget.ListView;
 public class NewTransaction extends Activity {
 
 	String errorMessage;
-	
+
 	// The List view
 	ListView personList;
 	// A list of data for each entry, which the adapter retrieves from.
 	ArrayList<Pair<String, Double>> person_cost_pairs;
+	private UserDetails user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.transaction_new_transaction);
 
+		
 		personList = (ListView) findViewById(R.id.PersonList);
 		person_cost_pairs = new ArrayList<Pair<String, Double>>();
 		// Fill the screen with dummy entries
@@ -128,7 +131,7 @@ public class NewTransaction extends Activity {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			//Checks the result of running addToTransactions
+			// Checks the result of running addToTransactions
 			if (result) {
 
 				// Toast message
@@ -143,7 +146,7 @@ public class NewTransaction extends Activity {
 						TransactionDetail.class);
 				startActivity(intent);
 			} else {
-				
+
 				// Toast message
 				Context context = getApplicationContext();
 				CharSequence feedbackMsg = errorMessage;
@@ -168,10 +171,12 @@ public class NewTransaction extends Activity {
 
 		try {
 			// address should be the http address of the server side code.
-			InputStream in = CustomHttpClient.executeHttpPost(MainActivity.url+MainActivity.login, nameValueP);
+			InputStream in = CustomHttpClient.executeHttpPost(MainActivity.url
+					+ MainActivity.login, nameValueP);
 			// Handle JSONstring
-			int response = JsonCustomReader.readJsonRetCode(in);			
-			Pair<String, Boolean> pair = TransactionHelper.handleResponse(response);
+			int response = JsonCustomReader.readJsonRetCode(in);
+			Pair<String, Boolean> pair = TransactionHelper
+					.handleResponse(response);
 			errorMessage = pair.first;
 			return pair.second;
 

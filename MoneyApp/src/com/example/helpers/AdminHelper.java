@@ -9,6 +9,9 @@ public class AdminHelper {
 	
 	public static Pair<String, Boolean> handleResponse(int response) {
 		switch (response) {
+		case 0:
+			errorMessage = "No operation specified. This shouldn't happen though.";
+			break;
 		case 1: //Correct password
 			return goodResult;
 		case 2: //Wrong password
@@ -31,8 +34,7 @@ public class AdminHelper {
 		default:
 			errorMessage = "Something went wrong!";
 			break;
-		}
-		
+		}		
 		return new Pair<String, Boolean>(errorMessage, false);
 	}
 

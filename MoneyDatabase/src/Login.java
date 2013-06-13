@@ -3,6 +3,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.ServletException;
@@ -41,9 +42,7 @@ public class Login extends javax.servlet.http.HttpServlet implements
 
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		
-		PrintWriter writer = response.getWriter();
-		JSONBuilder jb = new JSONBuilder();
+/*		JSONBuilder jb = new JSONBuilder();
 		int i = 0;
 		jb.beginObject().append("returnCode",1).beginArray();
 		while(i < 3) {	
@@ -60,59 +59,22 @@ public class Login extends javax.servlet.http.HttpServlet implements
 		jb.endArray().endObject();
 		
 		writer.println(jb.build());
-	/*	
-		StringBuilder strB = getBuilder();
-		append(strB, "returnCode", 1);
-		append(strB, "status", 2);
-		append(strB, "first", "terence");
-		append(strB, "last", "tse");
-		out.print(build(strB));
 */
-		String operation = request.getParameter("op");
-
-		if (operation == null) {
-			//out.println("<br>no operation specified</br>");
-			return;
-		}
-
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
-			out
-					.println("<h1>Driver not found: " + e + e.getMessage()
+			out.println("<h1>Driver not found: " + e + e.getMessage()
 							+ "</h1>");
 		}
 
 		try {
-
-			String uri = "jdbc:postgresql://db.doc.ic.ac.uk/g1227132_u?&ssl=true"
-					+ "&sslfactory=org.postgresql.ssl.NonValidatingFactory";
-
-			Connection conn = DriverManager.getConnection(uri, "g1227132_u",
-					"W0zFGMaqup");
-			Statement stmt = conn.createStatement();
-
-			if (operation.equals("checkPassword")) {
-
-				// Check if userID exists
-
-				String phoneNo = request.getParameter("phone");
-				String password = request.getParameter("password");
-
-				ResultSet rs = stmt
-						.executeQuery("SELECT password FROM appuser WHERE phonenumber='"
-								+ phoneNo + "'");
-
-				out.println("op:" + operation + "phone:" + phoneNo + "pass:"
-						+ password);
-
-				rs.next();
-				if (rs.getString("password").equals(password)) {
-					out.print("valid");
-				} else {
-					out.print("invalid");
-				}
-			}
+			Connection conn = DriverManager.getConnection(
+					"jdbc:postgresql://db.doc.ic.ac.uk/g1227132_u?&ssl=true"
+					+ "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+					"g1227132_u", "W0zFGMaqup");
+			
+			handleOperation(request.getParameter("op"), conn, request, out);
+			conn.close();
 		} catch (Exception e) {
 			out.println("<h1>exception: " + e + e.getMessage() + "</h1>");
 		}
@@ -129,18 +91,10 @@ public class Login extends javax.servlet.http.HttpServlet implements
 		// response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 
-		String operation = request.getParameter("op");
-
-		if (operation == null) {
-			out.println("<br>no operation specified</br>");
-			return;
-		}
-
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
-			out
-					.println("<h1>Driver not found: " + e + e.getMessage()
+			out.println("<h1>Driver not found: " + e + e.getMessage()
 							+ "</h1>");
 		}
 
@@ -149,18 +103,26 @@ public class Login extends javax.servlet.http.HttpServlet implements
 					"jdbc:postgresql://db.doc.ic.ac.uk/g1227132_u?&ssl=true"
 					+ "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 					"g1227132_u", "W0zFGMaqup");
-			Statement stmt = conn.createStatement();
-			handleOperation(operation, stmt, request, out);
+			
+			handleOperation(request.getParameter("op"), conn, request, out);
+			conn.close();
 
 		} catch (Exception e) {
 			out.println("<h1>exception: " + e + e.getMessage() + "</h1>");
 		}
 	}
 
-	private void handleOperation(String operation, Statement stmt,
+	private void handleOperation(String operation, Connection conn,
 			HttpServletRequest request, PrintWriter out) throws Exception {
 
+		JSONBuilder jb = new JSONBuilder();
+		if (operation == null) {
+			out.println(getReturnCode(jb,0));
+			return;
+		}
+		
 		if (operation.equals("newAccount")) {
+			Statement stmt = conn.createStatement();
 			String fname = request.getParameter("firstname");
 			String sname = request.getParameter("surname");
 			String pw = request.getParameter("password");
@@ -170,7 +132,7 @@ public class Login extends javax.servlet.http.HttpServlet implements
 					.executeQuery("SELECT userid FROM appuser WHERE phonenumber = '"
 							+ phoneNo + "';");
 			if (phoneResults.next()) // It failed because phone number exists
-				out.print(build(append(getBuilder(), "returnCode", 6)));// out.print("6");
+				out.print(getReturnCode(jb,6));
 			else {
 
 				int rs = stmt
@@ -181,19 +143,20 @@ public class Login extends javax.servlet.http.HttpServlet implements
 								+ "', '"
 								+ pw
 								+ "', '"
-								+ phoneNo + "')");// RETURNING userid;");
-
-				if (rs == 0)
-					out.print(build(append(getBuilder(), "returnCode", 7)));// out.print("7");
-				else
+								+ phoneNo + "')");
+				
+				if (rs == 0) //failed to insert
+					out.print(getReturnCode(jb,7));
+				else {
 					// Successful signup
-					out.print(build(append(getBuilder(), "returnCode", 5)));// out.print("5");
-
+					String json = getUserDetails(conn, jb, phoneNo,5);
+					out.print(json);
+				}
 				stmt.close();
 			}
 
 		} else if (operation.equals("checkPassword")) {
-
+			Statement stmt = conn.createStatement();
 			String phoneNo = request.getParameter("phone");
 			String password = request.getParameter("password");
 
@@ -201,81 +164,45 @@ public class Login extends javax.servlet.http.HttpServlet implements
 					.executeQuery("SELECT password FROM appuser WHERE phonenumber='"
 							+ phoneNo + "'");
 
-			if (!rs.next()) { // User account with the phone Number doens't
-				// exist
-				out.print(build(append(getBuilder(), "returnCode", 3)));// out.print(
-				// "3"
-				// );
+			if (!rs.next()) { // User account with the phone Number doens't exist
+				out.print(getReturnCode(jb,3));
 			} else if (rs.getString("password").equals(password)) { // correct
-				// password
-				//ResultSet userDetails = stmt.executeQuery("SELECT * from appuser Where phonenumber = " + phoneNo + ";");
-				//int userid = userDetails.getInt("userid");
-				//User user = new User();
-				out.print(build(append(getBuilder(), "returnCode", 1)));// out.print(
-				// "1"
-				// );
+				String json = getUserDetails(conn, jb, phoneNo,1);
+				out.print(json);
 			} else { // wrong password
 				loginCount++;
 				if (loginCount >= 3) // tried too many
-					out.print(build(append(getBuilder(), "returnCode", 4)));// out.print("4");
+					out.print(getReturnCode(jb,4));
 				else
-					out.print(build(append(getBuilder(), "returnCode", 2)));// out.print(
-				// "2"
-				// );
+					out.print(getReturnCode(jb,2));
 			}
 
 		}
 	}
 
-	private String DOUBLE_QUOTE = "\"";
-	private String COLON = ":";
-	private String COMMA = ",";
-	private boolean firstEntry = true;
-
-	public StringBuilder getBuilder() {
-		StringBuilder str = new StringBuilder("{ ");
-		return str;
+	private String getReturnCode(JSONBuilder jb, int ret) {
+		return jb.beginObject().append("returnCode",ret).endObject().build();
 	}
 
-	public StringBuilder append(StringBuilder str, String key, String value) {
-		if (!firstEntry)
-			str.append(COMMA);
-		firstEntry = false;
-		str.append(DOUBLE_QUOTE + key + DOUBLE_QUOTE + COLON + DOUBLE_QUOTE
-				+ value + DOUBLE_QUOTE);
-		return str;
-	}
-
-	public StringBuilder append(StringBuilder str, String key, int value) {
-		if (!firstEntry) {
-			str.append(COMMA);
-		}
-		firstEntry = false;
-		str.append(DOUBLE_QUOTE + key + DOUBLE_QUOTE + COLON + value);
-		return str;
-	}
-
-	public StringBuilder append(StringBuilder str, String key, double value) {
-		if (!firstEntry) {
-			str.append(COMMA);
-		}
-		firstEntry = false;
-		str.append(DOUBLE_QUOTE + key + DOUBLE_QUOTE + COLON + value);
-		return str;
-	}
-
-	public StringBuilder append(StringBuilder str, String key, boolean value) {
-		if (!firstEntry) {
-			str.append(COMMA);
-		}
-		firstEntry = false;
-		str.append(DOUBLE_QUOTE + key + DOUBLE_QUOTE + COLON + value);
-		return str;
-	}
-
-	public String build(StringBuilder str) {
-		firstEntry = true;
-		return str.append("}").toString();
+	private String getUserDetails(Connection conn, JSONBuilder jb,
+			String phoneNo,int retCode) throws SQLException {
+		Statement userstmt = conn.createStatement();
+		// Get user details
+		ResultSet userDetails 
+		  = userstmt.executeQuery("SELECT * from appuser Where phonenumber = '" + phoneNo + "';");
+		// Get the entry
+		userDetails.next();
+		String json = jb.beginObject().append("returnCode",retCode)
+									  .append("userid",userDetails.getInt("userid"))
+									  .append("firstname",userDetails.getString("firstname"))
+									  .append("surname",userDetails.getString("surname"))
+									  .append("calenderid",userDetails.getInt("calendarid"))
+									  .append("wishlist",userDetails.getInt("wishlist"))
+									  .append("password",userDetails.getString("password"))
+									  .append("phonenumber",userDetails.getString("phonenumber"))
+						.endObject().build();
+		userstmt.close();
+		return json;
 	}
 
 }

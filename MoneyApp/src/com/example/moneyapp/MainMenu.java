@@ -1,5 +1,6 @@
 package com.example.moneyapp;
 
+import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.message.MessageListActivity;
 import com.example.moneyapp.transaction.Transactions;
 
@@ -8,17 +9,23 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
 public class MainMenu extends Activity {
 
+	public static final String TAG = "MainMenu";
+	private UserDetails user;
+	
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		Intent intent = getIntent();
+		user = UserDetails.getUser(intent);
+		Log.v(TAG, user.toString());
 		setContentView(R.layout.activity_main_menu);
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -36,26 +43,31 @@ public class MainMenu extends Activity {
 
 	public void toCalendar(View view){
 		Intent intent = new Intent(MainMenu.this, Calendar.class);
+		intent.putExtra(MainActivity.USER_KEY, user);
 		startActivity(intent);
 	}
 	
 	public void toTransactions(View view){
 		Intent intent = new Intent(MainMenu.this, Transactions.class);
+		intent.putExtra(MainActivity.USER_KEY, user);
 		startActivity(intent);
 	}
 	
 	public void toMessages(View view){
 		Intent intent = new Intent(MainMenu.this, MessageListActivity.class);
+		intent.putExtra(MainActivity.USER_KEY, user);
 		startActivity(intent);
 	}
 	
 	public void toWishList(View view){
 		Intent intent = new Intent(MainMenu.this, WishList.class);
+		intent.putExtra(MainActivity.USER_KEY, user);
 		startActivity(intent);
 	}
 	
 	public void toSettings(View view){
 		Intent intent = new Intent(MainMenu.this, Settings.class);
+		intent.putExtra(MainActivity.USER_KEY, user);
 		startActivity(intent);
 	}
 	

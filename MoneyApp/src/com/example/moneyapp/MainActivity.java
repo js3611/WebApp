@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
@@ -28,31 +29,30 @@ import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.HttpReaders;
 import com.example.helpers.StringFilter;
+import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
 
 public class MainActivity extends Activity {
-
+	public static final String TAG = "MainActivity";
 	public static final int DEFAULT_DATA_LENGTH = 1000;
-
+	public static final String USER_KEY = "com.example.moneyapp.USERDETAILS";
 	public static final String edge02 = "http://146.169.52.2:59999";
 	public static final String pixel20 = "http://146.169.53.180:59999";
-	public static final String joMachine = "http://129.31.224.153:8080/MoneyDatabase";
+	public static final String joMachine = "http://129.31.226.24:8080/MoneyDatabase";
+	public static final String joMachineHome = "http://10.0.2.2:8080/MoneyDatabase";
 	public static final String url = joMachine;// "http://146.169.53.14:59999";
 	public static final String login = "/Login";
 	public static final String TRANSACTION = "/Transaction";
-	private TextView errorView;
 	private String errorMessage;
+	private UserDetails userDetails;
 
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		errorView = (TextView) findViewById(R.id.errorView);
 		errorMessage = "";
-		errorView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-		errorView.setText("e.g. phone: 123, pw:123");
-		errorView.setTextColor(Color.RED);
+		userDetails = null;
 	}
 
 	@Override
@@ -79,16 +79,17 @@ public class MainActivity extends Activity {
 		String phoneNo = phoneText.getText().toString();
 
 		if (StringFilter.isIllegal(password) || StringFilter.isIllegal(phoneNo)) {
-			errorView.setText("Missing entries");
-			errorView.setTextColor(Color.RED);
+			toastMessage("Missing entry");
 			return;
 		}
 
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		if (ConnectionHelper.checkNetworkConnection(connMgr))
 			new PasswordVerifier().execute(phoneNo, password);
-		else
-			errorView.setText("No network connection");
+		else 
+			toastMessage("No network connection");
+		
+			
 	}
 
 	private class PasswordVerifier extends AsyncTask<String, Void, Boolean> {
@@ -103,17 +104,16 @@ public class MainActivity extends Activity {
 
 			if (result) {
 				// Toast message
-				Context context = getApplicationContext();
 				CharSequence feedbackMsg = "Log in successful!";
-				int duration = Toast.LENGTH_SHORT;
-				Toast toast = Toast.makeText(context, feedbackMsg, duration);
+				Toast toast = Toast.makeText(getApplicationContext(), feedbackMsg, Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();
 
 				Intent intent = new Intent(MainActivity.this, MainMenu.class);
+				intent.putExtra(USER_KEY, userDetails);
 				startActivity(intent);
 			} else {
-				errorView.setText(errorMessage);
+				toastMessage(errorMessage);
 			}
 		}
 
@@ -128,10 +128,19 @@ public class MainActivity extends Activity {
 		try {
 			InputStream in = CustomHttpClient.executeHttpPost(url + login,
 					nameValueP);
-			// InputStream in = CustomHttpClient.executeHttpGet(url+login);
-			// Handle JSONstring
-			// errorMessage = HttpReaders.readIt(in, 1000);
-			int response = JsonCustomReader.readJsonRetCode(in);
+			Log.v(TAG,"Readfine?");
+			//errorMessage = HttpReaders.readIt(in, 1000);
+			//Log.v(TAG, errorMessage);
+			
+			Pair<Integer,UserDetails> result = JsonCustomReader.readJsonUser(in);
+			userDetails = result.second;
+
+			Log.v(TAG,"still fine?");
+			
+			
+			 //Handle JSONstring
+
+			int response = result.first;			
 			Pair<String, Boolean> pair = AdminHelper.handleResponse(response);
 			errorMessage = pair.first;
 			return pair.second;
@@ -147,4 +156,13 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	}
 
+
+	private void toastMessage(String msg) {
+		CharSequence feedbackMsg = msg;
+		Toast toast = Toast.makeText(getApplicationContext(), feedbackMsg, Toast.LENGTH_SHORT);
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.show();
+		
+	}
+	
 }
