@@ -12,6 +12,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
 
 /*
@@ -43,14 +45,13 @@ public class PerPersonProfile extends FragmentActivity {
 		mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
-				// When changing pages, reset the action bar actions since they
-				// are dependent
-				// on which page is currently active. An alternative approach is
-				// to have each
-				// fragment expose actions itself (rather than the activity
-				// exposing actions),
-				// but for simplicity, the activity provides the actions in this
-				// sample.
+				/*
+				 * When changing pages, reset the action bar actions since they
+				 * are dependent on which page is currently active. An
+				 * alternative approach is to have each fragment expose actions
+				 * itself (rather than the activity exposing actions), but for
+				 * simplicity, the activity provides the actions in this sample.
+				 */
 				invalidateOptionsMenu();
 			}
 		});
@@ -76,8 +77,7 @@ public class PerPersonProfile extends FragmentActivity {
 			// Navigate "up" the demo structure to the launchpad activity.
 			// See http://developer.android.com/design/patterns/navigation.html
 			// for more.
-			NavUtils.navigateUpTo(this, new Intent(this,
-					com.example.moneyapp.MainMenu.class));
+			NavUtils.navigateUpTo(this, getIntent().setClass(this, MainMenu.class));
 			return true;
 
 		case R.id.profileMenu:
@@ -103,13 +103,14 @@ public class PerPersonProfile extends FragmentActivity {
 		if (mPager.getCurrentItem() == 0) {
 			// If the user is currently looking at the first step, allow the
 			// system to handle the Back button. This calls finish() on this
-			// activityand pops the
+			// activity and pops the
 			// back stack.
 			super.onBackPressed();
 		} else { // Otherwise,select the previous step.
 			mPager.setCurrentItem(mPager.getCurrentItem() - 1);
 		}
 	}
+	
 
 	/* Adapter which gives you either log page or profile page */
 	private class PerPersonLogProfileAdapter extends FragmentStatePagerAdapter {

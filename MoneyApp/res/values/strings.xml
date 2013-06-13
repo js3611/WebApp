@@ -65,5 +65,7 @@
     <string name="person_search_hint">Search Person</string>
     <string name="example_phone_no">0123456789</string>
     <string name="example_password">password</string>
+    <string name="preference_file_key">Preference</string>
+    <string name="view_mode">1</string>
 
 </resources>

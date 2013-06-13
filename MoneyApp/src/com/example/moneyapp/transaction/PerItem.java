@@ -44,8 +44,8 @@ public class PerItem extends Activity {
 		//Create a list which holds data for each entry
 		details = new ArrayList<TransactionDetail>();
 
-		new DownloadContent().execute("");
-
+		new DownloadPerItem(transList, thisActivity, details).execute("");
+//		new DownloadContent().execute("");
 		registerForContextMenu(transList);
 
 		transList.setOnItemClickListener(new OnItemClickListener() {
@@ -99,9 +99,10 @@ public class PerItem extends Activity {
 			super.onPostExecute(result);
 			
 			transList.setAdapter(new PerItemAdapter(result, thisActivity));
-			registerForContextMenu(transList);
+			//registerForContextMenu(transList);
 		}
 	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

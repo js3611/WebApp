@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
 	public static final String USER_KEY = "com.example.moneyapp.USERDETAILS";
 	public static final String edge02 = "http://146.169.52.2:59999";
 	public static final String pixel20 = "http://146.169.53.180:59999";
-	public static final String joMachine = "http://129.31.226.24:8080/MoneyDatabase";
+	public static final String joMachine = "http://129.31.227.146:8080/MoneyDatabase";
 	public static final String joMachineHome = "http://10.0.2.2:8080/MoneyDatabase";
 	public static final String url = joMachine;// "http://146.169.53.14:59999";
 	public static final String login = "/Login";
@@ -104,10 +104,7 @@ public class MainActivity extends Activity {
 
 			if (result) {
 				// Toast message
-				CharSequence feedbackMsg = "Log in successful!";
-				Toast toast = Toast.makeText(getApplicationContext(), feedbackMsg, Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
+				toastMessage("Login successful!");
 
 				Intent intent = new Intent(MainActivity.this, MainMenu.class);
 				intent.putExtra(USER_KEY, userDetails);

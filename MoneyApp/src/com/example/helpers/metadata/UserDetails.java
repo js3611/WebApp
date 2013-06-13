@@ -94,7 +94,10 @@ public class UserDetails implements Serializable {
 	}
 	public static UserDetails getUser(Intent intent) {
 		Bundle bundle = intent.getExtras();
-		return (UserDetails) bundle.getSerializable(MainActivity.USER_KEY);
+		if(bundle!=null)
+			return (UserDetails) bundle.getSerializable(MainActivity.USER_KEY);
+		
+		return null;
 	}
 	
 	
