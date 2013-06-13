@@ -58,7 +58,7 @@
            android:layout_marginRight="15dp"
            android:contentDescription="@string/next"
            android:src="@drawable/next_button_icon" />
-        
+                
     </RelativeLayout>
     
 </LinearLayout>
