@@ -2,7 +2,9 @@ package com.example.moneyapp;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
+import android.view.MenuItem;
 
 public class Calendar extends Activity {
 
@@ -19,4 +21,17 @@ public class Calendar extends Activity {
 		return true;
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			//NavUtils.navigateUpFromSameTask(this);
+			Intent intent = getIntent().setClass(this,MainMenu.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+			return true;		
+			}
+		return super.onOptionsItemSelected(item);
+	}
+	
 }

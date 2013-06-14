@@ -49,7 +49,7 @@ public class NewPerson extends Activity {
 		
 thisActivity = this;
 		
-		friendList = (ListView) findViewById(R.id.PerPersonList);
+		friendList = (ListView) findViewById(R.id.friends_list);
 		details = new ArrayList<UserDetails>();
 
 		new DownloadContent().execute("");

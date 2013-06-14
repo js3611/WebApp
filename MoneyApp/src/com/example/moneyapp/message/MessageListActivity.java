@@ -1,5 +1,6 @@
 package com.example.moneyapp.message;
 
+import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
 import android.content.Intent;
 import android.os.Bundle;
@@ -65,7 +66,10 @@ public class MessageListActivity extends FragmentActivity implements
 			//
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
-			NavUtils.navigateUpFromSameTask(this);
+			//NavUtils.navigateUpFromSameTask(this);
+			Intent intent = getIntent().setClass(this,MainMenu.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

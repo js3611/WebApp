@@ -64,9 +64,8 @@ public class PerPerson extends Activity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			//NavUtils.navigateUpFromSameTask(this);
-			Intent intent = getIntent();
+			Intent intent = getIntent().setClass(this,MainMenu.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.setClass(this,MainMenu.class);
             startActivity(intent);
 			return true;		
 			}
