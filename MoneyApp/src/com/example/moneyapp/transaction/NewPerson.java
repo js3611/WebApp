@@ -2,22 +2,27 @@ package com.example.moneyapp.transaction;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.metadata.UserDetails;
+import com.example.helpers.metadata.UserInfo;
 import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.R;
@@ -31,7 +36,10 @@ public class NewPerson extends Activity {
 	private ListView friendList;
 	// A list of data for each entry, which the adapter retrieves from.
 	private ArrayList<UserDetails> details;
-	private String name = "Jo";
+	private UserDetails user;
+	private UserDetails[] owers;
+	private int numberOfOwers;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,38 +55,47 @@ public class NewPerson extends Activity {
 			// doMySearch(query);
 		}
 		
-thisActivity = this;
-		
+		/* Set fields */ 
+		thisActivity = this;
 		friendList = (ListView) findViewById(R.id.friends_list);
 		details = new ArrayList<UserDetails>();
+		user = UserDetails.getUser(getIntent());
+		numberOfOwers = 0;
 
-		new DownloadContent().execute("");
+		/* Get friends from database */
+		new DownloadFriends().execute(user.getUserid());
 		
 		friendList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
 
+				CheckBox cb = (CheckBox) v.findViewById(R.id.checkBox1);
 
-			}
-
-			private boolean selectedNewTransaction(int pos) {
-
-				return details.size() == pos;
-				
+				if(owers[pos] == null) {
+					cb.setChecked(true);
+					owers[pos]=details.get(pos);
+					numberOfOwers++;
+					Log.v(TAG, "Added: "+details.get(pos).getFirstName());
+				}else{
+					owers[pos] = null;
+					cb.setChecked(false);
+					numberOfOwers--;
+					Log.v(TAG, "Removed: "+details.get(pos).getFirstName());
+				}
 			}
 
 		});
 
 	}
 	
-	private class DownloadContent extends AsyncTask<String, Void, ArrayList<UserDetails>> {
+	private class DownloadFriends extends AsyncTask<Integer, Void, ArrayList<UserDetails>> {
 
 		@Override
-		protected ArrayList<UserDetails> doInBackground(String... params) {
+		protected ArrayList<UserDetails> doInBackground(Integer... params) {
 			try {
-				int userid = 2;
-				String op = "viewFriendsOwe";
+				int userid = params[0];
+				String op = "getFriendsList";
 				String viewMode = "perPerson";
 				
 				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+
@@ -86,14 +103,9 @@ thisActivity = this;
 						"op="+op+"&"+ 
 						"viewMode="+viewMode+"&"+
 						"userid="+userid );
-//				TransactionDetail Detail;
-//				Detail = new TransactionDetail();
-//				Detail.setIcon(R.drawable.ic_launcher);
-//				Detail.setOwesuser(HttpReaders.readIt(in,500));
-//				Detail.setPrice(0);
-//				details.add(Detail);
+
 				Pair<Integer,ArrayList<UserDetails>> rawData = JsonCustomReader
-						.readJsonUsers(in);
+						.readJsonFriends(in);
 				details = rawData.second;
 			} catch (Exception e) {
 				UserDetails Detail;
@@ -110,7 +122,9 @@ thisActivity = this;
 		protected void onPostExecute(ArrayList<UserDetails> result) {
 			super.onPostExecute(result);
 			
-			friendList.setAdapter(new NewPersonAdapter(result, thisActivity));
+			owers = new UserDetails[result.size()];
+			NewPersonAdapter npa = new NewPersonAdapter(result, thisActivity);
+			friendList.setAdapter(npa);
 			registerForContextMenu(friendList);
 		}
 		
@@ -122,5 +136,18 @@ thisActivity = this;
 		getMenuInflater().inflate(R.menu.new_person, menu);
 		return true;
 	}
+	
+	public void onAddClicked(View view) {
+	
+		Intent intent = getIntent().setClass(this, NewTransaction.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		ArrayList<UserInfo> owerinfos = new ArrayList<UserInfo>(numberOfOwers);
+		for (UserDetails user : owers) {
+			if(user!=null)
+				owerinfos.add(new UserInfo(user));
+		}
+		intent.putParcelableArrayListExtra(Transactions.FRIENDIDS_STR, owerinfos);
+		intent.putExtra(Transactions.ON_RETURN_FROM_ADD, true);
+		startActivity(intent);
 
+	}
 }

@@ -67,5 +67,6 @@
     <string name="example_password">password</string>
     <string name="preference_file_key">Preference</string>
     <string name="view_mode">1</string>
+    <string name="who_owe">Who owes you?</string>
 
 </resources>
