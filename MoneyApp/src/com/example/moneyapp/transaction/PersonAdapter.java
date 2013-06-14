@@ -63,6 +63,9 @@ public class PersonAdapter extends CustomAdapter<Pair<String, Double>> {
 			return v;
 		}
 		Pair<String, Double> detail = _data.get(position);
+		viewHolder.image.setImageResource(R.drawable.ic_launcher);
+		viewHolder.name_view.setText(detail.first);
+		viewHolder.price_text.setText(""+detail.second);
 		return v;
 	}
 
@@ -75,6 +78,11 @@ public class PersonAdapter extends CustomAdapter<Pair<String, Double>> {
 		ImageView image;
 		TextView name_view;
 		EditText price_text;
+	}
+	
+	@Override
+	public Object getItem(int position) {
+		return _data.get(position).second;
 	}
 	
 	

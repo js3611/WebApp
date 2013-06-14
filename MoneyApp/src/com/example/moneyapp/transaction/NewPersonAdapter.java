@@ -45,6 +45,7 @@ public class NewPersonAdapter extends BaseAdapter {
 
 			viewHolder.image = (ImageView) v.findViewById(R.id.profile_icon);
 			viewHolder.name_view = (TextView) v.findViewById(R.id.name_view);
+			viewHolder.checkButton1 = (CheckBox) v.findViewById(R.id.checkBox1);
 			v.setTag(viewHolder);
 		} else {
 			viewHolder = (NewPersonViewHolder) v.getTag();

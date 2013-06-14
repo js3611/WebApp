@@ -2,6 +2,8 @@ package com.example.moneyapp.transaction;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.SearchManager;
@@ -20,6 +22,7 @@ import android.widget.SearchView;
 
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.metadata.UserDetails;
+import com.example.helpers.metadata.UserInfo;
 import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.R;
@@ -34,7 +37,8 @@ public class NewPerson extends Activity {
 	// A list of data for each entry, which the adapter retrieves from.
 	private ArrayList<UserDetails> details;
 	private UserDetails user;
-	private int[] owersids;
+	private UserDetails[] owers;
+	private int numberOfOwers;
 	
 
 	@Override
@@ -56,6 +60,7 @@ public class NewPerson extends Activity {
 		friendList = (ListView) findViewById(R.id.friends_list);
 		details = new ArrayList<UserDetails>();
 		user = UserDetails.getUser(getIntent());
+		numberOfOwers = 0;
 
 		/* Get friends from database */
 		new DownloadFriends().execute(user.getUserid());
@@ -67,13 +72,15 @@ public class NewPerson extends Activity {
 
 				CheckBox cb = (CheckBox) v.findViewById(R.id.checkBox1);
 
-				if(owersids[pos] == 0) {
+				if(owers[pos] == null) {
 					cb.setChecked(true);
-					owersids[pos]=details.get(pos).getUserid();
+					owers[pos]=details.get(pos);
+					numberOfOwers++;
 					Log.v(TAG, "Added: "+details.get(pos).getFirstName());
 				}else{
-					owersids[pos] = 0;
+					owers[pos] = null;
 					cb.setChecked(false);
+					numberOfOwers--;
 					Log.v(TAG, "Removed: "+details.get(pos).getFirstName());
 				}
 			}
@@ -115,7 +122,7 @@ public class NewPerson extends Activity {
 		protected void onPostExecute(ArrayList<UserDetails> result) {
 			super.onPostExecute(result);
 			
-			owersids = new int[result.size()];
+			owers = new UserDetails[result.size()];
 			NewPersonAdapter npa = new NewPersonAdapter(result, thisActivity);
 			friendList.setAdapter(npa);
 			registerForContextMenu(friendList);
@@ -133,7 +140,12 @@ public class NewPerson extends Activity {
 	public void onAddClicked(View view) {
 	
 		Intent intent = getIntent().setClass(this, NewTransaction.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		intent.putExtra(Transactions.FRIENDIDS_STR, owersids);
+		ArrayList<UserInfo> owerinfos = new ArrayList<UserInfo>(numberOfOwers);
+		for (UserDetails user : owers) {
+			if(user!=null)
+				owerinfos.add(new UserInfo(user));
+		}
+		intent.putParcelableArrayListExtra(Transactions.FRIENDIDS_STR, owerinfos);
 		intent.putExtra(Transactions.ON_RETURN_FROM_ADD, true);
 		startActivity(intent);
 
