@@ -37,7 +37,8 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 		// TODO FIND A WAY OF GETTING THE VIEWMODE FROM THE DEVICE
 		
 		if (operation == null) {
-			writer.println("br>no operation specified</br>");
+			JSONBuilder jb = new JSONBuilder();
+			writer.println(getReturnCode(jb,0));
 			return;
 		}
 
@@ -243,20 +244,22 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				ResultSet friendsList = getFriendsStmt.executeQuery("SELECT f.friendid, a.firstname, a.surname FROM friends f " 
 											+ "INNER JOIN appuser a on f.friendid = a.userid WHERE f.userid = "
 											+ userid + ";");
-				if (!friendsList.isBeforeFirst())
-					writer.println(jb.beginObject().append("returnCode", 142).endObject());
-				else {
+					
+				if (friendsList.next()) {
 						jb.beginObject().append("returnCode",1).beginArray();
-					while(friendsList.next()) {
+					do {
 						jb.beginObject().append("friendid", friendsList.getInt("friendid"))
 										.append("firstname", friendsList.getString("firstname"))
 										.append("surname", friendsList.getString("surname"))
 						  .endObject();
-					}
+					} while(friendsList.next());
 					jb.endArray().endObject();
 					writer.println(jb.build());
-				}
+				} else {
+						writer.println(jb.beginObject().append("returnCode", 4).endObject().build());
+				} 
 			}
+			
 			
 			if (operation.equals("viewFriendsOwe")) {
 				Statement friendsGetStmt = conn.createStatement();
@@ -352,10 +355,10 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				// currently only gets the user profile details not the amount
 				if (!friendSet.isBeforeFirst()) {
 					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
-				}
+				} 
 				
 				
-				if (friendSet.next()) {
+				else if (friendSet.next()) {
 					jb.beginObject().append("returnCode",1);
 					int friend_id = friendSet.getInt("friendid");
 					String friend_firstname = friendSet.getString("firstname");
@@ -367,9 +370,10 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 									.append("friend_surname",friend_surname)
 				// TODO .append("amount",friend_amount)
 					  .endObject();
-					}
+					
 					jb.endObject();			
 					writer.println(jb.build());
+				}
 					
 			} else if (operation.equals("viewFriendsLog")){
 				Statement friendsLogStmt = conn.createStatement();
@@ -431,11 +435,6 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 		PrintWriter out = response.getWriter();
 		String operation = request.getParameter("op");
 
-		if (operation == null) {
-			out.println("br>no operation specified</br>");
-			return;
-		}
-
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
@@ -459,8 +458,13 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 	private void handlePostOperation(String operation, Connection conn,
 	HttpServletRequest request, PrintWriter writer) throws Exception {
 
-		// ADDS A NEW TRANSACTION TO THE DATABASE.
-		if (operation.equals("newTransaction")) {
+
+		if (operation == null) {
+			JSONBuilder jb = new JSONBuilder();
+			writer.println(getReturnCode(jb,0));
+			return;
+		} else	if (operation.equals("newTransaction")) {
+			
 			// Add to transactions table
 			Statement transStmt = conn.createStatement();
 			JSONBuilder jb = new JSONBuilder();
@@ -673,5 +677,9 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 																					// OPERATION
 		
 		}
+	}
+	
+	private String getReturnCode(JSONBuilder jb, int ret) {
+		return jb.beginObject().append("returnCode",ret).endObject().build();
 	}
 }
