@@ -26,6 +26,9 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Pair;
@@ -40,34 +43,57 @@ import android.widget.ListView;
 
 public class NewTransaction extends Activity {
 
-	String errorMessage;
+	private String errorMessage;
 
 	// The List view
-	ListView personList;
+	private ListView personList;
 	// A list of data for each entry, which the adapter retrieves from.
-	ArrayList<Pair<String, Double>> person_cost_pairs;
+	private ArrayList<Pair<String, Double>> person_cost_pairs;
 	private UserDetails user;
-
+	private UserDetails[] owers = null; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.transaction_new_transaction);
 
-		
+		/* Set fields */
 		personList = (ListView) findViewById(R.id.PersonList);
 		person_cost_pairs = new ArrayList<Pair<String, Double>>();
-		// Fill the screen with dummy entries
+		user = UserDetails.getUser(getIntent());
+		addOwers();
 
 		personList.setAdapter(new PersonAdapter(person_cost_pairs, this));
 		registerForContextMenu(personList);
 
+		/* set the behaviour of the list*/
+		setOnItemInListClicked();
+
+	}
+
+	private void setOnItemInListClicked() {
 		personList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
 				if (selectedNewTransaction(pos)) {
-					startActivity(new Intent(NewTransaction.this,
-							NewPerson.class));
+					startActivity(getIntent().setClass(NewTransaction.this,
+							NewPerson.class)); 
+					/*get new dialog fragment
+					// DialogFragment.show() will take care of adding the fragment
+				    // in a transaction.  We also want to remove any currently showing
+				    // dialog, so make our own transaction and take care of that here.
+				    FragmentTransaction ft = getFragmentManager().beginTransaction();
+				    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+				    if (prev != null) {
+				        ft.remove(prev);
+				    }
+				    ft.addToBackStack(null);
+
+				    // Create and show the dialog.
+				    DialogFragment newFragment = FriendListFragment.newInstance(user.getUserid());
+				    newFragment.show(ft, "dialog");
+					*/
 				}
 
 			}
@@ -77,7 +103,20 @@ public class NewTransaction extends Activity {
 			}
 
 		});
+	}
 
+	private boolean fromAddFriend() {
+		return getIntent().getExtras().getBoolean(Transactions.ON_RETURN_FROM_ADD, false);
+	}
+
+	private void addOwers() {
+		if(fromAddFriend()) {
+			owers = (UserDetails[]) getIntent().getExtras().getParcelableArray(Transactions.FRIENDIDS_STR); 
+		} else {
+			//??? 
+			owers = new UserDetails[1];
+		}
+		
 	}
 
 	@Override
@@ -142,7 +181,7 @@ public class NewTransaction extends Activity {
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();
 
-				Intent intent = new Intent(NewTransaction.this,
+				Intent intent = getIntent().setClass(NewTransaction.this,
 						TransactionDetail.class);
 				startActivity(intent);
 			} else {

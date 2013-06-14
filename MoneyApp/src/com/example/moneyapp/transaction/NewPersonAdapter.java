@@ -3,18 +3,29 @@ package com.example.moneyapp.transaction;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.R;
 
-public class NewPersonAdapter extends CustomAdapter<UserDetails> {
+/* Displays friends */
+public class NewPersonAdapter extends BaseAdapter {
+
+	protected ArrayList<UserDetails> _data;
+	Context _c;
+	LayoutInflater mInflator;
 
 	public NewPersonAdapter(ArrayList<UserDetails> data, Context c) {
-		super(data, c);
+		_data = data;
+		_c = c;
+		mInflator = (LayoutInflater) _c
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	/* Fill the entry with data here */
@@ -30,35 +41,19 @@ public class NewPersonAdapter extends CustomAdapter<UserDetails> {
 		 */
 		if (v == null) {
 			viewHolder = new NewPersonViewHolder();
-			switch (type) {
-			case TYPE_NORMAL_ENTRY:
-				v = mInflator.inflate(
-						R.layout.transaction_new_person_entry, null);
+			v = mInflator.inflate(R.layout.transaction_new_person_entry, null);
 
-				viewHolder.image = (ImageView) v
-						.findViewById(R.id.profile_icon);
-				viewHolder.name_view = (TextView) v
-						.findViewById(R.id.name_view);
-				break;
-
-			case TYPE_NEW_ENTRY:
-				v = mInflator.inflate(R.layout.new_transaction_entry_layout, null);
-
-				viewHolder.image = (ImageView) v.findViewById(R.id.add_icon);
-				viewHolder.name_view = (TextView) v
-						.findViewById(R.id.add_transaction);
-				break;
-			}
+			viewHolder.image = (ImageView) v.findViewById(R.id.profile_icon);
+			viewHolder.name_view = (TextView) v.findViewById(R.id.name_view);
 			v.setTag(viewHolder);
 		} else {
 			viewHolder = (NewPersonViewHolder) v.getTag();
 		}
 		/* Fill the content with data here */
-		if (type == TYPE_NEW_ENTRY)
-			return v;
 		UserDetails detail = _data.get(position);
 		viewHolder.image.setImageResource(detail.getProfilePicture());
-		viewHolder.name_view.setText(detail.getFirstName()+ " " +detail.getSurname());
+		viewHolder.name_view.setText(detail.getFirstName() + " "
+				+ detail.getSurname());
 		return v;
 	}
 
@@ -66,10 +61,26 @@ public class NewPersonAdapter extends CustomAdapter<UserDetails> {
 
 	}
 
+	@Override
+	public int getCount() {
+		return _data.size();
+	}
+
+	@Override
+	public Object getItem(int pos) {
+		return _data.get(pos);
+	}
+
+	@Override
+	public long getItemId(int pos) {
+		return pos;
+	}
+	
 	/* Customised view holder */
 	static class NewPersonViewHolder {
 		ImageView image;
 		TextView name_view;
+		CheckBox checkButton1;
 	}
-	
+
 }

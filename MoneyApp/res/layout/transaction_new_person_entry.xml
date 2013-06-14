@@ -19,5 +19,11 @@
         android:textColor="#003366"
         android:textSize="12sp" />
 
+    <CheckBox
+        android:id="@+id/checkBox1"
+        android:focusable="false"
+        android:enabled="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

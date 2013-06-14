@@ -18,6 +18,8 @@ import android.util.Pair;
 
 public class JsonCustomReader {
 
+	private static final String TAG = "JSON";
+
 	public static int readJsonRetCode(InputStream in)
 			throws UnsupportedEncodingException, IOException {
 		JsonReader jr = new JsonReader(new BufferedReader(
@@ -32,8 +34,6 @@ public class JsonCustomReader {
 		return response;
 	}
 
-
-	
 	public static Pair<Integer, UserDetails> readJsonFriend(InputStream in)
 			throws UnsupportedEncodingException, IOException {
 		JsonReader jr = new JsonReader(new BufferedReader(
@@ -45,7 +45,7 @@ public class JsonCustomReader {
 		String firstName = "";
 		int calendarid = 0;
 		int wishlist = 0;
-		String password = ""; 
+		String password = "";
 		String phoneNo = "";
 		int profilePicture = R.drawable.ic_launcher;
 
@@ -60,7 +60,8 @@ public class JsonCustomReader {
 			String name = jr.nextName();
 			if (name.equals("userid") || name.equals("friend_id")) {
 				userid = jr.nextInt();
-			} else if (name.equals("firstname") || name.equals("friend_firstname")) {
+			} else if (name.equals("firstname")
+					|| name.equals("friend_firstname")) {
 				firstName = jr.nextString();
 			} else if (name.equals("surname") || name.equals("friend_surname")) {
 				surname = jr.nextString();
@@ -78,11 +79,12 @@ public class JsonCustomReader {
 		}
 		jr.endObject();
 		jr.endObject();
-		UserDetails ud = new UserDetails(userid, surname, firstName, calendarid, wishlist, password, phoneNo, profilePicture);
+		UserDetails ud = new UserDetails(userid, surname, firstName,
+				calendarid, wishlist, password, phoneNo, profilePicture);
 		Log.v("JSON", ud.toString());
 		return new Pair<Integer, UserDetails>(retCode, ud);
 	}
-	
+
 	public static Pair<Integer, UserDetails> readJsonUser(InputStream in)
 			throws UnsupportedEncodingException, IOException {
 		JsonReader jr = new JsonReader(new BufferedReader(
@@ -94,7 +96,7 @@ public class JsonCustomReader {
 		String firstName = "";
 		int calendarid = 0;
 		int wishlist = 0;
-		String password = ""; 
+		String password = "";
 		String phoneNo = "";
 		int profilePicture = R.drawable.ic_launcher;
 
@@ -107,7 +109,8 @@ public class JsonCustomReader {
 			String name = jr.nextName();
 			if (name.equals("userid") || name.equals("friend_id")) {
 				userid = jr.nextInt();
-			} else if (name.equals("firstname") || name.equals("friend_firstname")) {
+			} else if (name.equals("firstname")
+					|| name.equals("friend_firstname")) {
 				firstName = jr.nextString();
 			} else if (name.equals("surname") || name.equals("friend_surname")) {
 				surname = jr.nextString();
@@ -124,7 +127,8 @@ public class JsonCustomReader {
 			}
 		}
 		jr.endObject();
-		UserDetails ud = new UserDetails(userid, surname, firstName, calendarid, wishlist, password, phoneNo, profilePicture);
+		UserDetails ud = new UserDetails(userid, surname, firstName,
+				calendarid, wishlist, password, phoneNo, profilePicture);
 		Log.v("JSON", ud.toString());
 		return new Pair<Integer, UserDetails>(retCode, ud);
 	}
@@ -191,16 +195,81 @@ public class JsonCustomReader {
 			}
 		}
 		jr.endObject();
-		TransactionDetail td =  new TransactionDetail(icon, transactionID, owesuser, user, owesuserid, userid,
-				subject, price, partial_pay, date, deadline);
-		Log.v("JSON", "Read transaction detail: "+td.toString());
+		TransactionDetail td = new TransactionDetail(icon, transactionID,
+				owesuser, user, owesuserid, userid, subject, price,
+				partial_pay, date, deadline);
+		Log.v("JSON", "Read transaction detail: " + td.toString());
 		return td;
 	}
 
-	public static Pair<Integer, ArrayList<UserDetails>> readJsonUsers(
-			InputStream in) {
-		// TODO Auto-generated method stub
-		return null;
+	public static Pair<Integer, ArrayList<UserDetails>> readJsonFriends(
+			InputStream in) throws UnsupportedEncodingException, IOException {
+		ArrayList<UserDetails> details = new ArrayList<UserDetails>();
+		JsonReader jr;
+
+		jr = new JsonReader(new BufferedReader(new InputStreamReader(in,
+				"UTF-8")));
+		jr.setLenient(true);
+		jr.beginObject();
+		/* read return code */
+		jr.nextName();
+		int returnCode = jr.nextInt();
+		/* skip name for array */
+		jr.skipValue();
+		/* begin processing array of data */
+		jr.beginArray();
+		while (jr.hasNext()) {
+			details.add(readJsonEachFriend(jr));
+		}
+		jr.endArray();
+		jr.endObject();
+
+		return new Pair<Integer, ArrayList<UserDetails>>(returnCode, details);
+
+	}
+
+	private static UserDetails readJsonEachFriend(JsonReader jr)
+			throws UnsupportedEncodingException, IOException {
+		int userid = 0;
+		String surname = "";
+		String firstName = "";
+		int calendarid = 0;
+		int wishlist = 0;
+		String password = "";
+		String phoneNo = "";
+		int profilePicture = R.drawable.ic_launcher;
+
+		jr.beginObject();
+		// Read content of user
+		while (jr.hasNext()) {
+			String name = jr.nextName();
+			if (name.equals("userid") || name.equals("friendid")) {
+				userid = jr.nextInt();
+			} else if (name.equals("firstname")
+					|| name.equals("friend_firstname")) {
+				firstName = jr.nextString();
+			} else if (name.equals("surname") || name.equals("friend_surname")) {
+				surname = jr.nextString();
+			} else if (name.equals("calendarid")) {
+				calendarid = jr.nextInt();
+			} else if (name.equals("wishlist")) {
+				wishlist = jr.nextInt();
+			} else if (name.equals("password")) {
+				password = jr.nextString();
+			} else if (name.equals("phonenumber")) {
+				phoneNo = jr.nextString();
+			} else {
+				jr.skipValue();
+			}
+		}
+		jr.endObject();
+		
+		UserDetails ud = new UserDetails(userid, surname, firstName,
+				calendarid, wishlist, password, phoneNo, profilePicture);
+		
+		Log.v("JSON", ud.toString());
+
+		return ud;
 	}
 
 }

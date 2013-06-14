@@ -15,8 +15,10 @@ public class Transactions extends Activity {
 	public final static String USER_STR = "com.example.moneyapp.transaction.userdetails";
 	public static final String ICON_STR = "com.example.moneyapp.transaction.icon";
 	protected static final String FRIENDID_STR = "com.example.moneyapp.transaction.friendid";
-	private static final String FRIEND_STR = "com.example.moneyapp.friend";
-	
+	public static final String FRIEND_STR = "com.example.moneyapp.friend";
+	public static final String FRIENDIDS_STR = "com.example.moneyapp.friendids";
+	public static final String ON_RETURN_FROM_ADD = "com.example.moneyapp.onReturnFromAddNewPerson";
+			
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

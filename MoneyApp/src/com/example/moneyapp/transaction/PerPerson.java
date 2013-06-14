@@ -28,7 +28,7 @@ import com.example.moneyapp.R;
 
 public class PerPerson extends Activity {
 
-	//Debug
+	// Debug
 	private static final String TAG = "PerPerson";
 	private PerPerson thisActivity;
 	// The List view
@@ -42,18 +42,16 @@ public class PerPerson extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.transaction_per_person_list_layout);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		/* Set fields*/
+
+		/* Set fields */
 		thisActivity = this;
 		transList = (ListView) findViewById(R.id.PerPersonList);
 		details = new ArrayList<TransactionDetail>();
 		user = UserDetails.getUser(getIntent());
-		
-		Log.v(TAG, user.toString());
 
 		/* Asynchronously populate the list view the data */
 		new DownloadContent().execute(Integer.toString(user.getUserid()));
-	
+
 		/* Set the behaviour when entry of a list is clicked */
 		setListEntryOnClickListener();
 
@@ -63,15 +61,14 @@ public class PerPerson extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			//NavUtils.navigateUpFromSameTask(this);
-			Intent intent = getIntent().setClass(this,MainMenu.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-			return true;		
-			}
+			Intent intent = getIntent().setClass(this, MainMenu.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	private void setListEntryOnClickListener() {
 		transList.setOnItemClickListener(new OnItemClickListener() {
 
@@ -79,16 +76,19 @@ public class PerPerson extends Activity {
 			public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
 
 				if (selectedNewTransaction(pos)) {
-					startActivity(new Intent(PerPerson.this, NewTransaction.class));
-				} else { // normal detail window
+					startActivity(getIntent().setClass(PerPerson.this,
+							NewTransaction.class));
+
+				} else { /* normal detail window */
 					TransactionDetail detail = details.get(pos);
 					Log.v(TAG, detail.toString());
-					Intent intent = getIntent().setClass(PerPerson.this, PerPersonProfile.class);
+					Intent intent = getIntent().setClass(PerPerson.this,
+							PerPersonProfile.class);
 					intent.putExtra(Transactions.NAME_STR, detail.getOwesuser());
 					intent.putExtra(Transactions.PRICE_STR, detail.getPrice());
 					intent.putExtra(Transactions.ICON_STR, detail.getIcon());
-					intent.putExtra(Transactions.FRIENDID_STR, detail.getOwesuserid());
-					//intent.putExtra(Transactions.USER_STR, )
+					intent.putExtra(Transactions.FRIENDID_STR,
+							detail.getOwesuserid());
 					startActivity(intent);
 				}
 
@@ -104,11 +104,12 @@ public class PerPerson extends Activity {
 	protected int getFriendID(TransactionDetail detail, String firstName) {
 		if (detail.getOwesuser().equals(firstName))
 			return detail.getUserid();
-		else 
+		else
 			return detail.getOwesuserid();
 	}
 
-	private class DownloadContent extends AsyncTask<String, Void, ArrayList<TransactionDetail>> {
+	private class DownloadContent extends
+			AsyncTask<String, Void, ArrayList<TransactionDetail>> {
 
 		@Override
 		protected ArrayList<TransactionDetail> doInBackground(String... params) {
@@ -116,18 +117,14 @@ public class PerPerson extends Activity {
 				int userid = Integer.parseInt(params[0]);
 				String op = "viewFriendsOwe";
 				String viewMode = "perPerson";
-				
-				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+
-						MainActivity.TRANSACTION + "?"+
-						"op="+op+"&"+ 
-						"viewMode="+viewMode+"&"+
-						"userid="+userid );
-//				TransactionDetail Detail;
-//				Detail = new TransactionDetail();
-//				Detail.setIcon(R.drawable.ic_launcher);
-//				Detail.setOwesuser(HttpReaders.readIt(in,500));
-//				Detail.setPrice(0);
-//				details.add(Detail);
+
+				InputStream in = CustomHttpClient
+						.executeHttpGet(MainActivity.url
+								+ MainActivity.TRANSACTION  
+								+ "?" + "op=" + op
+								+ "&" + "viewMode=" + viewMode 
+								+ "&" + "userid=" + userid);
+
 				ArrayList<TransactionDetail> rawData = JsonCustomReader
 						.readJsonPerPerson(in);
 				details = processPerPerson(rawData);
@@ -142,59 +139,85 @@ public class PerPerson extends Activity {
 
 			return details;
 		}
-		
+
 		/* A method to combine the bills and diplay total difference */
 		private ArrayList<TransactionDetail> processPerPerson(
 				ArrayList<TransactionDetail> rawData) {
-			
+
 			ArrayList<TransactionDetail> newDetails = new ArrayList<TransactionDetail>();
 			Map<String, Double> personPriceMap = new HashMap<String, Double>();
 			Map<String, UserDetails> personDetailMap = new HashMap<String, UserDetails>();
-		
+
 			/* for each transaction */
 			for (TransactionDetail transactionDetail : rawData) {
-				
+
 				Log.v(TAG, transactionDetail.toString());
 				/* If the transaction is to user */
-				if(user.getFirstName().equals(transactionDetail.getUser())) {
+				if (user.getFirstName().equals(transactionDetail.getUser())) {
 					/* get who owes */
 					String owesUser = transactionDetail.getOwesuser();
 					/* put the icon now */
-					Log.v(TAG,"pays to "+ owesUser);
-					if(personPriceMap.containsKey(owesUser)) { 
-						/* If there is a person in the map already, subtract the value */
-						personPriceMap.put(owesUser, personPriceMap.get(owesUser)-(transactionDetail.getRemainingToPay()));
+					Log.v(TAG, "pays to " + owesUser);
+					if (personPriceMap.containsKey(owesUser)) {
+						/*
+						 * If there is a person in the map already, subtract the
+						 * value
+						 */
+						personPriceMap.put(
+								owesUser,
+								personPriceMap.get(owesUser)
+										- (transactionDetail
+												.getRemainingToPay()));
 					} else {
-						/* This is the case they owe you, so you have to pay negative amount */
-						personPriceMap.put(owesUser, -transactionDetail.getRemainingToPay());
+						/*
+						 * This is the case they owe you, so you have to pay
+						 * negative amount
+						 */
+						personPriceMap.put(owesUser,
+								-transactionDetail.getRemainingToPay());
 						/* Add the detail of the person who you owe to a map */
-						personDetailMap.put(owesUser, 
-								new UserDetails(transactionDetail.getOwesuserid(), "", owesUser, 0, 0, "", "", transactionDetail.getIcon()));
+						personDetailMap.put(
+								owesUser,
+								new UserDetails(transactionDetail
+										.getOwesuserid(), "", owesUser, 0, 0,
+										"", "", transactionDetail.getIcon()));
 					}
-					Log.v(TAG,"pays to "+ owesUser + ": "+ personPriceMap.get(owesUser));
-				} else { 
+					Log.v(TAG,
+							"pays to " + owesUser + ": "
+									+ personPriceMap.get(owesUser));
+				} else {
 					/* If user owes someone, then increase the total */
 					String owesUser = transactionDetail.getUser();
-					
-					if(personPriceMap.containsKey(owesUser)) {
-						personPriceMap.put(owesUser, personPriceMap.get(owesUser)+(transactionDetail.getRemainingToPay()));
+
+					if (personPriceMap.containsKey(owesUser)) {
+						personPriceMap.put(
+								owesUser,
+								personPriceMap.get(owesUser)
+										+ (transactionDetail
+												.getRemainingToPay()));
 					} else {
-						personPriceMap.put(owesUser, transactionDetail.getRemainingToPay());
-						personDetailMap.put(owesUser, new UserDetails(transactionDetail.getUserid(), "", owesUser, 0, 0, "", "", transactionDetail.getIcon()));	
+						personPriceMap.put(owesUser,
+								transactionDetail.getRemainingToPay());
+						personDetailMap.put(owesUser, new UserDetails(
+								transactionDetail.getUserid(), "", owesUser, 0,
+								0, "", "", transactionDetail.getIcon()));
 					}
-					Log.v(TAG,"pays to"+ owesUser + ": "+ personPriceMap.get(owesUser));
+					Log.v(TAG,
+							"pays to" + owesUser + ": "
+									+ personPriceMap.get(owesUser));
 
 				}
 			}
-			
+
 			Log.v(TAG, "After editing");
-			
+
 			for (Map.Entry<String, Double> entry : personPriceMap.entrySet()) {
 				TransactionDetail tDetail = new TransactionDetail(
-						personDetailMap.get(entry.getKey()).getProfilePicture(), 0, 
-							entry.getKey(), user.getFirstName(), 
-							personDetailMap.get(entry.getKey()).getUserid(), user.getUserid(), 
-							"",  entry.getValue(), (double) 0, "", "");
+						personDetailMap.get(entry.getKey()).getProfilePicture(),
+						0, entry.getKey(), user.getFirstName(), personDetailMap
+								.get(entry.getKey()).getUserid(), user
+								.getUserid(), "", entry.getValue(), (double) 0,
+						"", "");
 				Log.v(TAG, tDetail.toString());
 				newDetails.add(tDetail);
 			}
@@ -204,11 +227,11 @@ public class PerPerson extends Activity {
 		@Override
 		protected void onPostExecute(ArrayList<TransactionDetail> result) {
 			super.onPostExecute(result);
-			
+
 			transList.setAdapter(new PerPersonAdapter(result, thisActivity));
 			registerForContextMenu(transList);
 		}
-		
+
 	}
 
 	public static ArrayList<TransactionDetail> addDummies(
@@ -242,14 +265,14 @@ public class PerPerson extends Activity {
 		Detail.setPrice(30);
 		details.add(Detail);
 
-//		String str = "{\"returnCode\":1," +
-//		"\"data\":[{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}," +
-//		"{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}," +
-//		"{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}]}";
-//
-//InputStream in = new ByteArrayInputStream(str.getBytes());
+		// String str = "{\"returnCode\":1," +
+		// "\"data\":[{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30},"
+		// +
+		// "{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}," +
+		// "{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}]}";
+		//
+		// InputStream in = new ByteArrayInputStream(str.getBytes());
 
-		
 		return details;
 	}
 

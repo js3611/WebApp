@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/* Within "new transaction"*/
 public class PersonAdapter extends CustomAdapter<Pair<String, Double>> {
 
 	public PersonAdapter(ArrayList<Pair<String, Double>> data, Context c) {
