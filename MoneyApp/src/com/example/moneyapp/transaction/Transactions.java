@@ -14,6 +14,8 @@ public class Transactions extends Activity {
 	public final static String PROFILEPIC_STR = "com.example.moneyapp.transaction.price";
 	public final static String USER_STR = "com.example.moneyapp.transaction.userdetails";
 	public static final String ICON_STR = "com.example.moneyapp.transaction.icon";
+	protected static final String FRIENDID_STR = "com.example.moneyapp.transaction.friendid";
+	private static final String FRIEND_STR = "com.example.moneyapp.friend";
 	
 	
 	@Override

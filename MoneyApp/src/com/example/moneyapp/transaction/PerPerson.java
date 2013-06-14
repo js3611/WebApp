@@ -83,10 +83,12 @@ public class PerPerson extends Activity {
 					startActivity(new Intent(PerPerson.this, NewTransaction.class));
 				} else { // normal detail window
 					TransactionDetail detail = details.get(pos);
+					Log.v(TAG, detail.toString());
 					Intent intent = getIntent().setClass(PerPerson.this, PerPersonProfile.class);
 					intent.putExtra(Transactions.NAME_STR, detail.getOwesuser());
 					intent.putExtra(Transactions.PRICE_STR, detail.getPrice());
 					intent.putExtra(Transactions.ICON_STR, detail.getIcon());
+					intent.putExtra(Transactions.FRIENDID_STR, detail.getOwesuserid());
 					//intent.putExtra(Transactions.USER_STR, )
 					startActivity(intent);
 				}
@@ -98,6 +100,13 @@ public class PerPerson extends Activity {
 			}
 
 		});
+	}
+
+	protected int getFriendID(TransactionDetail detail, String firstName) {
+		if (detail.getOwesuser().equals(firstName))
+			return detail.getUserid();
+		else 
+			return detail.getOwesuserid();
 	}
 
 	private class DownloadContent extends AsyncTask<String, Void, ArrayList<TransactionDetail>> {
@@ -138,10 +147,11 @@ public class PerPerson extends Activity {
 		/* A method to combine the bills and diplay total difference */
 		private ArrayList<TransactionDetail> processPerPerson(
 				ArrayList<TransactionDetail> rawData) {
+			
 			ArrayList<TransactionDetail> newDetails = new ArrayList<TransactionDetail>();
 			Map<String, Double> personPriceMap = new HashMap<String, Double>();
-			Map<String, Integer> personIconMap = new HashMap<String, Integer>();
-
+			Map<String, UserDetails> personDetailMap = new HashMap<String, UserDetails>();
+		
 			/* for each transaction */
 			for (TransactionDetail transactionDetail : rawData) {
 				
@@ -151,31 +161,42 @@ public class PerPerson extends Activity {
 					/* get who owes */
 					String owesUser = transactionDetail.getOwesuser();
 					/* put the icon now */
-					Log.v(TAG,"pays to"+ owesUser);
-					personIconMap.put(owesUser, transactionDetail.getIcon());
-					if(personPriceMap.containsKey(owesUser)) { /* If there is a person in the map already, subtract the value */
+					Log.v(TAG,"pays to "+ owesUser);
+					if(personPriceMap.containsKey(owesUser)) { 
+						/* If there is a person in the map already, subtract the value */
 						personPriceMap.put(owesUser, personPriceMap.get(owesUser)-(transactionDetail.getRemainingToPay()));
 					} else {
+						/* This is the case they owe you, so you have to pay negative amount */
 						personPriceMap.put(owesUser, -transactionDetail.getRemainingToPay());
+						/* Add the detail of the person who you owe to a map */
+						personDetailMap.put(owesUser, 
+								new UserDetails(transactionDetail.getOwesuserid(), "", owesUser, 0, 0, "", "", transactionDetail.getIcon()));
 					}
-					Log.v(TAG,"pays to"+ owesUser + ": "+ personPriceMap.get(owesUser));
-				} else { //If user owes someone, then increase the total 
+					Log.v(TAG,"pays to "+ owesUser + ": "+ personPriceMap.get(owesUser));
+				} else { 
+					/* If user owes someone, then increase the total */
 					String owesUser = transactionDetail.getUser();
-					personIconMap.put(owesUser, transactionDetail.getIcon());
+					
 					if(personPriceMap.containsKey(owesUser)) {
 						personPriceMap.put(owesUser, personPriceMap.get(owesUser)+(transactionDetail.getRemainingToPay()));
 					} else {
 						personPriceMap.put(owesUser, transactionDetail.getRemainingToPay());
+						personDetailMap.put(owesUser, new UserDetails(transactionDetail.getUserid(), "", owesUser, 0, 0, "", "", transactionDetail.getIcon()));	
 					}
 					Log.v(TAG,"pays to"+ owesUser + ": "+ personPriceMap.get(owesUser));
 
 				}
 			}
 			
+			Log.v(TAG, "After editing");
+			
 			for (Map.Entry<String, Double> entry : personPriceMap.entrySet()) {
 				TransactionDetail tDetail = new TransactionDetail(
-						personIconMap.get(entry.getKey()), 0, entry.getKey(),
-						user.getFirstName(), "", entry.getValue(), (double) 0, "", "");
+						personDetailMap.get(entry.getKey()).getProfilePicture(), 0, 
+							entry.getKey(), user.getFirstName(), 
+							personDetailMap.get(entry.getKey()).getUserid(), user.getUserid(), 
+							"",  entry.getValue(), (double) 0, "", "");
+				Log.v(TAG, tDetail.toString());
 				newDetails.add(tDetail);
 			}
 			return newDetails;

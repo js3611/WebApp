@@ -113,7 +113,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 								+ userid
 								+ ") AND t.total_paid_off = false GROUP BY t.transid, t.name, t._date, t.total_amount, d.owesuserid ORDER BY t._date DESC");
 	
-				if (!transactionSet.next()) {
+				if (!transactionSet.isBeforeFirst()) {
 					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
 				}
 				else {
@@ -149,7 +149,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 								+ userid
 								+ ") AND t.total_paid_off = true GROUP BY t.transid, t.name, t.complete_date, t.total_amount,t._date, d.owesuserid ORDER BY t._date DESC");
 	
-				if (!transactionSet.next()) {
+				if (!transactionSet.isBeforeFirst()) {
 					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
 				} else {
 					jb.beginObject().append("returnCode",1).beginArray();
@@ -188,7 +188,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 								+ "  debt d INNER JOIN appuser a ON (d.owesuserid = a.userid OR d.userid = a.userid) AND d.transid = " 
 								+ transid +" ;" );
 				
-				if (!detailsSet.next() || debtSet.next()) { // SELECTs returned
+				if (!detailsSet.isBeforeFirst() || !debtSet.isBeforeFirst()) { // SELECTs returned
 															// nothing , i.e.
 															// something went
 															// wrong
@@ -243,7 +243,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				ResultSet friendsList = getFriendsStmt.executeQuery("SELECT f.friendid, a.firstname, a.surname FROM friends f " 
 											+ "INNER JOIN appuser a on f.friendid = a.userid WHERE f.userid = "
 											+ userid + ";");
-				if (!friendsList.next())
+				if (!friendsList.isBeforeFirst())
 					writer.println(jb.beginObject().append("returnCode", 142).endObject());
 				else {
 						jb.beginObject().append("returnCode",1).beginArray();
@@ -273,14 +273,14 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				jb.beginObject().append("returnCode",1).beginArray();
 				while (debtSet.next()) {
 					String user_firstname = IDtoFirstnameMap.get(debtSet.getInt("userid"));
-					String payuser_firstname = IDtoFirstnameMap.get(debtSet.getInt("owesuserid"));
+					String owesuser_firstname = IDtoFirstnameMap.get(debtSet.getInt("owesuserid"));
 					Double debtAmount = debtSet.getDouble("amount");
 					Double partial_pay = debtSet.getDouble("partial_pay");
 					
 					jb.beginObject().append("userid", debtSet.getInt("userid"))
 									.append("owesuserid", debtSet.getInt("owesuserid"))
 									.append("user_fname", user_firstname)
-									.append("payuser_fname", payuser_firstname)
+									.append("owesuser_fname", owesuser_firstname)
 									.append("amount",debtAmount)
 									.append("partial_pay", partial_pay)
 					  .endObject();
@@ -339,24 +339,18 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				Statement friendsProfStmt = conn.createStatement();
 				JSONBuilder jb = new JSONBuilder();
 
-//				int friendid = Integer.parseInt(request.getParameter("friendid"));		
-//				ResultSet friendSet 
-//				  = friendsProfStmt.executeQuery(
-//						  "SELECT userid as friendid, firstname, surname " +
-//						  "FROM appuser " +
-//						  "WHERE userid = "+ friendid +";");
-				String firstname = request.getParameter("firstname");		
+				int friendid = Integer.parseInt(request.getParameter("friendid"));		
 				ResultSet friendSet 
 				  = friendsProfStmt.executeQuery(
 						  "SELECT userid as friendid, firstname, surname " +
 						  "FROM appuser " +
-						  "WHERE firstname = '"+ firstname +"';");
+						  "WHERE userid = "+ friendid +";");
 
 				
 				// TODO MUST JOIN WITH THE AMOUNT SOMEHOW FROM A PRVIOUS QUERY
 				// OR ANOTHER QUERY
 				// currently only gets the user profile details not the amount
-				if (friendSet.isBeforeFirst()) {
+				if (!friendSet.isBeforeFirst()) {
 					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
 				}
 				
@@ -388,13 +382,13 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 						"SELECT d.transid, t.name, d.userid,d.owesuserid, d.amount, d.partial_pay, t._date " +
 						"FROM debt d INNER JOIN transactions t " +
 						"ON (t.transid = d.transid) " +
-						"WHERE d.owesuserid = "+ friendid +" " +
+						"WHERE (d.owesuserid = "+ friendid +" AND d.userid =" + userid +") " +
 						"OR (d.userid = "+friendid + " AND d.owesuserid = " + userid + ") " +
 					    "AND total_paid_off = false" + " UNION " +
 					    "SELECT d.transid, t.name, d.userid,d.owesuserid, d.amount, d.partial_pay, t._date " +
 						"FROM debt d INNER JOIN transactions t " +
 						"ON (t.transid = d.transid) " +
-						"WHERE d.owesuserid = "+ userid +" " +
+						"WHERE (d.owesuserid = "+ userid +" AND d.userid =" + userid +") " +
 						"OR (d.userid = "+ userid + " AND d.owesuserid = " + friendid + ") " +
 					    "AND total_paid_off = false;"
 						);
@@ -498,8 +492,8 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 							+ trans_amount + ", "
 							+ trans_urgency + ") RETURNING transid;");
 
-			if (!new_trans.next())
-				writer.print(jb.beginObject().append("returnCode",1).endObject());
+			if (!new_trans.isBeforeFirst())
+				writer.print(jb.beginObject().append("returnCode",4).endObject());
 			else {
 				// The transaction id of just added transaction above
 				int trans_id = new_trans.getInt("transid");
@@ -545,7 +539,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 								+ "transid = "
 								+ old_trans_id + ";");
 			
-			if (!records.next())
+			if (!records.isBeforeFirst())
 				jb.beginObject().append("returnCode", 44).endObject();
 			else {
 				while (records.next()){
@@ -641,7 +635,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 					.executeQuery("SELECT * FROM debt WHERE transid = "
 							+ transid + ";");
 		
-			if (!results.next()) { // NO RESULTS SO ALL DEBTS HAVE BEEN PAID
+			if (!results.isBeforeFirst()) { // NO RESULTS SO ALL DEBTS HAVE BEEN PAID
 									// transaction completion
 				rs = updateStmt.executeUpdate("UPDATE transactions SET total_paid_off = true, complete_date = " + date + " WHERE transid = "
 								+ transid + ";");

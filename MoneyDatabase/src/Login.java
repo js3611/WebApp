@@ -189,7 +189,7 @@ public class Login extends javax.servlet.http.HttpServlet implements
 		Statement userstmt = conn.createStatement();
 		// Get user details
 		ResultSet userDetails 
-		  = userstmt.executeQuery("SELECT * from appuser Where phonenumber = '" + phoneNo + "';");
+		  = userstmt.executeQuery("SELECT * FROM appuser WHERE phonenumber = '" + phoneNo + "';");
 		// Get the entry
 		userDetails.next();
 		String json = jb.beginObject().append("returnCode",retCode)

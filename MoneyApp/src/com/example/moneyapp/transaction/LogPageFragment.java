@@ -54,7 +54,8 @@ public class LogPageFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.log_title)).setText("Log Transaction");
 		logList = (ListView) rootView.findViewById(R.id.log_list);
 
-		new DownloadContent().execute("");
+		int friendid = thisActivity.getIntent().getExtras().getInt(Transactions.FRIENDID_STR);
+		new DownloadContent().execute(friendid);
 
 		registerForContextMenu(logList);
 
@@ -74,12 +75,12 @@ public class LogPageFragment extends Fragment {
 		return rootView;
 	}
 	
-	private class DownloadContent extends AsyncTask<String, Void, ArrayList<TransactionDetail>> {
+	private class DownloadContent extends AsyncTask<Integer, Void, ArrayList<TransactionDetail>> {
 
 		@Override
-		protected ArrayList<TransactionDetail> doInBackground(String... params) {
+		protected ArrayList<TransactionDetail> doInBackground(Integer... params) {
 			try {
-				int friendid = 4;
+				int friendid = params[0];
 				int userid = user.getUserid();
 				String op = "viewFriendsLog";
 				String viewMode = "perPerson";

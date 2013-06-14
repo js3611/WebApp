@@ -39,8 +39,9 @@ public class MainActivity extends Activity {
 	public static final String edge02 = "http://146.169.52.2:59999";
 	public static final String pixel20 = "http://146.169.53.180:59999";
 	public static final String joMachine = "http://129.31.227.146:8080/MoneyDatabase";
-	public static final String joMachineHome = "http://10.0.2.2:8080/MoneyDatabase";
-	public static final String url = joMachine;// "http://146.169.53.14:59999";
+	public static final String joMachineEmulator = "http://10.0.2.2:8080/MoneyDatabase";
+	public static final String joMachineHome = "http://82.26.23.66:8080/MoneyDatabase";
+	public static final String url = joMachineEmulator;// "http://146.169.53.14:59999";
 	public static final String login = "/Login";
 	public static final String TRANSACTION = "/Transaction";
 	private String errorMessage;

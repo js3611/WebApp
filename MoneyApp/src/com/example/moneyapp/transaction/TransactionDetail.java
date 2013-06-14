@@ -6,6 +6,8 @@ public class TransactionDetail {
 	private int transactionID;
 	private String owesuser;
 	private String user;
+	private int owesuserid;
+	private int userid;
 	private String subject;
 	private double price;
 	private double partial_pay;
@@ -14,13 +16,15 @@ public class TransactionDetail {
 
 	public TransactionDetail(){}
 	
-	public TransactionDetail(int icon, int transactionID, String owesuser, String user, String subject,
+	public TransactionDetail(int icon, int transactionID, String owesuser, String user, int owesuserid, int userid, String subject,
 			Double price, Double partial_pay, String date, String deadline) {
 		super();
 		this.transactionID = transactionID;
 		this.icon = icon;
 		this.owesuser = owesuser;
 		this.user = user;
+		this.owesuserid = owesuserid;
+		this.userid = userid;
 		this.subject = subject;
 		this.price = price;
 		this.partial_pay = partial_pay;
@@ -103,14 +107,33 @@ public class TransactionDetail {
 	public double getRemainingToPay() {
 		return price - partial_pay;
 	}
+
 	
+
 	@Override
 	public String toString() {
 		return "TransactionDetail [icon=" + icon + ", transactionID="
 				+ transactionID + ", owesuser=" + owesuser + ", user=" + user
+				+ ", owesuserid=" + owesuserid + ", userid=" + userid
 				+ ", subject=" + subject + ", price=" + price
 				+ ", partial_pay=" + partial_pay + ", date=" + date
 				+ ", deadline=" + deadline + "]";
+	}
+
+	public int getOwesuserid() {
+		return owesuserid;
+	}
+
+	public void setOwesuserid(int owesuserid) {
+		this.owesuserid = owesuserid;
+	}
+
+	public int getUserid() {
+		return userid;
+	}
+
+	public void setUserid(int userid) {
+		this.userid = userid;
 	}
 
 	

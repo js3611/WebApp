@@ -37,15 +37,14 @@ public class PerItem extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.transaction_per_person_list_layout);
-
-		thisActivity = this;
-		
 		transList = (ListView) findViewById(R.id.PerPersonList);
+		
+		/* set fields */
+		thisActivity = this;
 		//Create a list which holds data for each entry
 		details = new ArrayList<TransactionDetail>();
-
-		new DownloadPerItem(transList, thisActivity, details).execute("");
-//		new DownloadContent().execute("");
+		//new DownloadPerItem(transList, thisActivity, details).execute("");
+		new DownloadContent().execute("");
 		registerForContextMenu(transList);
 
 		transList.setOnItemClickListener(new OnItemClickListener() {

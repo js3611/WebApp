@@ -13,6 +13,7 @@ import com.example.moneyapp.transaction.TransactionDetail;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import android.util.Log;
 import android.util.Pair;
 
 public class JsonCustomReader {
@@ -31,6 +32,57 @@ public class JsonCustomReader {
 		return response;
 	}
 
+
+	
+	public static Pair<Integer, UserDetails> readJsonFriend(InputStream in)
+			throws UnsupportedEncodingException, IOException {
+		JsonReader jr = new JsonReader(new BufferedReader(
+				new InputStreamReader(in, "UTF-8")));
+		jr.setLenient(true);
+
+		int userid = 0;
+		String surname = "";
+		String firstName = "";
+		int calendarid = 0;
+		int wishlist = 0;
+		String password = ""; 
+		String phoneNo = "";
+		int profilePicture = R.drawable.ic_launcher;
+
+		jr.beginObject();
+		// Read return code
+		jr.nextName();
+		int retCode = jr.nextInt();
+		// Read content of user
+		jr.nextName();
+		jr.beginObject();
+		while (jr.hasNext()) {
+			String name = jr.nextName();
+			if (name.equals("userid") || name.equals("friend_id")) {
+				userid = jr.nextInt();
+			} else if (name.equals("firstname") || name.equals("friend_firstname")) {
+				firstName = jr.nextString();
+			} else if (name.equals("surname") || name.equals("friend_surname")) {
+				surname = jr.nextString();
+			} else if (name.equals("calendarid")) {
+				calendarid = jr.nextInt();
+			} else if (name.equals("wishlist")) {
+				wishlist = jr.nextInt();
+			} else if (name.equals("password")) {
+				password = jr.nextString();
+			} else if (name.equals("phonenumber")) {
+				phoneNo = jr.nextString();
+			} else {
+				jr.skipValue();
+			}
+		}
+		jr.endObject();
+		jr.endObject();
+		UserDetails ud = new UserDetails(userid, surname, firstName, calendarid, wishlist, password, phoneNo, profilePicture);
+		Log.v("JSON", ud.toString());
+		return new Pair<Integer, UserDetails>(retCode, ud);
+	}
+	
 	public static Pair<Integer, UserDetails> readJsonUser(InputStream in)
 			throws UnsupportedEncodingException, IOException {
 		JsonReader jr = new JsonReader(new BufferedReader(
@@ -42,9 +94,9 @@ public class JsonCustomReader {
 		String firstName = "";
 		int calendarid = 0;
 		int wishlist = 0;
-		String password = ""; // WHY? what if someone wants to change password?
+		String password = ""; 
 		String phoneNo = "";
-		int profilePicture = 0;
+		int profilePicture = R.drawable.ic_launcher;
 
 		jr.beginObject();
 		// Read return code
@@ -53,11 +105,11 @@ public class JsonCustomReader {
 		// Read content of user
 		while (jr.hasNext()) {
 			String name = jr.nextName();
-			if (name.equals("userid")) {
+			if (name.equals("userid") || name.equals("friend_id")) {
 				userid = jr.nextInt();
-			} else if (name.equals("firstname")) {
+			} else if (name.equals("firstname") || name.equals("friend_firstname")) {
 				firstName = jr.nextString();
-			} else if (name.equals("surname")) {
+			} else if (name.equals("surname") || name.equals("friend_surname")) {
 				surname = jr.nextString();
 			} else if (name.equals("calendarid")) {
 				calendarid = jr.nextInt();
@@ -73,6 +125,7 @@ public class JsonCustomReader {
 		}
 		jr.endObject();
 		UserDetails ud = new UserDetails(userid, surname, firstName, calendarid, wishlist, password, phoneNo, profilePicture);
+		Log.v("JSON", ud.toString());
 		return new Pair<Integer, UserDetails>(retCode, ud);
 	}
 
@@ -104,6 +157,8 @@ public class JsonCustomReader {
 		int transactionID = 0;
 		String owesuser = null;
 		String user = null;
+		int owesuserid = 0;
+		int userid = 0;
 		String subject = null;
 		double price = 0;
 		double partial_pay = 0;
@@ -116,8 +171,12 @@ public class JsonCustomReader {
 			if (name.equals("transid")) {
 				transactionID = jr.nextInt();
 			} else if (name.equals("userid")) {
-				user = jr.nextString();
+				userid = jr.nextInt();
 			} else if (name.equals("owesuserid")) {
+				owesuserid = jr.nextInt();
+			} else if (name.equals("user_fname")) {
+				user = jr.nextString();
+			} else if (name.equals("owesuser_fname")) {
 				owesuser = jr.nextString();
 			} else if (name.equals("name")) {
 				subject = jr.nextString();
@@ -132,8 +191,10 @@ public class JsonCustomReader {
 			}
 		}
 		jr.endObject();
-		return new TransactionDetail(icon, transactionID, owesuser, user,
+		TransactionDetail td =  new TransactionDetail(icon, transactionID, owesuser, user, owesuserid, userid,
 				subject, price, partial_pay, date, deadline);
+		Log.v("JSON", "Read transaction detail: "+td.toString());
+		return td;
 	}
 
 	public static Pair<Integer, ArrayList<UserDetails>> readJsonUsers(
