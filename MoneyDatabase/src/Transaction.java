@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import HttpServletReqWrapper.ModifiedServletRequest;
 import JSONBuilder.JSONBuilder;
-
+import IdMap.IDToNameMap;
 
 /**
  * Servlet implementation class for Servlet: Transaction
@@ -24,17 +24,14 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 		javax.servlet.Servlet {
 	static final long serialVersionUID = 1L;
 
-	Map<Integer,String> IDtoFirstnameMap = null;
-	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		PrintWriter writer = response.getWriter();
 		String operation = request.getParameter("op");
 		String viewMode = request.getParameter("viewMode");
-		// request.getParameter("viewMode");
-
+		int userid = request.getParameter("userid");
 		
-		// TODO FIND A WAY OF GETTING THE VIEWMODE FROM THE DEVICE
+		// TODO FIND A WAY OF GETTING THE VIEWMODE AND USER ID FROM THE DEVICE
 		
 		if (operation == null) {
 			JSONBuilder jb = new JSONBuilder();
@@ -57,8 +54,8 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 									+ "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 							"g1227132_u", "W0zFGMaqup");
 
-			if (IDtoFirstnameMap == null)
-					makeMap(response,conn);
+			if (IDtoNameMap == null)
+					IDtoNameMap = IDtoNameMap(response,conn,userid);
 			
 			handleGetOperation(operation, viewMode, conn, request, writer);
 
@@ -66,32 +63,6 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			writer.println("<h1>exception: " + e + e.getMessage() + "</h1>");
 		}
 	}
-	
-	public void makeMap(HttpServletResponse response, Connection conn) {
-		
-		try{
-			PrintWriter writer = response.getWriter();			
-			
-			IDtoFirstnameMap = new HashMap<Integer,String>();
-			Statement IdToUser = conn.createStatement();
-			ResultSet rs = IdToUser.executeQuery("SELECT userid, firstname FROM appuser;");
-			
-			if(!rs.isBeforeFirst()) {
-				writer.println("Oh sheet");
-			}
-			while(rs.next()) {
-				IDtoFirstnameMap.put(rs.getInt("userid"),rs.getString("firstname"));
-			}	
-		}
-		catch (SQLException e) {
-			//abandon all hope 
-		}
-		catch (IOException e ){
-			//still gg slash ff
-		}
-
-	}
-	
 	
 
 	private void handleGetOperation(String operation, String viewMode, Connection conn,
@@ -115,7 +86,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 								+ ") AND t.total_paid_off = false GROUP BY t.transid, t.name, t._date, t.total_amount, d.owesuserid ORDER BY t._date DESC");
 	
 				if (!transactionSet.isBeforeFirst()) {
-					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
+					writer.println(getReturnCode(jb,4));
 				}
 				else {
 					jb.beginObject().append("returnCode",1).beginArray();
@@ -151,7 +122,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 								+ ") AND t.total_paid_off = true GROUP BY t.transid, t.name, t.complete_date, t.total_amount,t._date, d.owesuserid ORDER BY t._date DESC");
 	
 				if (!transactionSet.isBeforeFirst()) {
-					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
+					writer.println(getReturnCode(jb,4));
 				} else {
 					jb.beginObject().append("returnCode",1).beginArray();
 					while (transactionSet.next()) {
@@ -186,14 +157,14 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				// result if user owes, multiple if user is owed)
 				ResultSet debtSet = debtsStmt
 						.executeQuery("SELECT d.transid, d.amount, a.userid, a.firstname, a.surname, amount FROM" 
-								+ "  debt d INNER JOIN appuser a ON (d.owesuserid = a.userid OR d.userid = a.userid) AND d.transid = " 
-								+ transid +" ;" );
+								+ "  debt d INNER JOIN appuser a ON (d.owesuserid = a.userid OR d.userid = a.userid)"  
+								+ " AND d.transid = " + transid +" ;" );
 				
 				if (!detailsSet.isBeforeFirst() || !debtSet.isBeforeFirst()) { // SELECTs returned
 															// nothing , i.e.
 															// something went
 															// wrong
-					writer.println(jbDebt.beginObject().append("returnCode",4).endObject().build());
+					writer.println(getReturnCode(jbDebt,4));
 				} 
 					
 				// Print the details of the transaction first then the people
@@ -207,6 +178,10 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				String details_description = detailsSet.getString("description");
 				String details_paid_off = detailsSet.getString("total_paid_off");
 					
+				// TODO CHANGE THIS IN THE IMPLEMENTATION, ADDED "CAN_DELETE"	
+				// WILL ALLOW DETERMINATION OF WHETHER USER CAN DELETE THIS TRANSACTION
+				boolean deletable = (userid == debtSet.getInt("userid"));
+					
 				jbDetails.beginObject().append("transid", details_transid)
 									   .append("name",details_name)
 									   .append("total_amount",details_amount)
@@ -214,8 +189,10 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 									   .append("urgency",details_urgency)
 									   .append("description",details_description)
 									   .append("complete_date",details_complete_date)
-									   .append("total_paid_off",details_paid_off)
-						.endObject();
+									   .append("total_paid_off",details_paid_off);
+									   .append("can_delete", deletable);
+
+				jbDetails.endObject();
 				writer.println(jbDetails.build());
 				
 				while (debtSet.next()) {
@@ -256,7 +233,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 					jb.endArray().endObject();
 					writer.println(jb.build());
 				} else {
-						writer.println(jb.beginObject().append("returnCode", 4).endObject().build());
+						writer.println(getReturnCode(jb,4));
 				} 
 			}
 			
@@ -264,8 +241,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			if (operation.equals("viewFriendsOwe")) {
 				Statement friendsGetStmt = conn.createStatement();
 				int userid = Integer.parseInt(request.getParameter("userid"));
-				
-				// TODO CHECK ALL QUERIES AGAINST DATABASE JUST IN CASE
+
 				
 				JSONBuilder jb = new JSONBuilder();
 				ResultSet debtSet = friendsGetStmt.executeQuery("SELECT d.userid, d.owesuserid, d.amount, d.partial_pay FROM"+
@@ -275,8 +251,8 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				
 				jb.beginObject().append("returnCode",1).beginArray();
 				while (debtSet.next()) {
-					String user_firstname = IDtoFirstnameMap.get(debtSet.getInt("userid"));
-					String owesuser_firstname = IDtoFirstnameMap.get(debtSet.getInt("owesuserid"));
+					String user_firstname = IDtoNameMap.getFirstname(debtSet.getInt("userid"));
+					String owesuser_firstname = IDtoNameMap.getFirstname(debtSet.getInt("owesuserid"));
 					Double debtAmount = debtSet.getDouble("amount");
 					Double partial_pay = debtSet.getDouble("partial_pay");
 					
@@ -290,53 +266,6 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 					}
 					jb.endArray().endObject();			
 					writer.println(jb.build());
-			/*
-			if (operation.equals("viewFriendsPay")) {
-				Statement friendsGetStmt = conn.createStatement();
-				int userid = Integer.parseInt(request.getParameter("userid"));
-				
-				// TODO CHECK ALL QUERIES AGAINST DATABASE JUST IN CASE
-				
-				JSONBuilder jb = new JSONBuilder();
-				ResultSet debtSet = friendsGetStmt.executeQuery("SELECT b.firstname as payfname, m.amount FROM"+
-				" ((appuser a INNER JOIN debt d on (a.userid = d.userid)) as m"+
-				" INNER JOIN appuser b on (b.userid = m.owesuserid))" + 
-				" INNER JOIN transactions t on (m.transid = t.transid) WHERE m.owesuserid = " + userid +" ;");
-				
-				jb.beginObject().append("returnCode",1).beginArray();
-				while (debtSet.next()) {
-					String payuser_firstname = debtSet.getString("payfname");
-					String debtAmount = debtSet.getString("amount");
-					
-					jb.beginObject().append("payuser_firstname", payuser_firstname)
-									.append("amount",debtAmount)
-					  .endObject();
-					}
-					jb.endArray().endObject();			
-					writer.println(jb.build());
-				
-			} else if (operation.equals("viewFriendsGet")){
-				Statement friendsGetStmt = conn.createStatement();
-				
-				String userid = Integer.parseInt(request.getParameter("userid");
-				writer.println(userid);
-				JSONBuilder jb = new JSONBuilder();
-				ResultSet debtSet = friendsGetStmt.executeQuery("SELECT m.firstname as owesfname, m.amount FROM"+
-				" ((appuser a INNER JOIN debt d on (a.userid = d.userid)) as m"+
-				" INNER JOIN appuser b on (b.userid = m.owesuserid))" + 
-				" INNER JOIN transactions t on (m.transid = t.transid) WHERE m.userid = " + userid +" ;");
-				
-				jb.beginObject().append("returnCode",1).beginArray();
-				while (debtSet.next()) {
-					String owesuser_firstname = debtSet.getString("owesfname");
-					String debtAmount = debtSet.getString("amount");
-					
-					jb.beginObject().append("owesuser_firstname", owesuser_firstname)
-									.append("amount",debtAmount)
-					  .endObject();
-					}
-					jb.endArray().endObject();			
-					writer.println(jb.build());*/
 				
 			} else if (operation.equals("viewFriendsProfile")){
 				Statement friendsProfStmt = conn.createStatement();
@@ -354,7 +283,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				// OR ANOTHER QUERY
 				// currently only gets the user profile details not the amount
 				if (!friendSet.isBeforeFirst()) {
-					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
+					writer.println(getReturnCode(jb,4));
 				} 
 				
 				
@@ -368,12 +297,13 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 					jb.beginObject().append("friend_id", friend_id)
 									.append("friend_firstname", friend_firstname)
 									.append("friend_surname",friend_surname)
-				// TODO .append("amount",friend_amount)
+					// TODO .append("amount",friend_amount)
 					  .endObject();
 					
 					jb.endObject();			
 					writer.println(jb.build());
-				}
+				}	
+					
 					
 			} else if (operation.equals("viewFriendsLog")){
 				Statement friendsLogStmt = conn.createStatement();
@@ -398,7 +328,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 						);
 				
 				if (!friendsTrans.isBeforeFirst()) {
-					writer.println(jb.beginObject().append("returnCode",4).endObject().build());
+					writer.println(getReturnCode(jb,4));
 				} else {
 					// Gets a list of the live transactions involving user and
 					// friend selected
@@ -425,13 +355,51 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 						jb.endArray().endObject();			
 						writer.println(jb.build());
 				}
-			}
+			} else if (operation.equals("remindFriend")) {
+				Statement msgStmt = conn.createStatement();
+				Statement transStmt = conn.createStatement();
+				JSONBuilder jb = new JSONBuilder();
+				
+				int userid = Integer.parseInt(request.getParameter("userid"));
+				int friendid = Integer.parseInt(request.getParameter("friendid"));
+				String friend_firstname = IDtoNameMap.getFirstname(friendid);
+				String user_firstname = request.getParameter("firstname");
+				
+				int transid = Integer.parseInt(request.getParameter("transid");
+				String date_today = request.getParameter("date");
+				String time_now = request.getParameter("time");
+				
+				
+				ResultSet trans = transStmt.executeQuery("SELECT t.name, d.amount, d.partial_pay " +
+									 "FROM debt d INNER JOIN transactions t on " +
+									 "(t.transid = d.transid) WHERE (d.userid = "+
+									 userid + " AND d.owesuserid = " + 
+									 friendid + "AND t.transid = " +
+									 transid + ";");
+
+				double total = trans.getDouble("amount") - trans.getDouble("partial_pay");
+				
+				
+				String msg = "Yo " + friend_firstname + ", " + user_firstname + " needs his money from "+
+							 trans.getString("name") + ". This comes to £" + total + ". Pay it back soon or "+
+							 "I'll come and smash your legs bro.");
+							 
+				int rs = msgSTmt.executeUpdate("INSERT INTO messagecontent VALUES (" +
+												msg +", " +
+												date_today +", " +
+												time_now + ", " +
+												conversationid + ", " +
+												userid + ";");
+												
+			 //TODO FINISH THIS SHIT, GOTTA FIND OUT HOW TO GET CONVO ID ALSO IF NONE EXISTS< TO CREATE A MESSAGE.
+			    
 		}
 	}
 
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
+			
 		PrintWriter out = response.getWriter();
 		String operation = request.getParameter("op");
 
@@ -534,6 +502,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 		
 			
 		} else if (operation.equals("updateTransaction")) {
+			//TODO CHECK, JO THINKS IS WRONG
 			// WHEN THE USER WANTS TO EDIT A TRANSACTION, E.G, A MISTAKE			
 		
 			Statement getStmt = conn.createStatement();
@@ -594,9 +563,9 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				handlePostOperation("debtRepaid", conn, request, writer); 
 									
 			if (rs != 0) 	//Update was successful
-				writer.println(jb.beginObject().append("returnCode",3).endObject());
+				writer.println(getReturnCode(jb,3));
 			else			//Update went wrong
-				writer.println(jb.beginObject().append("returnCode",4).endObject());
+				writer.println(getReturnCode(jb,4));
 
 			
 		} else if (operation.equals("personRepay")){
@@ -619,7 +588,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 					handlePostOperation("debtRepaid", conn, modifiedReq, writer);
 				}
 			} else { // Something went wrong, there should be a debt alive
-				writer.println(jb.beginObject().append("returnCode",69).endObject());			
+				writer.println(getReturnCode(jb,69));			
 			}
 		} else if (operation.equals("debtRepaid")) {
 			// WHEN A PERSON PAYS THEIR PART OF A TRANSACTION
@@ -637,9 +606,9 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 							+ " AND owesuserid = " + owesuserid + ";");
 		
 			if (rs != 0) // update correctly, debt marked as paid
-				writer.print(jb.beginObject().append("returnCode",5).endObject());
+				writer.print(getReturnCode(jb,5));
 			else  // update went wrong, nothing was changed
-				writer.print(jb.beginObject().append("returnCode",6).endObject());
+				writer.print(getReturnCode(jb,6));
 		
 			//This is if the last debt has been repaid of a transaction and we can ALSO complete the transaction
 			ResultSet results = checkStmt
@@ -652,7 +621,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 								+ transid + ";");
 				
 				if (rs == 0)	// Update didn't go through
-					writer.print(jb.beginObject().append("returnCode",7).endObject());
+					writer.print(getReturnCode(jb,7));
 		
 				// else do nothing
 			}
@@ -660,28 +629,26 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			
 		} else if (operation.equals("deleteTransaction")) {
 			// WHEN THE USER WANTS TO DELETE A TRANSACTION
-			// TODO check that the delete button only appears if transaction is owned by
-			// user
 			Statement dltStmt = conn.createStatement();
+			Statement dltDebtsStmt = conn.createStatement();
 			JSONBuilder jb = new JSONBuilder();
 			
 			int transid = Integer.parseInt(request.getParameter("transid"));
 		
 			int result = dltStmt.executeUpdate("DELETE FROM transactions WHERE transid = " + transid + ";");
+			int deletedDebts = dltStmt.executeUpdate("DELETE FROM debt WHERE transid = " + transid + ";");
 			
-			if (result != 0)  // Delete worked
-				writer.print(jb.beginObject().append("returnCode",8).endObject());
+			if (result != 0 && deletedDebts != 0)  // Delete worked
+				writer.print(getReturnCode(jb,8));
 			else		 // The DELETE statement didnt execute correctly
-				writer.print(jb.beginObject().append("returnCode",9).endObject());
+				writer.print(getReturnCode(jb,9));
 		
 			dltStmt.close();
 		
 		} else {
 			JSONBuilder jb = new JSONBuilder();
-			writer.print(jb.beginObject().append("returnCode",10).endObject());; // COULD
-																					// NOT
-																					// RECOGNISE
-																					// OPERATION
+			writer.print(getReturnCode(jb,10));
+			// COULD NOT RECOGNISE OPERATION
 		
 		}
 	}
@@ -690,3 +657,56 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 		return jb.beginObject().append("returnCode",ret).endObject().build();
 	}
 }
+
+
+
+
+
+
+
+
+			/*
+			if (operation.equals("viewFriendsPay")) {
+				Statement friendsGetStmt = conn.createStatement();
+				int userid = Integer.parseInt(request.getParameter("userid"));
+				
+				JSONBuilder jb = new JSONBuilder();
+				ResultSet debtSet = friendsGetStmt.executeQuery("SELECT b.firstname as payfname, m.amount FROM"+
+				" ((appuser a INNER JOIN debt d on (a.userid = d.userid)) as m"+
+				" INNER JOIN appuser b on (b.userid = m.owesuserid))" + 
+				" INNER JOIN transactions t on (m.transid = t.transid) WHERE m.owesuserid = " + userid +" ;");
+				
+				jb.beginObject().append("returnCode",1).beginArray();
+				while (debtSet.next()) {
+					String payuser_firstname = debtSet.getString("payfname");
+					String debtAmount = debtSet.getString("amount");
+					
+					jb.beginObject().append("payuser_firstname", payuser_firstname)
+									.append("amount",debtAmount)
+					  .endObject();
+					}
+					jb.endArray().endObject();			
+					writer.println(jb.build());
+				
+			} else if (operation.equals("viewFriendsGet")){
+				Statement friendsGetStmt = conn.createStatement();
+				
+				String userid = Integer.parseInt(request.getParameter("userid");
+				writer.println(userid);
+				JSONBuilder jb = new JSONBuilder();
+				ResultSet debtSet = friendsGetStmt.executeQuery("SELECT m.firstname as owesfname, m.amount FROM"+
+				" ((appuser a INNER JOIN debt d on (a.userid = d.userid)) as m"+
+				" INNER JOIN appuser b on (b.userid = m.owesuserid))" + 
+				" INNER JOIN transactions t on (m.transid = t.transid) WHERE m.userid = " + userid +" ;");
+				
+				jb.beginObject().append("returnCode",1).beginArray();
+				while (debtSet.next()) {
+					String owesuser_firstname = debtSet.getString("owesfname");
+					String debtAmount = debtSet.getString("amount");
+					
+					jb.beginObject().append("owesuser_firstname", owesuser_firstname)
+									.append("amount",debtAmount)
+					  .endObject();
+					}
+					jb.endArray().endObject();			
+					writer.println(jb.build());*/
