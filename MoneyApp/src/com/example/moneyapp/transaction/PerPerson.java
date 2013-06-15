@@ -151,13 +151,13 @@ public class PerPerson extends Activity {
 			/* for each transaction */
 			for (TransactionDetail transactionDetail : rawData) {
 
-				Log.v(TAG, transactionDetail.toString());
+				//Log.v(TAG, transactionDetail.toString());
 				/* If the transaction is to user */
 				if (user.getFirstName().equals(transactionDetail.getUser())) {
 					/* get who owes */
 					String owesUser = transactionDetail.getOwesuser();
 					/* put the icon now */
-					Log.v(TAG, "pays to " + owesUser);
+			//		Log.v(TAG, "pays to " + owesUser);
 					if (personPriceMap.containsKey(owesUser)) {
 						/*
 						 * If there is a person in the map already, subtract the
@@ -182,9 +182,9 @@ public class PerPerson extends Activity {
 										.getOwesuserid(), "", owesUser, 0, 0,
 										"", "", transactionDetail.getIcon()));
 					}
-					Log.v(TAG,
-							"pays to " + owesUser + ": "
-									+ personPriceMap.get(owesUser));
+//					Log.v(TAG,
+//							"pays to " + owesUser + ": "
+//									+ personPriceMap.get(owesUser));
 				} else {
 					/* If user owes someone, then increase the total */
 					String owesUser = transactionDetail.getUser();
@@ -202,14 +202,14 @@ public class PerPerson extends Activity {
 								transactionDetail.getUserid(), "", owesUser, 0,
 								0, "", "", transactionDetail.getIcon()));
 					}
-					Log.v(TAG,
-							"pays to" + owesUser + ": "
-									+ personPriceMap.get(owesUser));
+//					Log.v(TAG,
+//							"pays to" + owesUser + ": "
+//									+ personPriceMap.get(owesUser));
 
 				}
 			}
 
-			Log.v(TAG, "After editing");
+//			Log.v(TAG, "After editing");
 
 			for (Map.Entry<String, Double> entry : personPriceMap.entrySet()) {
 				TransactionDetail tDetail = new TransactionDetail(
@@ -218,7 +218,7 @@ public class PerPerson extends Activity {
 								.get(entry.getKey()).getUserid(), user
 								.getUserid(), "", entry.getValue(), (double) 0,
 						"", "");
-				Log.v(TAG, tDetail.toString());
+//				Log.v(TAG, tDetail.toString());
 				newDetails.add(tDetail);
 			}
 			return newDetails;

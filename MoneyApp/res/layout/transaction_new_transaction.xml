@@ -31,6 +31,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
+            android:inputType="textCapSentences|textAutoCorrect"
             android:hint="e.g. Dinner" />
 
         <TextView
@@ -50,6 +51,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
+            android:inputType="textCapSentences|textAutoCorrect"
             android:hint="e.g. Remember when we went to Nandos, I paid for you because you didn&apos;t have enough cash" />
 
         <TextView

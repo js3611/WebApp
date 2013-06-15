@@ -3,7 +3,11 @@ package com.example.moneyapp.transaction;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,7 +26,7 @@ public class PersonAdapter extends CustomAdapter<Pair<String, Double>> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = convertView;
-		PerItemViewHolder viewHolder;
+		final PerItemViewHolder viewHolder;
 		int type = getItemViewType(position);
 		/*
 		 * convertView caches data. If v is null than you need to inflate the
@@ -42,7 +46,21 @@ public class PersonAdapter extends CustomAdapter<Pair<String, Double>> {
 						.findViewById(R.id.name_view);
 				viewHolder.price_text = (EditText) v
 						.findViewById(R.id.new_price_text);
-
+				viewHolder.price_text.setOnFocusChangeListener(new OnFocusChangeListener() {
+					
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						double epsilon = 0.000001;
+						EditText et = (EditText) viewHolder.price_text;
+						try {
+						if(Double.parseDouble(et.getText().toString()) <= epsilon) 
+							et.setText("");
+						} catch (NumberFormatException e) {
+							et.setText("");
+						}
+					}
+				});
+				
 				break;
 
 			case TYPE_NEW_ENTRY:
