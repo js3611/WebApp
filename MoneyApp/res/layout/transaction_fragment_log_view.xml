@@ -18,7 +18,11 @@
         android:id="@+id/log_list"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="1" >
+        android:layout_weight="1" 
+        android:divider="@color/lightgreen" 
+        android:dividerHeight="1dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
     </ListView>    
     
 </LinearLayout>

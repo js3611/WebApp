@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,6 +8,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainMenuLarge" >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:orientation="vertical" >"
     <!--
     <Button
         android:id="@+id/calendar"
@@ -34,7 +38,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="@dimen/extMarginLargeMain"
         android:background="@drawable/custom_button"
         android:onClick="toFriend"
         android:paddingBottom="20dp"
@@ -95,7 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/wishList"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="@dimen/extMarginLargeMain"
         android:background="@drawable/custom_button"
         android:onClick="toSettings"
         android:paddingBottom="20dp"
@@ -104,4 +108,5 @@
         android:text="@string/settings"
         android:textSize="30sp" />
 
-</RelativeLayout>
+    </LinearLayout>
+</ScrollView>
