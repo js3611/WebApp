@@ -137,7 +137,7 @@ public class NewPerson extends Activity {
 	
 	public void onAddClicked(View view) {
 	
-		Intent intent = getIntent().setClass(this, NewTransaction.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		Intent intent = new Intent(getApplicationContext(), NewTransaction.class);
 		ArrayList<UserInfo> owerinfos = new ArrayList<UserInfo>(numberOfOwers);
 		for (UserDetails user : owers) {
 			if(user!=null)
@@ -145,7 +145,13 @@ public class NewPerson extends Activity {
 		}
 		intent.putParcelableArrayListExtra(Transactions.FRIENDIDS_STR, owerinfos);
 		intent.putExtra(Transactions.ON_RETURN_FROM_ADD, true);
-		startActivity(intent);
+		
+		setResult(RESULT_OK, intent);
+		finish();
+		
+//		startActivity(intent);
 
+		
+		
 	}
 }

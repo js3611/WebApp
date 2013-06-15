@@ -8,6 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainMenuLarge" >
 
+    <!--
     <Button
         android:id="@+id/calendar"
         android:layout_width="match_parent"
@@ -23,23 +24,40 @@
         android:shadowColor="@android:color/background_dark"
         android:text="@string/calendar" 
         android:textSize="30sp"
-        android:onClick="toCalendar"/>
-    
+        android:onClick="toCalendar" />-->
+
+    <Button
+        android:id="@+id/Friends"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/transactions"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/custom_button"
+        android:onClick="toFriend"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:shadowColor="@android:color/background_dark"
+        android:text="@string/Friends"
+        android:textSize="30sp" />
+
     <Button
         android:id="@+id/transactions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/convos"
-        android:layout_alignLeft="@+id/calendar"
+        android:layout_alignLeft="@+id/Friends"
         android:layout_marginBottom="50dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
         android:background="@drawable/custom_button"
+        android:onClick="toTransactions"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/transactions"
-        android:textSize="30sp" 
-        android:onClick="toTransactions" />
-    
+        android:textSize="30sp" />
+
     <Button
         android:id="@+id/convos"
         android:layout_width="match_parent"
@@ -48,13 +66,13 @@
         android:layout_alignLeft="@+id/transactions"
         android:layout_centerVertical="true"
         android:layout_marginBottom="50dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
         android:background="@drawable/custom_button"
+        android:onClick="toMessages"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/convos"
-        android:textSize="30sp"
-        android:onClick="toMessages" />
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/wishList"
@@ -63,14 +81,14 @@
         android:layout_above="@+id/settings"
         android:layout_alignLeft="@+id/convos"
         android:layout_marginBottom="50dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
         android:background="@drawable/custom_button"
+        android:onClick="toWishList"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
         android:shadowColor="@android:color/background_dark"
-        android:text="@string/wishList" 
-        android:textSize="30sp"
-        android:onClick="toWishList"/>
-    
+        android:text="@string/wishList"
+        android:textSize="30sp" />
+
     <Button
         android:id="@+id/settings"
         android:layout_width="match_parent"
@@ -78,14 +96,12 @@
         android:layout_alignLeft="@+id/wishList"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="60dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
         android:background="@drawable/custom_button"
-        android:shadowColor="@android:color/background_dark"
-        android:text="@string/settings" 
-        android:textSize="30sp"
         android:onClick="toSettings"
-        />
-
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:shadowColor="@android:color/background_dark"
+        android:text="@string/settings"
+        android:textSize="30sp" />
 
 </RelativeLayout>

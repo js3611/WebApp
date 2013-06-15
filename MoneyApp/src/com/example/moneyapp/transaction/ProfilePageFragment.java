@@ -1,8 +1,14 @@
 package com.example.moneyapp.transaction;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.DateGen;
+import com.example.helpers.HttpReaders;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
@@ -120,7 +128,58 @@ public class ProfilePageFragment extends Fragment {
 			((ImageView) view.findViewById(R.id.big_profile_icon)).setImageResource(friend.getProfilePicture());
 			((TextView) view.findViewById(R.id.firstName)).setText(friend.getFirstName());
 			((TextView) view.findViewById(R.id.surname)).setText(friend.getSurname());
-			((TextView) view.findViewById(R.id.price)).setText("£"+Math.abs(total_price));
+			((TextView) view.findViewById(R.id.price)).setText("ï¿½"+Math.abs(total_price));
+			((TextView) view.findViewById(R.id.oweDirection)).setText(setDirection(total_price,friend.getFirstName()));
+		}
+		
+	}
+	
+	public void makeFullPayment() {
+		new MakePayment().execute(user.getUserid(),friend.getUserid());
+	}
+	
+	private class MakePayment extends AsyncTask<Integer, Void, Void>{
+
+		@Override
+		protected Void doInBackground(Integer... params) {
+			try {
+				Log.v(TAG, "Making full payment");
+				String url = MainActivity.URL + MainActivity.TRANSACTION;			
+				List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(3);
+				nameValueP.add(new BasicNameValuePair("op", "personRepay"));
+				nameValueP.add(new BasicNameValuePair("userid", Integer.toString(params[0])));
+				nameValueP.add(new BasicNameValuePair("owesuserid", Integer.toString(params[1])));
+				nameValueP.add(new BasicNameValuePair("date", DateGen.getDate()));
+				
+				
+				InputStream in = CustomHttpClient
+						.executeHttpPost(url,nameValueP);
+//				InputStream in = CustomHttpClient
+//						.executeHttpGet(MainActivity.url
+//								+ MainActivity.TRANSACTION + "?" + "op=" + op
+//								+ "&" + "viewMode=" + viewMode + "&"
+//								+ "friendid=" + userid);
+
+				Log.v(TAG, HttpReaders.readIt(in,5000));
+
+				
+//				Pair<Integer, UserDetails> friendPair = JsonCustomReader
+//						.readJsonFriend(in);
+//				int retCode = friendPair.getFirst();
+//				friend = friendPair.getSecond();
+
+			} catch (Exception e) {
+				Log.v(TAG, e.getMessage());
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			((ImageView) view.findViewById(R.id.big_profile_icon)).setImageResource(friend.getProfilePicture());
+			((TextView) view.findViewById(R.id.firstName)).setText(friend.getFirstName());
+			((TextView) view.findViewById(R.id.surname)).setText(friend.getSurname());
+			((TextView) view.findViewById(R.id.price)).setText("ï¿½"+Math.abs(total_price));
 			((TextView) view.findViewById(R.id.oweDirection)).setText(setDirection(total_price,friend.getFirstName()));
 		}
 		
