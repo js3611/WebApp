@@ -529,7 +529,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 						break;
 					}
 				}
-				writer.print(jb.build());
+				writer.println(jb.build());
 			}
 		
 			
@@ -594,9 +594,9 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				handlePostOperation("debtRepaid", conn, request, writer); 
 									
 			if (rs != 0) 	//Update was successful
-				writer.println(jb.beginObject().append("returnCode",3).endObject());
+				writer.println(jb.beginObject().append("returnCode",3).endObject().build());
 			else			//Update went wrong
-				writer.println(jb.beginObject().append("returnCode",4).endObject());
+				writer.println(jb.beginObject().append("returnCode",4).endObject().build());
 
 			
 		} else if (operation.equals("personRepay")){
@@ -608,18 +608,26 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			int owesuserid = Integer.parseInt(request.getParameter("owesuserid"));
 			int userid = Integer.parseInt(request.getParameter("userid"));
 
-			ResultSet allTransactions = updateStmt.executeQuery("SELECT transid FROM debt WHERE userid = "
-									+ userid + " AND owesuserid = "
-									+ owesuserid + ";");  
+			ResultSet allTransactions 
+				= updateStmt.executeQuery(
+						"SELECT transid " +
+						"FROM debt " +
+						"WHERE userid = "+ userid + " " +
+						"AND owesuserid = "+ owesuserid + " UNION " +
+						"SELECT transid " +
+						"FROM debt " +
+						"WHERE userid = "+ owesuserid + " " +
+						"AND owesuserid = "+ userid + ";");  
 			
-			if (!allTransactions.next()){ // The select statement returned correctly
-				while (allTransactions.next()){
+			if (allTransactions.next()){ // The select statement returned correctly
+				do {
 					int current_transid = allTransactions.getInt("transid");
-					ModifiedServletRequest modifiedReq = new ModifiedServletRequest(request,current_transid,null,null);									
+					ModifiedServletRequest modifiedReq = new ModifiedServletRequest(request,current_transid,null,null);	
 					handlePostOperation("debtRepaid", conn, modifiedReq, writer);
-				}
+					
+				} while (allTransactions.next());
 			} else { // Something went wrong, there should be a debt alive
-				writer.println(jb.beginObject().append("returnCode",69).endObject());			
+				writer.println(jb.beginObject().append("returnCode",69).endObject().build());			
 			}
 		} else if (operation.equals("debtRepaid")) {
 			// WHEN A PERSON PAYS THEIR PART OF A TRANSACTION
@@ -632,27 +640,36 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			int owesuserid = Integer.parseInt(request.getParameter("owesuserid"));
 			String date = request.getParameter("date");
 		
-			int rs = updateStmt.executeUpdate("UPDATE debt SET paid_off = true,complete_date = "+ date+ " WHERE transid = "
-							+ transid + " AND userid = " + userid
-							+ " AND owesuserid = " + owesuserid + ";");
+			int rs = updateStmt.executeUpdate(
+					"UPDATE debt " +
+					"SET paid_off = true,complete_date = '"+ date+ "' " +
+					" WHERE (transid = " + transid + 
+					" AND userid = " + userid +
+					" AND owesuserid = " + owesuserid + ") OR (transid = " + transid + 
+					" AND userid = " + owesuserid +
+					" AND owesuserid = " + userid + ");"); 
 		
 			if (rs != 0) // update correctly, debt marked as paid
-				writer.print(jb.beginObject().append("returnCode",5).endObject());
+				writer.print(jb.beginObject().append("returnCode",5).endObject().build());
 			else  // update went wrong, nothing was changed
-				writer.print(jb.beginObject().append("returnCode",6).endObject());
-		
+			{
+				writer.println(transid+"' "+userid+"' " +owesuserid);
+				
+				writer.println(rs);
+				writer.print(jb.beginObject().append("returnCode",6).endObject().build());
+			}
 			//This is if the last debt has been repaid of a transaction and we can ALSO complete the transaction
 			ResultSet results = checkStmt
 					.executeQuery("SELECT * FROM debt WHERE transid = "
-							+ transid + ";");
+							+ transid + "AND paid_off = false;");
 		
 			if (!results.isBeforeFirst()) { // NO RESULTS SO ALL DEBTS HAVE BEEN PAID
 									// transaction completion
-				rs = updateStmt.executeUpdate("UPDATE transactions SET total_paid_off = true, complete_date = " + date + " WHERE transid = "
+				rs = updateStmt.executeUpdate("UPDATE transactions SET total_paid_off = true, complete_date = '" + date + "' WHERE transid = "
 								+ transid + ";");
 				
 				if (rs == 0)	// Update didn't go through
-					writer.print(jb.beginObject().append("returnCode",7).endObject());
+					writer.print(jb.beginObject().append("returnCode",7).endObject().build());
 		
 				// else do nothing
 			}
@@ -670,15 +687,15 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			int result = dltStmt.executeUpdate("DELETE FROM transactions WHERE transid = " + transid + ";");
 			
 			if (result != 0)  // Delete worked
-				writer.print(jb.beginObject().append("returnCode",8).endObject());
+				writer.print(jb.beginObject().append("returnCode",8).endObject().build());
 			else		 // The DELETE statement didnt execute correctly
-				writer.print(jb.beginObject().append("returnCode",9).endObject());
+				writer.print(jb.beginObject().append("returnCode",9).endObject().build());
 		
 			dltStmt.close();
 		
 		} else {
 			JSONBuilder jb = new JSONBuilder();
-			writer.print(jb.beginObject().append("returnCode",10).endObject());; // COULD
+			writer.print(jb.beginObject().append("returnCode",10).endObject().build());; // COULD
 																					// NOT
 																					// RECOGNISE
 																					// OPERATION
