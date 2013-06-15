@@ -12,13 +12,13 @@ public class ModifiedServletRequest extends HttpServletRequestWrapper {
 	
 	public ModifiedServletRequest(HttpServletRequest request, int t_id, String old_date, String partial_pay_record) {
 		super(request);
-		if(!partial_pay_record.equals(null))
+		if(partial_pay_record != null)
 			this.partial_pay_record = partial_pay_record;
 		
-		if(t_id == -1)
+		if(t_id != -1)
 			this.transid = t_id;
 		
-		if (!old_date.equals(null))
+		if (old_date != null)
 			this.old_date = old_date;
 
 	}
