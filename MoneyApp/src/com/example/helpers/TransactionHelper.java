@@ -1,6 +1,8 @@
 package com.example.helpers;
 
-import android.util.Pair;
+import com.example.helpers.metadata.Pair;
+
+
 
 public class TransactionHelper {
 		

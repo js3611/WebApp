@@ -2,14 +2,15 @@ package com.example.moneyapp.transaction;
 
 import java.util.ArrayList;
 
-import com.example.moneyapp.R;
 import android.content.Context;
-import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.helpers.metadata.Pair;
+import com.example.moneyapp.R;
 
 /* Within "new transaction"*/
 public class PersonAdapter extends CustomAdapter<Pair<String, Double>> {
@@ -64,8 +65,8 @@ public class PersonAdapter extends CustomAdapter<Pair<String, Double>> {
 		}
 		Pair<String, Double> detail = _data.get(position);
 		viewHolder.image.setImageResource(R.drawable.ic_launcher);
-		viewHolder.name_view.setText(detail.first);
-		viewHolder.price_text.setText(""+detail.second);
+		viewHolder.name_view.setText(detail.getFirst());
+		viewHolder.price_text.setText(""+detail.getSecond());
 		return v;
 	}
 
@@ -82,7 +83,7 @@ public class PersonAdapter extends CustomAdapter<Pair<String, Double>> {
 	
 	@Override
 	public Object getItem(int position) {
-		return _data.get(position).second;
+		return _data.get(position).getSecond();
 	}
 	
 	

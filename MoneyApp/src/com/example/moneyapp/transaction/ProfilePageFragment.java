@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
@@ -91,7 +91,7 @@ public class ProfilePageFragment extends Fragment {
 				int userid = params[0];
 				String op = "viewFriendsProfile";
 				String viewMode = "perPerson";
-				String url = MainActivity.url
+				String url = MainActivity.URL
 						+ MainActivity.TRANSACTION + "?" + "op=" + op
 						+ "&" + "viewMode=" + viewMode + "&"
 						+ "friendid=" + userid;
@@ -106,8 +106,8 @@ public class ProfilePageFragment extends Fragment {
 
 				Pair<Integer, UserDetails> friendPair = JsonCustomReader
 						.readJsonFriend(in);
-				int retCode = friendPair.first;
-				friend = friendPair.second;
+				int retCode = friendPair.getFirst();
+				friend = friendPair.getSecond();
 
 			} catch (Exception e) {
 				Log.v(TAG, e.getMessage());

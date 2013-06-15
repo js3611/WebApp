@@ -2,8 +2,6 @@ package com.example.moneyapp.transaction;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import android.app.Activity;
 import android.app.SearchManager;
@@ -11,7 +9,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +18,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.helpers.metadata.UserInfo;
 import com.example.json.JsonCustomReader;
@@ -98,7 +96,7 @@ public class NewPerson extends Activity {
 				String op = "getFriendsList";
 				String viewMode = "perPerson";
 				
-				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+
+				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
 						MainActivity.TRANSACTION + "?"+
 						"op="+op+"&"+ 
 						"viewMode="+viewMode+"&"+
@@ -106,7 +104,7 @@ public class NewPerson extends Activity {
 
 				Pair<Integer,ArrayList<UserDetails>> rawData = JsonCustomReader
 						.readJsonFriends(in);
-				details = rawData.second;
+				details = rawData.getSecond();
 			} catch (Exception e) {
 				UserDetails Detail;
 				Detail = new UserDetails();

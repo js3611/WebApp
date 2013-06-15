@@ -16,7 +16,6 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -27,7 +26,7 @@ import android.widget.Toast;
 import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
-import com.example.helpers.HttpReaders;
+import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
 
@@ -124,19 +123,18 @@ public class SignIn extends Activity {
 
 		try {
 
-			InputStream in = CustomHttpClient.executeHttpPost(MainActivity.url+MainActivity.login, nameValueP);
+			InputStream in = CustomHttpClient.executeHttpPost(MainActivity.URL+MainActivity.LOGIN, nameValueP);
 			// Handle JSONstring
 //			Log.v(TAG,HttpReaders.readIt(in, 1000));
 			Pair<Integer,UserDetails> result = JsonCustomReader.readJsonUser(in);	
-			Log.v(TAG,"parsed fine. wats wrong then");
 			
-			userDetails = result.second;
+			userDetails = result.getSecond();
 			 //Handle JSONstring
 //			 errorMessage = HttpReaders.readIt(in, 1000);
-			int response = result.first;			
+			int response = result.getFirst();			
 			Pair<String, Boolean> pair = AdminHelper.handleResponse(response);
-			errorMessage = pair.first;
-			return pair.second;
+			errorMessage = pair.getFirst();
+			return pair.getSecond();
 
 		} catch (ClientProtocolException e) {
 			Log.v(TAG,"ClientProtocolException");

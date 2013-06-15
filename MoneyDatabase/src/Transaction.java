@@ -469,24 +469,28 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			Statement transStmt = conn.createStatement();
 			JSONBuilder jb = new JSONBuilder();
 			
+			
 			int user_id = Integer.parseInt(request.getParameter("userid"));
 			String trans_name = request.getParameter("name");
 			String trans_desc = request.getParameter("desc");
-			int trans_date = Integer.parseInt(request.getParameter("date"));
+			String trans_date = request.getParameter("date");
 			double trans_amount = Double.parseDouble(request.getParameter("total_amount"));
 			int trans_urgency = Integer.parseInt(request.getParameter("urgency"));
 			//Should be default 0 unless taken from updateTransaction;
-			double trans_partial_pay = Double.parseDouble(request.getParameter("partial_pay"));
+			double trans_partial_pay = 0;
+			if (request.getParameter("partial_pay") != null) {
+				trans_partial_pay = Double.parseDouble(request.getParameter("partial_pay"));
+			}
 			// Client Side counter please to count how many people owe in this transaction
-			int user_owes_count = Integer.parseInt(request.getParameter("user_owes_count"));			
-
+			int user_owes_count = Integer.parseInt(request.getParameter("user_owes_count"));	
+			
 			//Store all the userids into one string and split it to get all the things to add
 			//format is like ("1:8,2:10,3:2") in the form (userid:amount-partial_pay)
 			//another parameter if it is update in the form ("1-0,2-0,3-0") (userid-partial_pay)
 			String owerIdAmount = request.getParameter("oweridIdAmount");			
 			String[] owerList = owerIdAmount.split(",");
 			String owerIdPartialPairs = request.getParameter("owerIdPartialPairs");
-			
+			String[] owerPartialPay = owerIdPartialPairs.split(",");
 
 			//Need to return the new transid to use
 			ResultSet new_trans = transStmt.executeQuery("INSERT INTO transactions(name, description, _date, total_amount, urgency) values ('"
@@ -496,33 +500,36 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 							+ trans_amount + ", "
 							+ trans_urgency + ") RETURNING transid;");
 
-			if (!new_trans.isBeforeFirst())
-				writer.print(jb.beginObject().append("returnCode",4).endObject());
-			else {
+			if (!new_trans.next()) { 
+				writer.print(getReturnCode(jb,30));
+			} else {
+
 				// The transaction id of just added transaction above
 				int trans_id = new_trans.getInt("transid");
-
+				
 				transStmt.close();
 
 				Statement individualStmt = conn.createStatement();
 
 				for (int i = 0; i < user_owes_count; i++) {
 					String[] userPair = owerList[i].split(":");
-					String[] owerPartialList = owerIdPartialPairs.split("-");
+					String[] owerPartialList = owerPartialPay[i].split("-");
 
 					int rs = individualStmt.executeUpdate("INSERT INTO debt(transid, userid, owesuserid, amount, partial_pay) VALUES ( "
 														+ trans_id + ", " 
 														+ user_id + ", " 
 														+ userPair[0] + ", "
-														+ owerPartialList[0] + ", "
-														+ owerPartialList[1] + ";");
+														+ userPair[1] + ", "
+														+ owerPartialList[1] + ");");
 					if (rs != 0) //SUCCESSFUL ADD	
-						writer.print(jb.beginObject().append("returnCode",1).endObject()); 
+						jb.beginObject().append("returnCode",1).endObject(); 
 					else {		// DATABASE INSERT WENT WRONG NOTHING INSERTED
-						writer.print(jb.beginObject().append("returnCode",2).endObject());
+						jb = new JSONBuilder();
+						jb.beginObject().append("returnCode",2).endObject();
 						break;
 					}
 				}
+				writer.print(jb.build());
 			}
 		
 			

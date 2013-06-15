@@ -74,7 +74,7 @@ public class PerItem extends Activity {
 				int userid = 2;
 				String op = "viewLiveTransactions";
 				String viewMode = "perItem";
-				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+
+				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
 						MainActivity.TRANSACTION + "?"+
 						"op="+op+"&"+ 
 						"viewMode="+viewMode+"&"+

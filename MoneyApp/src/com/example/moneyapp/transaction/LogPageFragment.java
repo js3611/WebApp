@@ -84,7 +84,7 @@ public class LogPageFragment extends Fragment {
 				int userid = user.getUserid();
 				String op = "viewFriendsLog";
 				String viewMode = "perPerson";
-				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.url+
+				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
 						MainActivity.TRANSACTION + "?"+
 						"op="+op+"&"+ 
 						"viewMode=" + viewMode + "&"+

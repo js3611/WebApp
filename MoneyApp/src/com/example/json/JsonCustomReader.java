@@ -7,14 +7,14 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import android.util.JsonReader;
+import android.util.Log;
+
+import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.R;
 import com.example.moneyapp.transaction.TransactionDetail;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
-import android.util.Log;
-import android.util.Pair;
 
 public class JsonCustomReader {
 
@@ -26,11 +26,10 @@ public class JsonCustomReader {
 				new InputStreamReader(in, "UTF-8")));
 		jr.setLenient(true);
 		jr.beginObject();
-		while (jr.peek() != JsonToken.NUMBER) {
-			jr.skipValue();
-		}
+		/* Skip the name */
+		jr.nextName();
 		int response = jr.nextInt();
-		jr.endObject();
+
 		return response;
 	}
 

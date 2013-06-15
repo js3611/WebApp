@@ -119,7 +119,7 @@ public class PerPerson extends Activity {
 				String viewMode = "perPerson";
 
 				InputStream in = CustomHttpClient
-						.executeHttpGet(MainActivity.url
+						.executeHttpGet(MainActivity.URL
 								+ MainActivity.TRANSACTION  
 								+ "?" + "op=" + op
 								+ "&" + "viewMode=" + viewMode 

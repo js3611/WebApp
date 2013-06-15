@@ -19,7 +19,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -31,7 +30,9 @@ import android.widget.Toast;
 
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.HttpReaders;
 import com.example.helpers.TransactionHelper;
+import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.helpers.metadata.UserInfo;
 import com.example.json.JsonCustomReader;
@@ -154,20 +155,22 @@ public class NewTransaction extends Activity {
 
 		int urgency = 1; // TODO GET FROM SPINNER
 
+		String transUserid =  Integer.toString(user.getUserid());
 		String transName = _transName.getText().toString();
 		String transDesc = _transDesc.getText().toString();
 		String transAmount = _transAmount.getText().toString();
-		String transDate = Integer.toString((year * 1000) + (month * 10) + day);
+		String transDate = getDate(year, month,day);
 		String transUrgency = Integer.toString(urgency);
 		String transOwerCount = Integer.toString(owers.size());
 		String transOwers = oweridIdAmount();
+		String transOwerIdPartialPairs = owerIdPartialPairs();
 
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		if (ConnectionHelper.checkNetworkConnection(connMgr)) {
 			 new AddTransaction()
-			 	.execute(transName, transDesc, transAmount,
-					 	 transDate, transUrgency, transOwerCount, transOwers);
+			 	.execute(transUserid, transName, transDesc, transAmount,
+					 	 transDate, transUrgency, transOwerCount, transOwers,transOwerIdPartialPairs);
 		} else if (!ConnectionHelper.checkNetworkConnection(connMgr)) {
 			Context context = getApplicationContext();
 			CharSequence feedbackMsg = "No network connection, retry after a few seconds";
@@ -179,16 +182,54 @@ public class NewTransaction extends Activity {
 
 	}
 
+	private String getDate(int year, int month, int day) {
+		StringBuilder strB = new StringBuilder();
+		strB.append(year).append("-");
+		if(month<10)
+			strB.append(0);
+		strB.append(month).append("-");
+		if(day<10)
+			strB.append(0);
+		strB.append(day);
+		return strB.toString();
+	}
+
+	private String owerIdPartialPairs() {
+		StringBuilder strB = new StringBuilder();
+		/* Set everyone to zero */
+		/* Generate a string of the form "userid-amount,userid-amount,..."*/
+		for (Iterator<UserDetails> itr = owers.iterator(); itr.hasNext();) {
+			UserDetails user = itr.next();
+			strB.append(user.getUserid() + "-" + 0.0);
+			if(itr.hasNext())
+				strB.append(",");
+		}
+		String str = strB.toString();
+		Log.v(TAG, str);
+		
+		return str;
+	}
+
 	/* Read amount from each person, produce the required string to send it to the server */
 	private String oweridIdAmount() {
-		/* Need to read data from each entry*/
 		
+		/* Need to read price entered in each edit text */
+		for (int i = 0; i < person_cost_pairs.size(); i++) {
+			View view = personList.getChildAt(i);
+			EditText text = (EditText) view.findViewById(R.id.new_price_text);
+			String contents = text.getText().toString();
+			Pair<String, Double> person = person_cost_pairs.get(i);
+			person.setSecond(Double.parseDouble(contents));
+		}
+	
+		/* Create a map from the first name to the price*/
 		StringBuilder strB = new StringBuilder();
 		Map<String, Double> personPriceMap = new HashMap<String, Double>();
 		for (Pair<String, Double> pair : person_cost_pairs) {
-			personPriceMap.put(pair.first,pair.second);
+			personPriceMap.put(pair.getFirst(),pair.getSecond());
 		}
 		
+		/* Generate a string of the form "userid:amount,userid:amount,..."*/
 		for (Iterator<UserDetails> itr = owers.iterator(); itr.hasNext();) {
 			UserDetails user = itr.next();
 			strB.append(user.getUserid() + ":" + personPriceMap.get(user.getFirstName()));
@@ -206,27 +247,21 @@ public class NewTransaction extends Activity {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			return addToTransactions(params[0], params[1], params[2],
-					params[3], params[4],params[5],params[6]);
+					params[3], params[4],params[5],params[6],params[7],params[8]);
 		}
 
 		@Override
 		protected void onPostExecute(Boolean result) {
 			// Checks the result of running addToTransactions
 			if (result) {
-
+				String msg = "Transaction added!";
 				// Toast message
-				Context context = getApplicationContext();
-				CharSequence feedbackMsg = "Transaction added!";
-				int duration = Toast.LENGTH_SHORT;
-				Toast toast = Toast.makeText(context, feedbackMsg, duration);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
-
+				toastMessage(msg);
+				/* Need to somehow know where to go back to */
 				Intent intent = getIntent().setClass(NewTransaction.this,
-						TransactionDetail.class);
+						PerPerson.class);
 				startActivity(intent);
 			} else {
-
 				// Toast message
 				Context context = getApplicationContext();
 				CharSequence feedbackMsg = errorMessage;
@@ -236,43 +271,53 @@ public class NewTransaction extends Activity {
 				toast.show();
 			}
 		}
+
 	}
 
-	private boolean addToTransactions(String transName, String transDesc,
-			String transAmount, String transDate, String transUrgency, String transOwerCount, String transOwers) {
+	private boolean addToTransactions(String transUserid, String transName, String transDesc,
+			String transAmount, String transDate, String transUrgency, String transOwerCount, String transOwers, String owerIdPartialPairs) {
 		List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(3);
 		nameValueP.add(new BasicNameValuePair("op", "newTransaction"));
-		// nameValueP.add(new BasicNameValuePair("userid", USERID META DATA));
+		nameValueP.add(new BasicNameValuePair("userid",transUserid));
 		nameValueP.add(new BasicNameValuePair("name", transName));
 		nameValueP.add(new BasicNameValuePair("desc", transDesc));
 		nameValueP.add(new BasicNameValuePair("date", transDate));
 		nameValueP.add(new BasicNameValuePair("total_amount", transAmount));
 		nameValueP.add(new BasicNameValuePair("urgency", transUrgency));
 		nameValueP.add(new BasicNameValuePair("user_owes_count", transOwerCount));
-		nameValueP.add(new BasicNameValuePair("oweridIdAmounr", transOwers));
+		nameValueP.add(new BasicNameValuePair("oweridIdAmount", transOwers));
+		nameValueP.add(new BasicNameValuePair("owerIdPartialPairs", owerIdPartialPairs));
 		
-
 		try {
 			// address should be the http address of the server side code.
-			InputStream in = CustomHttpClient.executeHttpPost(MainActivity.url
+			InputStream in = CustomHttpClient.executeHttpPost(MainActivity.URL
 					+ MainActivity.TRANSACTION, nameValueP);
+			
+			//errorMessage = HttpReaders.readIt(in, 16);
+			
+			Log.v(TAG, errorMessage);
 			// Handle JSONstring
 			int response = JsonCustomReader.readJsonRetCode(in);
 			Pair<String, Boolean> pair = TransactionHelper
 					.handleResponse(response);
-			errorMessage = pair.first;
-			return pair.second;
+			errorMessage = pair.getFirst();
+			return pair.getSecond();
 
 		} catch (Exception e) {
-			// Toast message
-			Context context = getApplicationContext();
-			CharSequence feedbackMsg = "An Unknown error has occurred!";
-			int duration = Toast.LENGTH_SHORT;
-			Toast toast = Toast.makeText(context, feedbackMsg, duration);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
+			
+			errorMessage = e.getMessage();
+
 		}
 
 		return false;
+	}
+	
+	private void toastMessage(String msg) {
+		Context context = getApplicationContext();
+		CharSequence feedbackMsg = msg;
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(context, feedbackMsg, duration);
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.show();
 	}
 }

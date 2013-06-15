@@ -11,24 +11,21 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
-import com.example.helpers.HttpReaders;
 import com.example.helpers.StringFilter;
+import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
 
@@ -40,9 +37,8 @@ public class MainActivity extends Activity {
 	public static final String pixel20 = "http://146.169.53.180:59999";
 	public static final String joMachine = "http://129.31.227.146:8080/MoneyDatabase";
 	public static final String joMachineEmulator = "http://10.0.2.2:8080/MoneyDatabase";
-	public static final String joMachineHome = "http://82.26.23.66:8080/MoneyDatabase";
-	public static final String url = joMachine;// "http://146.169.53.14:59999";
-	public static final String login = "/Login";
+	public static final String URL = joMachineEmulator;// "http://146.169.53.14:59999";
+	public static final String LOGIN = "/Login";
 	public static final String TRANSACTION = "/Transaction";
 	private String errorMessage;
 	private UserDetails userDetails;
@@ -73,7 +69,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void loginHandler(View view) {
-
+		Log.v(TAG, "Log in on process");
 		EditText passwordText = (EditText) findViewById(R.id.password);
 		EditText phoneText = (EditText) findViewById(R.id.phoneNumber);
 		String password = passwordText.getText().toString();
@@ -124,24 +120,22 @@ public class MainActivity extends Activity {
 		nameValueP.add(new BasicNameValuePair("password", password));
 
 		try {
-			InputStream in = CustomHttpClient.executeHttpPost(url + login,
+			InputStream in = CustomHttpClient.executeHttpPost(URL + LOGIN,
 					nameValueP);
-			Log.v(TAG,"Readfine?");
+
 			//errorMessage = HttpReaders.readIt(in, 1000);
 			//Log.v(TAG, errorMessage);
-			
+			//int retCode = JsonCustomReader.readJsonRetCode(in);
 			Pair<Integer,UserDetails> result = JsonCustomReader.readJsonUser(in);
-			userDetails = result.second;
-
-			Log.v(TAG,"still fine?");
-			
+			userDetails = result.getSecond();
+			Log.v(TAG,"is error here");
 			
 			 //Handle JSONstring
 
-			int response = result.first;			
+			int response = result.getFirst();			
 			Pair<String, Boolean> pair = AdminHelper.handleResponse(response);
-			errorMessage = pair.first;
-			return pair.second;
+			errorMessage = pair.getFirst();
+			return pair.getSecond();
 		} catch (Exception e) {
 			errorMessage = e.toString();
 		}
