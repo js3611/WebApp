@@ -1,33 +1,47 @@
 package com.example.moneyapp.transaction;
 
 import android.app.ActionBar;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.example.helpers.MyToast;
+import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
 
 /*
  * Class for per person mode, profile for each person who you owe to
  */
-public class PerPersonProfile extends FragmentActivity {
+public class PerPersonProfile extends FragmentActivity implements PayDialog.NoticeDialogListener {
 
+	/* Debug */
+	private static final String TAG = "PerPersonProfile";
+	private String errorMessage = "no error";
+	
+	
 	private static final int NUM_PAGES = 2;
 	private static final int PROFILE = 0;
 	private static final int LOG = 1;
+	
 	/* Gives you animated effect. ViewPager uses PageAdapters */
 	private ViewPager mPager;
 	/* Used by view pager. provide it with "pages" (fragments) */
 	private PagerAdapter mPagerAdapter;
+	public ProfilePageFragment ppfragment;
+	public LogPageFragment lpfragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,10 +136,12 @@ public class PerPersonProfile extends FragmentActivity {
 		@Override
 		public Fragment getItem(int pos) {
 			switch (pos) {
-			case PROFILE:
-				return ProfilePageFragment.create();
+			case PROFILE: 
+				ppfragment = ProfilePageFragment.create();
+				return ppfragment;
 			case LOG:
-				return LogPageFragment.create();
+				lpfragment = LogPageFragment.create();
+				return lpfragment;
 			}
 			return null;
 		}
@@ -136,6 +152,67 @@ public class PerPersonProfile extends FragmentActivity {
 			return NUM_PAGES;
 		}
 
+	}
+	
+	
+	public void handlePayment(View view) {
+		Log.v(TAG, "Making a payment");
+        PayDialog payD = new PayDialog();
+        payD.show(getFragmentManager(), "Payment");
+	
+	}
+
+	private class MakePayment extends AsyncTask<String, Void, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			return makePayment();
+		}
+
+		private Boolean makePayment() {
+			String op = "personRepay";
+			String owesuserid = null;
+			String userid;
+			
+			return false;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+
+			if (result) {
+				// Toast message
+				MyToast.toastMessage(getApplicationContext(),"Paid successfully!");
+			} else {
+				MyToast.toastMessage(getApplicationContext(),"Error occurred");
+			}
+		}
+
+	}
+
+
+	@Override
+	public void onDialogPartialClick(DialogFragment dialog) {
+		Intent intent = getIntent().setClass(getApplicationContext(), NewTransaction.class);
+		/* Add user and friend */
+		startActivity(intent);
+	}
+
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		//Do nothing
+	}
+
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog) {
+		//Do nothing
+	}
+
+	@Override
+	public void onDialogFullyClick(DialogFragment dialog) {
+		//Make a payment
+		//new MakePayment().execute();
+		ppfragment.makeFullPayment();
 	}
 
 }

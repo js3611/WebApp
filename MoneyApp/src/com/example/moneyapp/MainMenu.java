@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.View;
 
 import com.example.helpers.metadata.UserDetails;
+import com.example.moneyapp.friend.Friend;
 import com.example.moneyapp.message.MessageListActivity;
 import com.example.moneyapp.transaction.PerItem;
 import com.example.moneyapp.transaction.PerPerson;
@@ -85,6 +86,12 @@ public class MainMenu extends Activity {
 	public void toSettings(View view){
 		Intent intent = getIntent();
 		intent.setClass(MainMenu.this, Settings.class);
+		startActivity(intent);
+	}
+	
+	public void toFriend(View view){
+		Intent intent = getIntent();
+		intent.setClass(MainMenu.this, Friend.class);
 		startActivity(intent);
 	}
 	

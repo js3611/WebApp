@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.DateGen;
 import com.example.helpers.HttpReaders;
 import com.example.helpers.TransactionHelper;
 import com.example.helpers.metadata.Pair;
@@ -41,12 +42,14 @@ import com.example.moneyapp.R;
 
 public class NewTransaction extends Activity {
 
+	/* Debug */
 	private static final String TAG = "New Transaction";
-
-	private String errorMessage;
+	private String errorMessage = "";
+	private double epsilon = 0.0000001;
 
 	// The List view
 	private ListView personList;
+	private PersonAdapter personAdapter;
 	// A list of data for each entry, which the adapter retrieves from.
 	private ArrayList<Pair<String, Double>> person_cost_pairs;
 	private UserDetails user;
@@ -59,12 +62,12 @@ public class NewTransaction extends Activity {
 
 		/* Set fields */
 		personList = (ListView) findViewById(R.id.PersonList);
-		person_cost_pairs = new ArrayList<Pair<String, Double>>();
+
 		user = UserDetails.getUser(getIntent());
 		
-		addOwers();
-
-		personList.setAdapter(new PersonAdapter(person_cost_pairs, this));
+		person_cost_pairs = new ArrayList<Pair<String, Double>>();
+		personAdapter =new PersonAdapter(person_cost_pairs, this);		
+		personList.setAdapter(personAdapter);
 		registerForContextMenu(personList);
 
 		/* set the behaviour of the list*/
@@ -72,14 +75,27 @@ public class NewTransaction extends Activity {
 
 	}
 
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.new_transaction, menu);
+		return true;
+	}
+
+
 	private void setOnItemInListClicked() {
 		personList.setOnItemClickListener(new OnItemClickListener() {
-
+	
 			@Override
 			public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
 				if (selectedNewTransaction(pos)) {
-					startActivity(getIntent().setClass(NewTransaction.this,
-							NewPerson.class)); 
+					
+					Intent i = new Intent(getApplicationContext(), NewPerson.class).putExtra(MainActivity.USER_KEY,user);
+					startActivityForResult(i, 1);
+					//startActivity(getIntent().setClass(NewTransaction.this,
+						//	NewPerson.class));
+					
 					/*get new dialog fragment
 					// DialogFragment.show() will take care of adding the fragment
 				    // in a transaction.  We also want to remove any currently showing
@@ -90,109 +106,75 @@ public class NewTransaction extends Activity {
 				        ft.remove(prev);
 				    }
 				    ft.addToBackStack(null);
-
+	
 				    // Create and show the dialog.
 				    DialogFragment newFragment = FriendListFragment.newInstance(user.getUserid());
 				    newFragment.show(ft, "dialog");
 					*/
 				}
-
+	
 			}
-
+	
 			private boolean selectedNewTransaction(int pos) {
 				return person_cost_pairs.size() == pos;
 			}
-
+	
 		});
 	}
 
-	private boolean fromAddFriend() {
-		return getIntent().getExtras().getBoolean(Transactions.ON_RETURN_FROM_ADD, false);
+
+	public void newTransactionHandler(View view) {
+		
+		if (!validateInput()) 
+			return;
+		
+		EditText _transName = (EditText) findViewById(R.id.item_text);
+		EditText _transDesc = (EditText) findViewById(R.id.item_description_text);
+		EditText _transAmount = (EditText) findViewById(R.id.amount);
+	
+		Calendar cal = Calendar.getInstance();
+		int day = cal.get(Calendar.DATE);
+		int month = cal.get(Calendar.MONTH);
+		int year = cal.get(Calendar.YEAR);
+	
+		int urgency = 1; // TODO GET FROM SPINNER
+	
+		String transUserid =  Integer.toString(user.getUserid());
+		String transName = _transName.getText().toString();
+		String transDesc = _transDesc.getText().toString();
+		String transAmount = _transAmount.getText().toString();
+		String transDate = DateGen.getDate();
+		String transUrgency = Integer.toString(urgency);
+		String transOwerCount = Integer.toString(owers.size());
+		String transOwers = oweridIdAmount();
+		String transOwerIdPartialPairs = owerIdPartialPairs();
+	
+
+		new AddTransaction().execute(transUserid, transName, transDesc, transAmount,
+					 	 transDate, transUrgency, transOwerCount, transOwers,transOwerIdPartialPairs);
+	
 	}
 
-	private void addOwers() {
-		if(fromAddFriend()) {
+
+	/* Update owers view */
+	private void addOwers(Intent data) {
+
 			owers = new ArrayList<UserDetails>();
-			ArrayList<? extends Parcelable> owerinfo = getIntent().getExtras().getParcelableArrayList(Transactions.FRIENDIDS_STR); 
+			ArrayList<? extends Parcelable> owerinfo = data.getExtras().getParcelableArrayList(Transactions.FRIENDIDS_STR); 
 			for (Parcelable parcelable : owerinfo) {
 				if (parcelable instanceof UserInfo) {
 					UserInfo userinfo = (UserInfo) parcelable;
 					UserDetails user = userinfo.getUserDetail();
 					owers.add(user);
 					person_cost_pairs.add(new Pair<String, Double>(user.getFirstName(), 0.0));
+					Log.v(TAG,"adding"+user.getFirstName());
 				}
 			}
 			Log.v(TAG,"received friends");
-		} else {
-			//??? 
-			owers = null;
-		}
 		
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.new_transaction, menu);
-		return true;
-	}
 
-	public void newTransactionHandler(View view) {
-		
-		if(owers == null) {
-			Log.v(TAG, "no one to owe");
-			return;
-		}
-		
-		EditText _transName = (EditText) findViewById(R.id.item_text);
-		EditText _transDesc = (EditText) findViewById(R.id.item_description_text);
-		EditText _transAmount = (EditText) findViewById(R.id.amount);
-
-		Calendar cal = Calendar.getInstance();
-		int day = cal.get(Calendar.DATE);
-		int month = cal.get(Calendar.MONTH);
-		int year = cal.get(Calendar.YEAR);
-
-		int urgency = 1; // TODO GET FROM SPINNER
-
-		String transUserid =  Integer.toString(user.getUserid());
-		String transName = _transName.getText().toString();
-		String transDesc = _transDesc.getText().toString();
-		String transAmount = _transAmount.getText().toString();
-		String transDate = getDate(year, month,day);
-		String transUrgency = Integer.toString(urgency);
-		String transOwerCount = Integer.toString(owers.size());
-		String transOwers = oweridIdAmount();
-		String transOwerIdPartialPairs = owerIdPartialPairs();
-
-		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-		if (ConnectionHelper.checkNetworkConnection(connMgr)) {
-			 new AddTransaction()
-			 	.execute(transUserid, transName, transDesc, transAmount,
-					 	 transDate, transUrgency, transOwerCount, transOwers,transOwerIdPartialPairs);
-		} else if (!ConnectionHelper.checkNetworkConnection(connMgr)) {
-			Context context = getApplicationContext();
-			CharSequence feedbackMsg = "No network connection, retry after a few seconds";
-			int duration = Toast.LENGTH_SHORT;
-			Toast toast = Toast.makeText(context, feedbackMsg, duration);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
-		}
-
-	}
-
-	private String getDate(int year, int month, int day) {
-		StringBuilder strB = new StringBuilder();
-		strB.append(year).append("-");
-		if(month<10)
-			strB.append(0);
-		strB.append(month).append("-");
-		if(day<10)
-			strB.append(0);
-		strB.append(day);
-		return strB.toString();
-	}
 
 	private String owerIdPartialPairs() {
 		StringBuilder strB = new StringBuilder();
@@ -319,5 +301,119 @@ public class NewTransaction extends Activity {
 		Toast toast = Toast.makeText(context, feedbackMsg, duration);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode==RESULT_OK) {
+			Log.v(TAG,"result ok");
+			addOwers(data);
+			personAdapter.notifyDataSetChanged();
+		} else {
+			Log.v(TAG,"result not ok");
+		}
+	}
+	
+	public boolean validateInput() {
+		
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (!ConnectionHelper.checkNetworkConnection(connMgr)) {
+			toastMessage("No network connection, retry after a few seconds");
+			return false; 
+		}
+		
+		if(!hasItemName()) {
+			toastMessage("Missing an item name");
+			return false;
+		}
+		
+		if(!hasTotal()) {
+			toastMessage("Missing a total");
+			return false;
+		}
+		
+		if(!hasFriendEntry()) {
+			toastMessage("Missing a person");
+			return false;
+		}
+		
+		if(!validateAmount()) {
+			toastMessage("Amount doens't match");
+			return false;
+		}
+		
+		if(!hasValidPriceInput()) {
+			return false;
+		}
+	
+		return true;
+		
+	}
+
+
+
+	private boolean hasValidPriceInput() {
+		EditText _transAmount = (EditText) findViewById(R.id.amount);
+		double amount = Double.parseDouble(_transAmount.getText().toString());
+		
+		/* Need to read price entered in each edit text */
+		for (int i = 0; i < person_cost_pairs.size(); i++) {
+			View view = personList.getChildAt(i);
+			EditText text = (EditText) view.findViewById(R.id.new_price_text);
+			String contents = text.getText().toString();
+			Pair<String, Double> person = person_cost_pairs.get(i);
+			try {
+				person.setSecond(Double.parseDouble(contents));
+			} catch (NumberFormatException e) {
+				toastMessage("Enter a number please");
+				return false;
+			}
+			if(person.getSecond() <= epsilon) {
+				toastMessage("Invalid number.\n Enter a positive value ");
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+	private boolean hasFriendEntry() {
+		return owers != null && owers.size()>0;
+	}
+
+
+	private boolean hasItemName() {
+		EditText _transName = (EditText) findViewById(R.id.item_text);
+		return !(_transName.getText()==null || _transName.getText().toString().equals(""));
+		
+	}
+	
+	private boolean hasTotal() {
+		EditText _transName = (EditText) findViewById(R.id.amount);
+		return !(_transName.getText()==null || _transName.getText().toString().equals(""));
+		
+	}
+
+	private boolean validateAmount() {
+		EditText _transAmount = (EditText) findViewById(R.id.amount);
+		double amount = Double.parseDouble(_transAmount.getText().toString());
+		
+		double sum = 0;
+		/* Need to read price entered in each edit text */
+		for (int i = 0; i < person_cost_pairs.size(); i++) {
+			View view = personList.getChildAt(i);
+			EditText text = (EditText) view.findViewById(R.id.new_price_text);
+			String contents = text.getText().toString();
+			Pair<String, Double> person = person_cost_pairs.get(i);
+			person.setSecond(Double.parseDouble(contents));
+			sum += person.getSecond();
+		}
+		
+		return practically_equal(amount,sum);
+	}
+
+	private boolean practically_equal(double amount, double sum) {
+		return Math.abs(amount-sum) < epsilon;
 	}
 }

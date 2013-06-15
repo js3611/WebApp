@@ -68,5 +68,10 @@
     <string name="preference_file_key">Preference</string>
     <string name="view_mode">1</string>
     <string name="who_owe">Who owes you?</string>
+    <string name="Friends">Friends</string>
+    <string name="title_activity_friend">Friends</string>
+    <string name="okay">Okay</string>
+    <string name="cancel">Cancel</string>
+    
 
 </resources>

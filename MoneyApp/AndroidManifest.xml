@@ -32,24 +32,24 @@
         </activity>
         <activity
             android:name="com.example.moneyapp.Calendar"
-            android:label="@string/title_activity_calendar" 
-            android:parentActivityName="com.example.moneyapp.MainMenu">
+            android:label="@string/title_activity_calendar"
+            android:parentActivityName="com.example.moneyapp.MainMenu" >
         </activity>
         <activity
             android:name="com.example.moneyapp.Profile"
-            android:label="@string/title_activity_profile" 
-            android:parentActivityName="com.example.moneyapp.PerPerson">
+            android:label="@string/title_activity_profile"
+            android:parentActivityName="com.example.moneyapp.PerPerson" >
         </activity>
         <activity
             android:name="com.example.moneyapp.GroupProfile"
-            android:label="@string/title_activity_group_profile" 
-            android:parentActivityName="com.example.moneyapp.PerPerson">
+            android:label="@string/title_activity_group_profile"
+            android:parentActivityName="com.example.moneyapp.PerPerson" >
         </activity>
         <activity
             android:name="com.example.moneyapp.transaction.PerPerson"
-            android:label="@string/title_activity_per_person_log" 
-            android:parentActivityName="com.example.moneyapp.MainMenu">
-            <meta-data 
+            android:label="@string/title_activity_per_person_log"
+            android:parentActivityName="com.example.moneyapp.MainMenu" >
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.moneyapp.MainMenu" />
         </activity>
@@ -59,25 +59,25 @@
         </activity>
         <activity
             android:name="com.example.moneyapp.message.Messages"
-            android:label="@string/title_activity_messages" 
-            android:parentActivityName="com.example.moneyapp.MainMenu">
-            <meta-data  
+            android:label="@string/title_activity_messages"
+            android:parentActivityName="com.example.moneyapp.MainMenu" >
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.moneyapp.MainMenu" />
         </activity>
         <activity
             android:name="com.example.moneyapp.WishList"
-            android:label="@string/title_activity_wish_list" 
-            android:parentActivityName="com.example.moneyapp.MainMenu">
-             <meta-data 
+            android:label="@string/title_activity_wish_list"
+            android:parentActivityName="com.example.moneyapp.MainMenu" >
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.moneyapp.MainMenu" />           
+                android:value="com.example.moneyapp.MainMenu" />
         </activity>
         <activity
             android:name="com.example.moneyapp.Settings"
-            android:label="@string/title_activity_settings" 
-            android:parentActivityName="com.example.moneyapp.MainMenu">
-             <meta-data 
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="com.example.moneyapp.MainMenu" >
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.moneyapp.MainMenu" />
         </activity>
@@ -97,7 +97,7 @@
             android:name="com.example.moneyapp.transaction.PerPersonProfile"
             android:label="@string/title_activity_per_person_log_profile"
             android:uiOptions="splitActionBarWhenNarrow" >
-            <meta-data 
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.moneyapp.MainMenu" />
         </activity>
@@ -105,7 +105,7 @@
             android:name="com.example.moneyapp.transaction.LogPageFragment"
             android:label="@string/title_activity_log_page_fragment"
             android:uiOptions="splitActionBarWhenNarrow" >
-            <meta-data 
+            <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.moneyapp.MainMenu" />
         </activity>
@@ -127,12 +127,13 @@
         </activity>
         <activity
             android:name="com.example.moneyapp.transaction.PerItem"
-            android:label="@string/title_activity_per_item" 
-            android:parentActivityName="com.example.moneyapp.MainMenu">
+            android:label="@string/title_activity_per_item"
+            android:parentActivityName="com.example.moneyapp.MainMenu" >
         </activity>
         <activity
             android:name="com.example.moneyapp.transaction.NewTransaction"
-            android:label="@string/title_activity_new_transaction" >
+            android:label="@string/title_activity_new_transaction"
+            android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity
             android:name="com.example.moneyapp.MainLargeActivity"
@@ -148,9 +149,18 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/search_person" />
+        </activity>
+        <activity
+            android:name="com.example.moneyapp.friend.Friend"
+            android:label="@string/title_activity_friend"
+            android:parentActivityName="com.example.moneyapp.MainMenu" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.moneyapp.MainMenu" />
         </activity>
     </application>
 

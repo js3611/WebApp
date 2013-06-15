@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import IdMap.IDtoNameMap;
 import JSONBuilder.JSONBuilder;
 
 /**
@@ -19,7 +20,8 @@ import JSONBuilder.JSONBuilder;
 public class Login extends javax.servlet.http.HttpServlet implements
 		javax.servlet.Servlet {
 	static final long serialVersionUID = 1L;
-
+	private IDtoNameMap idToNameMap = null;
+	
 	int loginCount = 0;
 
 	/*
@@ -72,6 +74,7 @@ public class Login extends javax.servlet.http.HttpServlet implements
 					"jdbc:postgresql://db.doc.ic.ac.uk/g1227132_u?&ssl=true"
 					+ "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 					"g1227132_u", "W0zFGMaqup");
+		
 			
 			handleOperation(request.getParameter("op"), conn, request, out);
 			conn.close();
@@ -161,13 +164,18 @@ public class Login extends javax.servlet.http.HttpServlet implements
 			String password = request.getParameter("password");
 
 			ResultSet rs = stmt
-					.executeQuery("SELECT password FROM appuser WHERE phonenumber='"
+					.executeQuery("SELECT password, userid FROM appuser WHERE phonenumber='"
 							+ phoneNo + "'");
 
 			if (!rs.next()) { // User account with the phone Number doens't exist
 				out.print(getReturnCode(jb,3));
 			} else if (rs.getString("password").equals(password)) { // correct
 				String json = getUserDetails(conn, jb, phoneNo,1);
+				
+				if (idToNameMap == null)
+					idToNameMap = IDtoNameMap.getInstance(conn,rs.getInt("userid"));
+
+				
 				out.print(json);
 			} else { // wrong password
 				loginCount++;

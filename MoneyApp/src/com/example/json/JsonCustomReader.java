@@ -80,7 +80,7 @@ public class JsonCustomReader {
 		jr.endObject();
 		UserDetails ud = new UserDetails(userid, surname, firstName,
 				calendarid, wishlist, password, phoneNo, profilePicture);
-		Log.v("JSON", ud.toString());
+		//Log.v("JSON", ud.toString());
 		return new Pair<Integer, UserDetails>(retCode, ud);
 	}
 
@@ -128,7 +128,7 @@ public class JsonCustomReader {
 		jr.endObject();
 		UserDetails ud = new UserDetails(userid, surname, firstName,
 				calendarid, wishlist, password, phoneNo, profilePicture);
-		Log.v("JSON", ud.toString());
+		//Log.v("JSON", ud.toString());
 		return new Pair<Integer, UserDetails>(retCode, ud);
 	}
 
@@ -197,7 +197,7 @@ public class JsonCustomReader {
 		TransactionDetail td = new TransactionDetail(icon, transactionID,
 				owesuser, user, owesuserid, userid, subject, price,
 				partial_pay, date, deadline);
-		Log.v("JSON", "Read transaction detail: " + td.toString());
+		//Log.v("JSON", "Read transaction detail: " + td.toString());
 		return td;
 	}
 
@@ -266,7 +266,7 @@ public class JsonCustomReader {
 		UserDetails ud = new UserDetails(userid, surname, firstName,
 				calendarid, wishlist, password, phoneNo, profilePicture);
 		
-		Log.v("JSON", ud.toString());
+		//Log.v("JSON", ud.toString());
 
 		return ud;
 	}
