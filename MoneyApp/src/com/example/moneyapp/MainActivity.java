@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.HttpReaders;
 import com.example.helpers.StringFilter;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
@@ -124,7 +125,7 @@ public class MainActivity extends Activity {
 					nameValueP);
 
 			//errorMessage = HttpReaders.readIt(in, 1000);
-			//Log.v(TAG, errorMessage);
+			Log.v(TAG, errorMessage);
 			//int retCode = JsonCustomReader.readJsonRetCode(in);
 			Pair<Integer,UserDetails> result = JsonCustomReader.readJsonUser(in);
 			userDetails = result.getSecond();

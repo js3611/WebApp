@@ -124,9 +124,10 @@ public class PerPerson extends Activity {
 								+ "?" + "op=" + op
 								+ "&" + "viewMode=" + viewMode 
 								+ "&" + "userid=" + userid);
-
+				Log.v(TAG, HttpReaders.readIt(in, 1000));
 				ArrayList<TransactionDetail> rawData = JsonCustomReader
 						.readJsonPerPerson(in);
+				
 				details = processPerPerson(rawData);
 			} catch (Exception e) {
 				TransactionDetail Detail;
