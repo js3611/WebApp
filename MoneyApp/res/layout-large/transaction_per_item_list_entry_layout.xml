@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@+id/subject_view"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/subjectDim"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
@@ -30,11 +30,14 @@
             android:layout_toRightOf="@+id/profile_icon"
             android:text="Subject"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#003366" />
+            android:textColor="#003366" 
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:scrollHorizontally="false" />
 
         <TextView
             android:id="@+id/price_view"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/priceDim"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
@@ -47,7 +50,7 @@
             android:textColorHint="@color/shadowgreen" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dateAndPerson"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/price_view"
             android:layout_toLeftOf="@+id/next_icon"
@@ -62,7 +65,8 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
-                android:text="date" />
+                android:text="date" 
+                android:scrollHorizontally="false" />
 
             <TextView
                 android:id="@+id/from_view"
@@ -71,7 +75,8 @@
                 android:layout_below="@+id/date_view"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:text="Person" />
+                android:text="Person" 
+                android:scrollHorizontally="false" />
         </RelativeLayout>
 
         <ImageView

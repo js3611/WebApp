@@ -7,6 +7,9 @@
     <dimen name="border_offset">-0.5dp</dimen>
     <dimen name="column_width">100dp</dimen>
     <dimen name="column_height">65dp</dimen>
+    <dimen name="priceDim">70dp</dimen>
+    <dimen name="subjectDim">150dp</dimen>
+    <dimen name="dateAndPerson">150dp</dimen>
     
 
 </resources>
