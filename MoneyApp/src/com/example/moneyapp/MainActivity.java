@@ -1,6 +1,10 @@
 package com.example.moneyapp;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +18,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -25,6 +31,7 @@ import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.StringFilter;
+import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
@@ -37,11 +44,11 @@ public class MainActivity extends Activity {
 	public static final String pixel20 = "http://146.169.53.180:59999";
 	public static final String joMachine = "http://129.31.227.146:8080/MoneyDatabase";
 	public static final String joMachineEmulator = "http://10.0.2.2:8080/MoneyDatabase";
-	public static final String URL = joMachine;// "http://146.169.53.14:59999";
+	public static final String URL = joMachineEmulator;// "http://146.169.53.14:59999";
 	public static final String LOGIN = "/Login";
 	public static final String TRANSACTION = "/Transaction";
 	private String errorMessage;
-	private UserDetails userDetails;
+	private UserDetails user;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -49,7 +56,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		errorMessage = "";
-		userDetails = null;
+		user = null;
 	}
 
 	@Override
@@ -104,7 +111,7 @@ public class MainActivity extends Activity {
 				toastMessage("Login successful!");
 
 				Intent intent = new Intent(MainActivity.this, MainMenu.class);
-				intent.putExtra(USER_KEY, userDetails);
+				intent.putExtra(USER_KEY, user);
 				startActivity(intent);
 			} else {
 				toastMessage(errorMessage);
@@ -123,24 +130,56 @@ public class MainActivity extends Activity {
 			InputStream in = CustomHttpClient.executeHttpPost(URL + LOGIN,
 					nameValueP);
 
-			//errorMessage = HttpReaders.readIt(in, 1000);
-			//Log.v(TAG, errorMessage);
-			//int retCode = JsonCustomReader.readJsonRetCode(in);
-			Pair<Integer,UserDetails> result = JsonCustomReader.readJsonUser(in);
-			userDetails = result.getSecond();
-			Log.v(TAG,"is error here");
-			
-			 //Handle JSONstring
-
-			int response = result.getFirst();			
-			Pair<String, Boolean> pair = AdminHelper.handleResponse(response);
-			errorMessage = pair.getFirst();
-			return pair.getSecond();
+			return processInput(in);
 		} catch (Exception e) {
 			errorMessage = e.toString();
 		}
 
 		return false;
+	}
+
+	private boolean processInput(InputStream in) {
+		JsonReader jr;
+		try {
+			jr = new JsonReader(new BufferedReader(new InputStreamReader(in,
+					"UTF-8")));
+
+			jr.setLenient(true);
+			jr.beginObject();
+
+			/* Read ReturnCode */
+			Pair<String, Boolean> pair = AdminHelper
+					.handleResponse(JsonCustomReader.readJSONRetCode(jr, in));
+
+			if (!pair.getSecond()) {
+				errorMessage = pair.getFirst();
+				return false;
+			}
+			/* Read User detail */
+			user = JsonCustomReader.readJSONUser(jr, in);
+			/* Read Friends */
+			if (jr.peek() == JsonToken.END_OBJECT) {
+				Log.v(TAG, "No FRIENDS");
+				FriendsList.createInstance(new ArrayList<UserDetails>());
+				return true;
+			}
+			ArrayList<UserDetails> friends = JsonCustomReader.readJSONFriends(jr, in);
+			FriendsList.createInstance(friends);
+			jr.endObject();
+
+			Log.v(TAG, FriendsList.showFriends());
+			// errorMessage = HttpReaders.readIt(in, 1000);
+			// Log.v(TAG, errorMessage);
+			// int retCode = JsonCustomReader.readJsonRetCode(in);
+			return true;
+			// Handle JSONstring
+		} catch (UnsupportedEncodingException e) {
+			errorMessage = e.getMessage();
+		} catch (IOException e) {
+			errorMessage = e.getMessage();
+		}
+		return false;
+
 	}
 
 	public void signInHandler(View view) {

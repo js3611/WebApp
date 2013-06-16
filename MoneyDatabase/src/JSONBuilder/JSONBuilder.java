@@ -12,6 +12,7 @@ public class JSONBuilder {
 	private boolean startedArray = false;
 	private boolean endedArray = false;
 	private boolean endedObj = false;
+	private boolean firstInArray = false;
 	private int nestedArrCount = 0;
 	private int nestedObjCount = 0;
 	
@@ -33,23 +34,26 @@ public class JSONBuilder {
 	}
 	
 	private void addArrayComma() {
-		if (endedArray || (startedObj && btwnEntry))
+		if (endedArray || (startedObj && btwnEntry) || endedObj)
 			str.append(COMMA);
 		endedArray = false;
 	}
 	
 	private void addObjComma() {
-		if (endedObj || btwnEntry)
+		if (!firstInArray && ( endedObj || btwnEntry))
 			str.append(COMMA);
 		endedObj = false;
+		firstInArray = false;
 	}
 	
 
 	public JSONBuilder beginArray() {
 		addArrayComma();
 		str.append(DOUBLE_QUOTE+"data"+DOUBLE_QUOTE+COLON+"[");
+		nestedArrCount++;
 		btwnEntry = false;
 		startedArray = true;
+		firstInArray = true;
 
 		return this;
 	}
@@ -80,6 +84,7 @@ public class JSONBuilder {
 		endedObj = true;
 		startedObj = false;
 		btwnEntry = false;
+		nestedObjCount--;
 		return this;
 	}
 

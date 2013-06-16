@@ -1,7 +1,11 @@
 package com.example.moneyapp.transaction;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +15,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,8 +24,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.HttpReaders;
+import com.example.helpers.metadata.FriendsList;
+import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
@@ -30,6 +39,7 @@ public class PerPerson extends Activity {
 
 	// Debug
 	private static final String TAG = "PerPerson";
+	private String errorMessage = "";
 	private PerPerson thisActivity;
 	// The List view
 	private ListView transList;
@@ -120,14 +130,12 @@ public class PerPerson extends Activity {
 
 				InputStream in = CustomHttpClient
 						.executeHttpGet(MainActivity.URL
-								+ MainActivity.TRANSACTION  
-								+ "?" + "op=" + op
-								+ "&" + "viewMode=" + viewMode 
-								+ "&" + "userid=" + userid);
+								+ MainActivity.TRANSACTION + "?" + "op=" + op
+								+ "&" + "viewMode=" + viewMode + "&"
+								+ "userid=" + userid);
 
-				ArrayList<TransactionDetail> rawData = JsonCustomReader
-						.readJsonPerPerson(in);
-				details = processPerPerson(rawData);
+				processInput(in);
+
 			} catch (Exception e) {
 				TransactionDetail Detail;
 				Detail = new TransactionDetail();
@@ -138,6 +146,47 @@ public class PerPerson extends Activity {
 			}
 
 			return details;
+		}
+
+		private boolean processInput(InputStream in) {
+
+			JsonReader jr;
+			try {
+				jr = new JsonReader(new BufferedReader(new InputStreamReader(
+						in, "UTF-8")));
+
+				jr.setLenient(true);
+				jr.beginObject();
+
+				/* Read ReturnCode */
+				Pair<String, Boolean> pair = AdminHelper
+						.handleResponse(JsonCustomReader
+								.readJSONRetCode(jr, in));
+
+				if (!pair.getSecond()) {
+					errorMessage = pair.getFirst();
+					return false;
+				}
+
+				if (jr.peek() == JsonToken.END_OBJECT) {
+					Log.v(TAG, "No Transactions");
+					return true;
+				}
+				/* Read TransactionDetails */
+				ArrayList<TransactionDetail> rawData = JsonCustomReader
+						.readJSONTransactions(jr, in);
+				jr.endObject();
+
+				details = processPerPerson2(rawData);
+
+				return true;
+			} catch (UnsupportedEncodingException e) {
+				errorMessage = e.getMessage();
+			} catch (IOException e) {
+				errorMessage = e.getMessage();
+			}
+			return false;
+
 		}
 
 		/* A method to combine the bills and diplay total difference */
@@ -151,13 +200,13 @@ public class PerPerson extends Activity {
 			/* for each transaction */
 			for (TransactionDetail transactionDetail : rawData) {
 
-				//Log.v(TAG, transactionDetail.toString());
+				// Log.v(TAG, transactionDetail.toString());
 				/* If the transaction is to user */
 				if (user.getFirstName().equals(transactionDetail.getUser())) {
 					/* get who owes */
 					String owesUser = transactionDetail.getOwesuser();
 					/* put the icon now */
-			//		Log.v(TAG, "pays to " + owesUser);
+					// Log.v(TAG, "pays to " + owesUser);
 					if (personPriceMap.containsKey(owesUser)) {
 						/*
 						 * If there is a person in the map already, subtract the
@@ -182,9 +231,9 @@ public class PerPerson extends Activity {
 										.getOwesuserid(), "", owesUser, 0, 0,
 										"", "", transactionDetail.getIcon()));
 					}
-//					Log.v(TAG,
-//							"pays to " + owesUser + ": "
-//									+ personPriceMap.get(owesUser));
+					// Log.v(TAG,
+					// "pays to " + owesUser + ": "
+					// + personPriceMap.get(owesUser));
 				} else {
 					/* If user owes someone, then increase the total */
 					String owesUser = transactionDetail.getUser();
@@ -202,14 +251,14 @@ public class PerPerson extends Activity {
 								transactionDetail.getUserid(), "", owesUser, 0,
 								0, "", "", transactionDetail.getIcon()));
 					}
-//					Log.v(TAG,
-//							"pays to" + owesUser + ": "
-//									+ personPriceMap.get(owesUser));
+					// Log.v(TAG,
+					// "pays to" + owesUser + ": "
+					// + personPriceMap.get(owesUser));
 
 				}
 			}
 
-//			Log.v(TAG, "After editing");
+			// Log.v(TAG, "After editing");
 
 			for (Map.Entry<String, Double> entry : personPriceMap.entrySet()) {
 				TransactionDetail tDetail = new TransactionDetail(
@@ -218,7 +267,79 @@ public class PerPerson extends Activity {
 								.get(entry.getKey()).getUserid(), user
 								.getUserid(), "", entry.getValue(), (double) 0,
 						"", "");
-//				Log.v(TAG, tDetail.toString());
+				// Log.v(TAG, tDetail.toString());
+				newDetails.add(tDetail);
+			}
+			return newDetails;
+		}
+
+		private ArrayList<TransactionDetail> processPerPerson2(
+				ArrayList<TransactionDetail> rawData) {
+
+			ArrayList<TransactionDetail> newDetails = new ArrayList<TransactionDetail>();
+			Map<Integer, Double> personPriceMap = new HashMap<Integer, Double>();
+
+			/* for each transaction */
+			for (TransactionDetail transactionDetail : rawData) {
+
+				// Log.v(TAG, transactionDetail.toString());
+				/* If the transaction is to user */
+				if (user.getUserid() == transactionDetail.getOwesuserid()) {
+					/* get who owes */
+					int owesUser = transactionDetail.getOwesuserid();
+					/* put the icon now */
+					// Log.v(TAG, "pays to " + owesUser);
+					if (personPriceMap.containsKey(owesUser)) {
+						/*
+						 * If there is a person in the map already, subtract the
+						 * value
+						 */
+						personPriceMap.put(
+								owesUser,
+								personPriceMap.get(owesUser)
+										- (transactionDetail
+												.getRemainingToPay()));
+					} else {
+						/*
+						 * This is the case they owe you, so you have to pay
+						 * negative amount
+						 */
+						personPriceMap.put(owesUser,
+								-transactionDetail.getRemainingToPay());
+					}
+					// Log.v(TAG,
+					// "pays to " + owesUser + ": "
+					// + personPriceMap.get(owesUser));
+				} else {
+					/* If user owes someone, then increase the total */
+					int owesUser = transactionDetail.getUserid();
+
+					if (personPriceMap.containsKey(owesUser)) {
+						personPriceMap.put(
+								owesUser,
+								personPriceMap.get(owesUser)
+										+ (transactionDetail
+												.getRemainingToPay()));
+					} else {
+						personPriceMap.put(owesUser,
+								transactionDetail.getRemainingToPay());
+					}
+					// Log.v(TAG,
+					// "pays to" + owesUser + ": "
+					// + personPriceMap.get(owesUser));
+
+				}
+			}
+
+			// Log.v(TAG, "After editing");
+
+			for (Map.Entry<Integer, Double> entry : personPriceMap.entrySet()) {
+				TransactionDetail tDetail = new TransactionDetail(
+						R.drawable.ic_launcher, 0,
+						FriendsList.getFirstname(entry.getKey()),
+						user.getFirstName(), entry.getKey(), user.getUserid(),
+						"", entry.getValue(), 0.0, "", "");
+
 				newDetails.add(tDetail);
 			}
 			return newDetails;

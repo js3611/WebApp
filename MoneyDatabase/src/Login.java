@@ -20,7 +20,6 @@ import JSONBuilder.JSONBuilder;
 public class Login extends javax.servlet.http.HttpServlet implements
 		javax.servlet.Servlet {
 	static final long serialVersionUID = 1L;
-	private IDtoNameMap idToNameMap = null;
 	
 	int loginCount = 0;
 
@@ -41,27 +40,8 @@ public class Login extends javax.servlet.http.HttpServlet implements
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-/*		JSONBuilder jb = new JSONBuilder();
-		int i = 0;
-		jb.beginObject().append("returnCode",1).beginArray();
-		while(i < 3) {	
-			int amount = 30;
-			jb.beginObject().append("userfname", "jo")
-							.append("owesfname","terence")
-							.append("price",amount)
-							.beginArray()
-								.appendArrVal("tae").appendArrVal("yeong")
-							.endArray()
-			  .endObject();
-			i++;
-		}
-		jb.endArray().endObject();
-		
-		writer.println(jb.build());
-*/
+
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
@@ -74,13 +54,14 @@ public class Login extends javax.servlet.http.HttpServlet implements
 					"jdbc:postgresql://db.doc.ic.ac.uk/g1227132_u?&ssl=true"
 					+ "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 					"g1227132_u", "W0zFGMaqup");
-		
 			
 			handleOperation(request.getParameter("op"), conn, request, out);
 			conn.close();
+
 		} catch (Exception e) {
 			out.println("<h1>exception: " + e + e.getMessage() + "</h1>");
 		}
+
 	}
 
 	/*
@@ -152,8 +133,10 @@ public class Login extends javax.servlet.http.HttpServlet implements
 					out.print(getReturnCode(jb,7));
 				else {
 					// Successful signup
-					String json = getUserDetails(conn, jb, phoneNo,5);
-					out.print(json);
+					jb.beginObject().append("retCode",5);
+					jb = getUserDetails(conn, jb, phoneNo);
+					jb.endObject();
+					out.print(jb.build());
 				}
 				stmt.close();
 			}
@@ -170,13 +153,18 @@ public class Login extends javax.servlet.http.HttpServlet implements
 			if (!rs.next()) { // User account with the phone Number doens't exist
 				out.print(getReturnCode(jb,3));
 			} else if (rs.getString("password").equals(password)) { // correct
-				String json = getUserDetails(conn, jb, phoneNo,1);
 				
-				if (idToNameMap == null)
-					idToNameMap = IDtoNameMap.getInstance(conn,rs.getInt("userid"));
+				jb.beginObject().append("returnCode",1);
+				jb = getUserDetails(conn, jb, phoneNo);
+				jb = getFriendList(conn, jb, rs.getInt("userid"));
+				jb.endObject();
+				
+				
+//				if (idToNameMap == null)
+//					idToNameMap = IDtoNameMap.getInstance(conn,rs.getInt("userid"));
 
 				
-				out.print(json);
+				out.print(jb.build());
 			} else { // wrong password
 				loginCount++;
 				if (loginCount >= 3) // tried too many
@@ -188,29 +176,59 @@ public class Login extends javax.servlet.http.HttpServlet implements
 		}
 	}
 
+	private JSONBuilder getFriendList(Connection conn, JSONBuilder jb, int userid)
+		throws SQLException {
+		
+		Statement getFriendsStmt = conn.createStatement();
+
+		ResultSet friendsList = getFriendsStmt
+				.executeQuery(
+						"SELECT f.friendid, a.firstname, a.surname " +
+						"FROM friends AS f INNER JOIN appuser AS a ON f.friendid = a.userid " +
+						"WHERE f.userid = "+ userid + " UNION " +
+						"SELECT f.userid, a.firstname, a.surname " +
+						"FROM friends AS f INNER JOIN appuser AS a ON f.userid = a.userid " +
+						"WHERE f.friendid = "+ userid + ";");
+
+		if (friendsList.next()) {
+			jb.beginArray();
+			do {
+				jb.beginObject()
+				.append("friendid", friendsList.getInt("friendid"))
+				.append("firstname", friendsList.getString("firstname"))
+				.append("surname", friendsList.getString("surname"))
+				.endObject();
+			} while (friendsList.next());
+			jb.endArray();
+		
+		} 
+		
+		return jb;
+	}
+
 	private String getReturnCode(JSONBuilder jb, int ret) {
 		return jb.beginObject().append("returnCode",ret).endObject().build();
 	}
 
-	private String getUserDetails(Connection conn, JSONBuilder jb,
-			String phoneNo,int retCode) throws SQLException {
+	private JSONBuilder getUserDetails(Connection conn, JSONBuilder jb,
+			String phoneNo) throws SQLException {
 		Statement userstmt = conn.createStatement();
 		// Get user details
 		ResultSet userDetails 
 		  = userstmt.executeQuery("SELECT * FROM appuser WHERE phonenumber = '" + phoneNo + "';");
 		// Get the entry
 		userDetails.next();
-		String json = jb.beginObject().append("returnCode",retCode)
-									  .append("userid",userDetails.getInt("userid"))
-									  .append("firstname",userDetails.getString("firstname"))
-									  .append("surname",userDetails.getString("surname"))
-									  .append("calenderid",userDetails.getInt("calendarid"))
-									  .append("wishlist",userDetails.getInt("wishlist"))
-									  .append("password",userDetails.getString("password"))
-									  .append("phonenumber",userDetails.getString("phonenumber"))
-						.endObject().build();
+		jb.beginObject();
+		jb.append("userid",userDetails.getInt("userid"))
+		  .append("firstname",userDetails.getString("firstname"))
+		  .append("surname",userDetails.getString("surname"))
+		  .append("calenderid",userDetails.getInt("calendarid"))
+		  .append("wishlist",userDetails.getInt("wishlist"))
+		  .append("password",userDetails.getString("password"))
+		  .append("phonenumber",userDetails.getString("phonenumber"));
+		jb.endObject();
 		userstmt.close();
-		return json;
+		return jb;
 	}
 
 }

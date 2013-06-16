@@ -17,7 +17,7 @@ import Pair.Pair;
 public class IDtoNameMap {
 
 	private static IDtoNameMap theMap;
-	private Map<Integer,Pair<String,String>> friendMap = null;
+	private Map<Integer, Pair<String, String>> friendMap = null;
 	//How can we possibly put so much strain on the server, especially if this reaches a couple thousand users?
 	//changing the map to be made just for the users' friends
 	
@@ -36,7 +36,13 @@ public class IDtoNameMap {
 			
 			Statement IdToUser = conn.createStatement();
 			
-			ResultSet rs = IdToUser.executeQuery("SELECT m.userid, m.firstname as user_firstname, m.surname as user_surname, m.friendid , n.firstname as friend_firstname, n.surname as friend_surname FROM appuser n inner join (SELECT b.userid, a.firstname, a.surname, b.friendid FROM appuser a inner join (SELECT * FROM friends where (userid = 3 or friendid = 3)) as b on (a.userid = b.userid)) as m on (n.userid = m.friendid);");
+			ResultSet rs = IdToUser.executeQuery(
+					"SELECT m.userid, m.firstname as user_firstname, m.surname as user_surname, m.friendid , n.firstname as friend_firstname, n.surname as friend_surname " +
+					"FROM appuser n inner join " +
+						"(SELECT b.userid, a.firstname, a.surname, b.friendid " +
+						"FROM appuser a INNER JOIN " +
+							"(SELECT * FROM friends where (userid = 3 or friendid = 3)) as b " +
+							"ON (a.userid = b.userid)) as m on (n.userid = m.friendid);");
 			
 			if(!rs.isBeforeFirst()) {
 			}
@@ -67,6 +73,17 @@ public class IDtoNameMap {
 	public String getSurname(int userid) {
 		return friendMap.get(userid).getSecond();
 	}
+	
+	@Override
+	public String toString() {
+		
+		
+		
+		return null;
+		
+	}
+	
+	
 	
 	
 }

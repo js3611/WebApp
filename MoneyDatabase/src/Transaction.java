@@ -23,16 +23,13 @@ import IdMap.IDtoNameMap;
 public class Transaction extends javax.servlet.http.HttpServlet implements
 		javax.servlet.Servlet {
 	static final long serialVersionUID = 1L;
-	private IDtoNameMap idToNameMap;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		PrintWriter writer = response.getWriter();
 		String operation = request.getParameter("op");
 		String viewMode = request.getParameter("viewMode");
-		int userid = 0;
-		
-	
+			
 
 		// TODO FIND A WAY OF GETTING THE VIEWMODE AND USER ID FROM THE DEVICE
 		
@@ -45,8 +42,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
-			writer
-					.println("<h1>Driver not found: " + e + e.getMessage()
+			writer.println("<h1>Driver not found: " + e + e.getMessage()
 							+ "</h1>");
 		}
 
@@ -57,8 +53,8 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 									+ "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 							"g1227132_u", "W0zFGMaqup");
 
-			if (idToNameMap == null)
-				idToNameMap = IDtoNameMap.getInstance(null,0);
+//			if (idToNameMap == null)
+//				idToNameMap = IDtoNameMap.getInstance(null,0);
 			
 			
 			handleGetOperation(operation, viewMode, conn, request, writer);
@@ -250,25 +246,30 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 
 				
 				JSONBuilder jb = new JSONBuilder();
-				ResultSet debtSet = friendsGetStmt.executeQuery("SELECT d.userid, d.owesuserid, d.amount, d.partial_pay FROM"+
-				" transactions t INNER JOIN debt d on (t.transid=d.transid)"+
-				"  WHERE (d.owesuserid = " + userid +" OR d.userid = " + userid +");");
+				ResultSet debtSet = friendsGetStmt.executeQuery(
+						"SELECT d.userid, d.owesuserid, d.amount, d.partial_pay " +
+						"FROM transactions t INNER JOIN debt d on (t.transid=d.transid)"+
+						"WHERE (d.owesuserid = " + userid +" OR d.userid = " + userid +");");
 
+				if (!debtSet.isBeforeFirst()) {
+					writer.println(getReturnCode(jb,20));
+					return;
+				}
 				
 				jb.beginObject().append("returnCode",1).beginArray();
 				while (debtSet.next()) {
-					String user_firstname = idToNameMap.getFirstname(debtSet.getInt("userid"));
-					String owesuser_firstname = idToNameMap.getFirstname(debtSet.getInt("owesuserid"));
+//					String user_firstname = idToNameMap.getFirstname(debtSet.getInt("userid"));
+//					String owesuser_firstname = idToNameMap.getFirstname(debtSet.getInt("owesuserid"));
 					Double debtAmount = debtSet.getDouble("amount");
 					Double partial_pay = debtSet.getDouble("partial_pay");
 					
 					
-					writer.println(idToNameMap.getFirstname(debtSet.getInt("owesuserid")));
+//					writer.println(idToNameMap.getFirstname(debtSet.getInt("owesuserid")));
 					
 					jb.beginObject().append("userid", debtSet.getInt("userid"))
 									.append("owesuserid", debtSet.getInt("owesuserid"))
-									.append("user_fname", user_firstname)
-									.append("owesuser_fname", owesuser_firstname)
+//									.append("user_fname", user_firstname)
+//									.append("owesuser_fname", owesuser_firstname)
 									.append("amount",debtAmount)
 									.append("partial_pay", partial_pay)
 					  .endObject();
@@ -372,7 +373,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				
 				int userid = Integer.parseInt(request.getParameter("userid"));
 				int friendid = Integer.parseInt(request.getParameter("friendid"));
-				String friend_firstname = idToNameMap.getFirstname(friendid);
+//				String friend_firstname = idToNameMap.getFirstname(friendid);
 				String user_firstname = request.getParameter("firstname");
 				
 				int transid = Integer.parseInt(request.getParameter("transid"));
@@ -390,7 +391,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				double total = trans.getDouble("amount") - trans.getDouble("partial_pay");
 				
 				
-				String msg = "Yo " + friend_firstname + ", " + user_firstname + " needs his money from "+
+				String msg = "Yo " + /*friend_firstname + */", " + user_firstname + " needs his money from "+
 							 trans.getString("name") + ". This comes to £" + total + ". Pay it back soon or "+
 							 "I'll come and smash your legs bro.";
 						
