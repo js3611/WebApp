@@ -120,14 +120,8 @@ public class Login extends javax.servlet.http.HttpServlet implements
 			else {
 
 				int rs = stmt
-						.executeUpdate("INSERT INTO appuser(firstname, surname, password, phonenumber) values ('"
-								+ fname
-								+ "', '"
-								+ sname
-								+ "', '"
-								+ pw
-								+ "', '"
-								+ phoneNo + "')");
+						.executeUpdate("INSERT INTO appuser(firstname, surname, password, phonenumber) " +
+								"values ('"+ fname + "', '" + sname + "', '"	+ pw + "', '" + phoneNo + "')");
 				
 				if (rs == 0) //failed to insert
 					out.print(getReturnCode(jb,7));
@@ -185,10 +179,11 @@ public class Login extends javax.servlet.http.HttpServlet implements
 				.executeQuery(
 						"SELECT f.friendid, a.firstname, a.surname " +
 						"FROM friends AS f INNER JOIN appuser AS a ON f.friendid = a.userid " +
-						"WHERE f.userid = "+ userid + " UNION " +
+						"WHERE f.userid = "+ userid + " AND f.confirmed = true" +
+						" UNION " +
 						"SELECT f.userid, a.firstname, a.surname " +
 						"FROM friends AS f INNER JOIN appuser AS a ON f.userid = a.userid " +
-						"WHERE f.friendid = "+ userid + ";");
+						"WHERE f.friendid = "+ userid + " AND f.confirmed = true;");
 
 		if (friendsList.next()) {
 			jb.beginArray();

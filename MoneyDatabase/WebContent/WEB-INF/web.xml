@@ -29,4 +29,14 @@
     <servlet-name>Login</servlet-name>
     <url-pattern>/Login</url-pattern>
   </servlet-mapping>
+   <servlet>
+    <description></description>
+    <display-name>Friends</display-name>
+    <servlet-name>Friends</servlet-name>
+    <servlet-class>Friends</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Friends</servlet-name>
+    <url-pattern>/Friends</url-pattern>
+  </servlet-mapping>
 </web-app>

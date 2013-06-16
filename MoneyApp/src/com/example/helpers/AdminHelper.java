@@ -45,7 +45,7 @@ public class AdminHelper {
 			errorMessage = "No friends";
 			break;
 		case 34:
-			errorMessage = "Failed to load";
+			errorMessage = "No new requests";
 			break;
 		case 35:
 			errorMessage = "No requests";

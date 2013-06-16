@@ -85,15 +85,15 @@
         android:shadowColor="@android:color/background_dark"
         android:text="@string/login" />
 
-    <TextView
+    <Button
         android:id="@+id/signIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/errorView"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/signin_custom_button"
         android:layout_marginTop="27dp"
         android:text="@string/signIn"
-        android:onClick="signInHandler"
-        android:clickable="true" />"
+        android:onClick="signInHandler" />
 
 </RelativeLayout>

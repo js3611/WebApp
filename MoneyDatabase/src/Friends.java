@@ -27,13 +27,12 @@ public class Friends extends javax.servlet.http.HttpServlet implements
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request,
 	 *      HttpServletResponse response)
 	 */
-	IDtoNameMap idToNameMap;
+
 	 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
 		String operation = request.getParameter("op");
-		int userid = Integer.parseInt(request.getParameter("userid"));
 		PrintWriter writer = response.getWriter();
 		JSONBuilder jb = new JSONBuilder();
 		
@@ -54,10 +53,7 @@ public class Friends extends javax.servlet.http.HttpServlet implements
 					"jdbc:postgresql://db.doc.ic.ac.uk/g1227132_u?&ssl=true"
 					+ "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 					"g1227132_u", "W0zFGMaqup");
-			
-			if (idToNameMap == null)
-				idToNameMap = IDtoNameMap.getInstance(conn,userid);
-			
+
 			handleOperation(operation, conn, request, writer);
 			conn.close();
 		} catch (Exception e) {
@@ -113,46 +109,46 @@ public class Friends extends javax.servlet.http.HttpServlet implements
 /* TODO
 doGET:
 1. Get list of all friends
-rc 1 = no friends or fail
-rc 2 = friends list success
-rc 3 = NO FRIENDS LOL TOO SAD FOR U
+rc 31 = no friends or fail
+rc 32 = friends list success
+rc 33 = NO FRIENDS LOL TOO SAD FOR U
 
 2. Get list of people who've added you
-rc 4 = failed
-rc 5 = no requests at the moment
-rc 6 = got requests
+rc 34 = failed
+rc 35 = no requests at the moment
+rc 36 = got requests
 
 3. Check if user exists(for adding)
-rc 9 = number not found
-rc 12 = number existed user returned
+rc 312 = number not found
+rc 39 = number existed user returned
 
 4. View Friend profile
-rc 16 = found friend
-rc 17 = something went wrong
+rc 316 = found friend
+rc 317 = something went wrong
 
 doPost:
 1. Add friend
-rc 7 = friend already exists
-rc 8 = friend added
+rc 37 = friend already exists
+rc 38 = friend added
 
 2. Delete friend
-rc 13 = existing debts between users
-rc 14 = something went wrong with delete
-rc 15 = delete done
+rc 313 = existing debts between users
+rc 314 = something went wrong with delete
+rc 315 = delete done
 
 3. Edit friend
-rc 18 = didnt work
-rc 19 = edited successfully
+rc 318 = didnt work
+rc 319 = edited successfully
 
 4. Confirm friend
-rc 10 = confirm didnt work
-rc 11 = successful confirm
+rc 310 = confirm didnt work
+rc 311 = successful confirm
 */
 
 	private void handleOperation(String operation, Connection conn,
 	 	HttpServletRequest request, PrintWriter writer) throws Exception {
 	 	
-	 	if (operation.equals("getFriends")) {
+	 	if (operation.equals("getFriends")) { //DONT USE THIS
 	 	//doGet to get Current friends
 	 		Statement getFriends = conn.createStatement();
 	 		Statement friendCount = conn.createStatement();
@@ -171,24 +167,24 @@ rc 11 = successful confirm
 					"friendid = " + userid + ");");
 			
 			if (!friends.isBeforeFirst() && !count.isBeforeFirst()) { // Something went wrong
-				writer.println(getReturnCode(jb,1));
+				writer.println(getReturnCode(jb,31));
 				
-			} else if (!friends.isBeforeFirst()) { // YOU HAVE NO FRIENDS or soemthing went wrong
+			} else if (!friends.isBeforeFirst()) { // YOU HAVE NO FRIENDS or something went wrong
 				int total = count.getInt("count");
 				if (total == 0)
-					 writer.println(getReturnCode(jb,3));
+					 writer.println(getReturnCode(jb,33));
 				else
-					writer.println(getReturnCode(jb,1));
+					writer.println(getReturnCode(jb,31));
 					
 			} else {
-				jb.beginObject().append("returnCode",2).beginArray();
+				jb.beginObject().append("returnCode",32).beginArray();
 				while(friends.next()) {
 					//if the supplied userid is in userid column
 					if (userid == friends.getInt("userid")) {
 						int friendid = friends.getInt("friendid");
 						
-						String firstname = idToNameMap.getFirstname(friendid);
-						String surname = idToNameMap.getSurname(friendid);
+						String firstname = null;
+						String surname = null;
 						
 						jb.beginObject().append("friendid",friendid)
 										.append("firstname", firstname)
@@ -210,9 +206,9 @@ rc 11 = successful confirm
 	 							friendid + ";");
 	 		
 	 		if (!friendDetails.isBeforeFirst()) {
-	 			writer.println(getReturnCode(jb,17));
+	 			writer.println(getReturnCode(jb,317));
 	 		} else {		
-	 		jb.beginObject().append("returnCode", 16)
+	 		jb.beginObject().append("returnCode", 316)
 	 						.append("userid", friendDetails.getInt("userid"))
 	 						.append("firstname", friendDetails.getString("firstname"))
 	 						.append("surname", friendDetails.getString("surname"))
@@ -247,18 +243,18 @@ rc 11 = successful confirm
 	 	
 	 	
 	 		if (!requests.isBeforeFirst() && !count.isBeforeFirst()) { // Something went wrong
-				writer.println(getReturnCode(jb,5));
+				writer.println(getReturnCode(jb,35));
 				
 			} else if (!requests.isBeforeFirst()) { // No requests or soemthing went wrong
 				int total = count.getInt("count");
 				if (total == 0)
-					 writer.println(getReturnCode(jb,4));
+					 writer.println(getReturnCode(jb,34));
 				else
-					writer.println(getReturnCode(jb,5));
+					writer.println(getReturnCode(jb,35));
 					
 			} else {	
 			//print all current requests
-				jb.beginObject().append("returnCode",6).beginArray();
+				jb.beginObject().append("returnCode",36).beginArray();
 
 				while(requests.next()) {	
 								
@@ -286,39 +282,61 @@ rc 11 = successful confirm
 	 		 	int phonenumber = Integer.parseInt(request.getParameter("phonenumber"));
 	 	
 	 			ResultSet rs = addStmt.executeQuery("SELECT userid, firstname, surname " +
-	 							"FROM appuser WHERE phonenumber = " +
-	 							phonenumber + ";");
+	 							"FROM appuser WHERE phonenumber = '" +
+	 							phonenumber + "';");
 	 			
-	 			if (!rs.isBeforeFirst())  //Phonenumber doesnt' exist
-	 				writer.println(getReturnCode(jb,12));
-	 			
-	 			jb.beginObject().append("returnCode",9)
-	 							.append("userid", rs.getInt("userid"))
-	 							.append("firstname", rs.getString("firstname"))
-	 							.append("surname", rs.getString("surname"))
-	 			  .endObject();
-	 			  
-	 			writer.println(jb.build());
-	 			
+	 			if (rs.next()) { //Phonenumber exists
+	 				
+	 				jb.beginObject().append("returnCode",39)
+	 				  .beginObject()
+						.append("userid", rs.getInt("userid"))
+						.append("firstname", rs.getString("firstname"))
+						.append("surname", rs.getString("surname"))
+					  .endObject()
+					  .endObject();
+		  
+	 				writer.println(jb.build());
+	 			}
+	 			else 
+	 				writer.println(getReturnCode(jb,312));
+ 							 			
 	 	}
 	 	else if (operation.equals("addFriend")) {
 	 		Statement addStmt = conn.createStatement();
-
+	 		Statement checkStmt = conn.createStatement();
+	 		
 	 		JSONBuilder jb = new JSONBuilder();
 	 		
-	 		int userid = Integer.parseInt(request.getParameter("userd"));
+	 		int userid = Integer.parseInt(request.getParameter("userid"));
 	 		int friendid = Integer.parseInt(request.getParameter("friendid"));
-	 						
-	 		int rs = addStmt.executeUpdate("INSERT INTO friends VALUES (" +
+	 		
+	 		ResultSet pending = checkStmt.executeQuery("SELECT confirmed FROM friends WHERE (userid = " +
+	 							 userid + " AND friendid = " +
+	 							 friendid + ") OR "+
+	 							 "(userid = " +
+	 							 friendid + " AND friendid =" +
+	 							 userid + ")");
+	 		
+	 		if (!pending.next()) {
+	 			int rs = addStmt.executeUpdate("INSERT INTO friends VALUES (" +
 	 						userid + ", " +
-	 						friendid +"; ");
-	 						
-	 						
-	 		if (rs == 0) // When either friendship exists or query didnt work 
-	 				     //(Can we change this so no suggestions for existing friends show up?)
-	 			writer.println(getReturnCode(jb,7));
-	 		else		 
-	 			writer.println(getReturnCode(jb,8));
+	 						friendid +"); ");
+	 			
+	 			if (rs == 0)
+	 				writer.println(getReturnCode(jb,37));
+	 			else
+	 				writer.println(getReturnCode(jb,38));
+	 		}
+
+	 		// When either friendship exists or query didn't work 
+	 		//TODO (Can we change this so no suggestions for existing friends AND pending friends show up?)
+	 		else {
+	 			boolean confirmed = pending.getBoolean("confirmed");
+	 			if (confirmed)
+	 				writer.println(getReturnCode(jb,321));
+	 			else
+	 				writer.println(getReturnCode(jb,320));
+	 		}
 	 						
 	 	}
 	 	else if (operation.equals("deleteFriend")) {
@@ -342,12 +360,12 @@ rc 11 = successful confirm
 	 							friendid + ":");
 	 							
 	 			if (rs == 0) //delete didnt work
-	 				writer.println(getReturnCode(jb,14));
+	 				writer.println(getReturnCode(jb,314));
 	 			else
-	 				writer.println(getReturnCode(jb,15));	
+	 				writer.println(getReturnCode(jb,315));	
 	 		}
 	 		else // else debts exist so cannot delete
-	 			writer.println(getReturnCode(jb,13));			
+	 			writer.println(getReturnCode(jb,313));			
 	 		
 	 	}
 	 	else if (operation.equals("confirmRequest")) {
@@ -363,9 +381,9 @@ rc 11 = successful confirm
 	 					userid + ";");
 	 					
 	 		if (rs == 0)
-	 			writer.println(getReturnCode(jb,10));
+	 			writer.println(getReturnCode(jb,310));
 	 		else 
-	 			writer.println(getReturnCode(jb,11));
+	 			writer.println(getReturnCode(jb,311));
 	 	}
 	 
 	 }

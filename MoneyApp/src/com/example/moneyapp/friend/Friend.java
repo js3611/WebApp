@@ -11,6 +11,26 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.JsonReader;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ListView;
+
 import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.MyToast;
@@ -21,34 +41,23 @@ import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
-import com.example.moneyapp.R.layout;
-import com.example.moneyapp.R.menu;
 import com.example.moneyapp.transaction.NewPersonAdapter;
-import com.example.moneyapp.transaction.PayDialog;
-
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.app.Activity;
-import android.app.DialogFragment;
-import android.content.Intent;
-import android.util.JsonReader;
-import android.util.JsonToken;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ListView;
-import android.support.v4.app.NavUtils;
 
 public class Friend extends Activity implements
 		NewFriendDialog.NoticeDialogListener {
 
 	private static final String TAG = "Friend";
+	private static final Integer CONFIRM_OP = 1;
+	private static final Integer DELETE_OP = 2;
 	private String errorMessage = "";
 	private Friend thisActivity;
 	private ListView friendList;
+	private FriendAdapter friendAdapter;
 	private ArrayList<UserDetails> details;
+	private ArrayList<UserDetails> newFriends; 
 	private UserDetails user;
 	private UserDetails newFriend;
+	private boolean[] tickIndex;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +76,7 @@ public class Friend extends Activity implements
 		FriendAdapter npa = new FriendAdapter(details, thisActivity);
 		friendList.setAdapter(npa);
 		registerForContextMenu(friendList);
+		new DownloadNotificationTask().execute();
 	}
 
 	/**
@@ -286,5 +296,221 @@ public class Friend extends Activity implements
 		}
 	}
 	
+	private class DownloadNotificationTask extends AsyncTask<String, Void, Boolean> {
 
+		@Override
+		protected Boolean doInBackground(String... params) {
+			return downloadNotification();
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+
+			if (result) { // Successfully Reads
+				for (UserDetails user : newFriends) {
+					Log.v(TAG, user.toString());
+				}
+				//Show dialog with people who wish to add
+				//TODO
+				showDialog();
+			} else { //Failed to get notifications or no new notifications
+				MyToast.toastMessage(thisActivity, errorMessage);
+			}
+		}
+
+		private boolean downloadNotification() {
+			List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(3);
+			nameValueP.add(new BasicNameValuePair("op", "getRequests"));
+			nameValueP.add(new BasicNameValuePair("userid", Integer.toString(user.getUserid())));
+
+			try {
+				InputStream in = CustomHttpClient.executeHttpPost(
+						MainActivity.URL + MainActivity.FRIENDS, nameValueP);
+								
+				return processInput(in);
+			} catch (Exception e) {
+				errorMessage = e.toString();
+			}
+			return false;
+		}
+
+		private boolean processInput(InputStream in) {
+			JsonReader jr;
+			try {
+				jr = new JsonReader(new BufferedReader(new InputStreamReader(
+						in, "UTF-8")));
+
+				jr.setLenient(true);
+				jr.beginObject();
+
+				/* Read ReturnCode */
+				Pair<String, Boolean> pair = AdminHelper
+						.handleResponse(JsonCustomReader
+								.readJSONRetCode(jr, in));
+
+				if (!pair.getSecond()) {
+					errorMessage = pair.getFirst();
+					return false;
+				}
+				
+				/* Read User detail */
+				newFriends = JsonCustomReader.readJSONFriends(jr, in);
+				jr.endObject();
+				return pair.getSecond();
+
+			} catch (UnsupportedEncodingException e) {
+				errorMessage = e.getMessage();
+			} catch (IOException e) {
+				errorMessage = e.getMessage();
+			}
+			return false;
+		}
+	}
+
+	
+	/* Shows dialog when there are new friend requests */	
+	private void showDialog() {
+		
+		Log.v(TAG, newFriends.size()+"");
+		tickIndex = new boolean[newFriends.size()];
+		
+		/* Create the dialog through the builder */
+		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
+		builder.setTitle("New Friend Requests!");
+
+		/* Inflate the dialog with customised view */
+		LayoutInflater inflater = getLayoutInflater();
+		View view = inflater.inflate(R.layout.friend_request_dialog, null);	
+        ListView listView = (ListView) view.findViewById(R.id.RequestList);
+        NewPersonAdapter npa = new NewPersonAdapter(newFriends, thisActivity);
+        listView.setAdapter(npa);
+
+        listView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
+            	CheckBox cb = (CheckBox) v.findViewById(R.id.checkBox1);
+
+				tickIndex[pos] = !tickIndex[pos];
+        		cb.setChecked(tickIndex[pos]);
+
+        		Log.v(TAG, "Added at "+pos);
+
+              	if(!tickIndex[pos]) {
+					Log.v(TAG, "Added: "+newFriends.get(pos).getFirstName());
+				}else{
+					Log.v(TAG, "Added: "+newFriends.get(pos).getFirstName());
+				}
+                
+            }
+        });
+        builder.setView(view);
+        builder.setPositiveButton(R.string.confirm,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						Log.v(TAG, "add friends, then update the view");
+						confirmFriends();
+					}
+				});
+
+		builder.setNegativeButton(R.string.delete,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						Log.v(TAG, "Delete pressed");
+						deleteFriends();
+					}
+				});
+		builder.setNeutralButton(R.string.cancel,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// Do nothing
+					}
+				});
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+	protected void deleteFriends() {
+		for (int i = 0; i < tickIndex.length; i++) {
+			if (tickIndex[i]) {
+				new FriendTask().execute(DELETE_OP,user.getUserid(),newFriends.get(i).getUserid());
+			}
+		}
+	}
+
+	protected void confirmFriends() {
+		for (int i = 0; i < tickIndex.length; i++) {
+			if (tickIndex[i]) {
+				new FriendTask().execute(CONFIRM_OP,user.getUserid(),newFriends.get(i).getUserid());
+			}
+		}
+		MyToast.toastMessage(thisActivity, "Confirmed friends!");
+	}   
+
+	private class FriendTask extends AsyncTask<Integer, Void, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(Integer... params) {
+			return addFriend(params[0],params[1],params[2]);
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+
+			if (result) { 
+				MyToast.toastMessage(thisActivity,"added friend");
+			} else {
+				MyToast.toastMessage(thisActivity, errorMessage);
+			}
+		}
+
+		private boolean addFriend(int opcode, int userid, int friendid) {
+			List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(3);
+			if (opcode==CONFIRM_OP) {
+				Log.v(TAG, "I'm here in confirm");
+				nameValueP.add(new BasicNameValuePair("op", "confirmRequest"));
+			} else if (opcode==DELETE_OP){
+				nameValueP.add(new BasicNameValuePair("op", "deleteFriend"));
+			}
+			Log.v(TAG, userid+"");
+			Log.v(TAG, friendid+"");
+			nameValueP.add(new BasicNameValuePair("userid", Integer.toString(userid)));
+			nameValueP.add(new BasicNameValuePair("friendid", Integer.toString(friendid)));
+
+			try {
+				InputStream in = CustomHttpClient.executeHttpPost(
+						MainActivity.URL + MainActivity.FRIENDS, nameValueP);
+				return processInput(in);
+			} catch (Exception e) {
+				errorMessage = e.toString();
+			}
+			return false;
+		}
+
+		private boolean processInput(InputStream in) {
+			JsonReader jr;
+			try {
+				jr = new JsonReader(new BufferedReader(new InputStreamReader(
+						in, "UTF-8")));
+
+				jr.setLenient(true);
+				jr.beginObject();
+
+				/* Read ReturnCode */
+				Pair<String, Boolean> pair = AdminHelper
+						.handleResponse(JsonCustomReader
+								.readJSONRetCode(jr, in));
+
+				errorMessage = pair.getFirst();
+				return pair.getSecond();
+						
+			} catch (UnsupportedEncodingException e) {
+				errorMessage = e.getMessage();
+			} catch (IOException e) {
+				errorMessage = e.getMessage();
+			}
+			return false;
+		}
+	}
+	
 }
