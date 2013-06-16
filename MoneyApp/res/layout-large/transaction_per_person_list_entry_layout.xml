@@ -15,8 +15,8 @@
             android:layout_height="72dp" 
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:src="@drawable/thai" />
 
         <TextView
@@ -54,8 +54,8 @@
            android:layout_height="48dp"
            android:layout_alignParentRight="true"
            android:layout_centerVertical="true"
-           android:layout_marginTop="15dp"
-           android:layout_marginRight="15dp"
+           android:layout_marginTop="10dp"
+           android:layout_marginRight="10dp"
            android:contentDescription="@string/next"
            android:src="@drawable/next_button_icon" />
                 

@@ -10,8 +10,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" 
-        android:orientation="vertical" >"
+        android:layout_height="fill_parent" 
+        android:orientation="vertical" >
     <!--
     <Button
         android:id="@+id/calendar"
@@ -34,9 +34,6 @@
         android:id="@+id/Friends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/transactions"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
         android:layout_marginTop="@dimen/extMarginMain"
         android:background="@drawable/custom_button"
@@ -51,8 +48,6 @@
         android:id="@+id/transactions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/convos"
-        android:layout_alignLeft="@+id/Friends"
         android:layout_marginBottom="50dp"
         android:background="@drawable/custom_button"
         android:onClick="toTransactions"
@@ -66,46 +61,13 @@
         android:id="@+id/convos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/wishList"
-        android:layout_alignLeft="@+id/transactions"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="@dimen/extMarginMain"
         android:background="@drawable/custom_button"
         android:onClick="toMessages"
         android:paddingBottom="20dp"
         android:paddingTop="20dp"
         android:shadowColor="@android:color/background_dark"
         android:text="@string/convos"
-        android:textSize="30sp" />
-
-    <Button
-        android:id="@+id/wishList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/settings"
-        android:layout_alignLeft="@+id/convos"
-        android:layout_marginBottom="50dp"
-        android:background="@drawable/custom_button"
-        android:onClick="toWishList"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
-        android:shadowColor="@android:color/background_dark"
-        android:text="@string/wishList"
-        android:textSize="30sp" />
-
-    <Button
-        android:id="@+id/settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/wishList"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/extMarginMain"
-        android:background="@drawable/custom_button"
-        android:onClick="toSettings"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
-        android:shadowColor="@android:color/background_dark"
-        android:text="@string/settings"
         android:textSize="30sp" />
 
     </LinearLayout>

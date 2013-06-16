@@ -8,7 +8,7 @@
     <dimen name="priceDim">120dp</dimen>
     <dimen name="subjectDim">150dp</dimen>
     <dimen name="dateAndPerson">130dp</dimen>
-    <dimen name="extMarginMain">100dp</dimen>
+    <dimen name="extMarginMain">250dp</dimen>
     <dimen name="buttonHeight">60dp</dimen>
     <dimen name="list_size">450dp</dimen>
     <dimen name="new_trans_button">200dp</dimen>

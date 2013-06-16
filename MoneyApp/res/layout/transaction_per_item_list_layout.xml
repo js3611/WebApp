@@ -9,7 +9,12 @@
 	    android:id="@+id/PerItemList"
 	    android:layout_width="match_parent"
 	    android:layout_height="0dip"
-	    android:layout_weight="1" >
+	    android:layout_weight="1" 
+	    android:layout_marginLeft="15dp"
+	    android:layout_marginRight="15dp"
+	    android:divider="@color/lightgreen"
+        android:dividerHeight="1dp"
+        android:clickable="true" >
 	</ListView>
 
 </LinearLayout>

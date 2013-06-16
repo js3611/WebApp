@@ -10,7 +10,9 @@
         style="?android:textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/transaction_log"
         android:textStyle="bold" />
 
@@ -19,8 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1" 
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:divider="@color/lightgreen"
+        android:dividerHeight="1dp"
+        android:clickable="true">
     </ListView>    
     
 </LinearLayout>
