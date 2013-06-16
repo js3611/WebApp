@@ -18,8 +18,8 @@
                 android:layout_height="150dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginRight="@dimen/marginRL"
+                android:layout_marginTop="@dimen/marginTB"
                 android:contentDescription="@string/profile"
                 android:src="@drawable/terence" />
 
@@ -35,8 +35,8 @@
                     android:id="@+id/firstName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="@dimen/marginRL"
+                    android:layout_marginTop="@dimen/marginTB"
                     android:text="First Name"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/firstName"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="@dimen/marginRL"
                     android:text="Surname" />
 
                 <TextView
@@ -53,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/surname"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="@dimen/marginRL"
                     android:text="You Owe him:" />
 
                 <TextView
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/oweDirection"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginRight="@dimen/marginRL"
                     android:text="£30"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
             </RelativeLayout>
@@ -72,11 +72,10 @@
             android:id="@+id/nudge_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
             android:layout_marginBottom="30dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="150dp"
             android:background="@drawable/custom_button"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
@@ -87,10 +86,9 @@
             android:id="@+id/message_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
             android:layout_marginBottom="30dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
             android:background="@drawable/custom_button"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
@@ -98,41 +96,12 @@
             android:textSize="25sp" />
 
         <Button
-            android:id="@+id/call_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/custom_button"
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp"
-            android:text="Call"
-            android:textSize="25sp" />
-
-        <Button
-            android:id="@+id/add_calender_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/custom_button"
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp"
-            android:text="Add Deadline"
-            android:textSize="25sp" />
-
-        <Button
             android:id="@+id/new_trans_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
             android:layout_marginBottom="30dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
             android:background="@drawable/custom_button"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
@@ -143,10 +112,9 @@
             android:id="@+id/pay_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
             android:layout_marginBottom="30dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
             android:background="@drawable/custom_button"
             android:onClick="handlePayment"
             android:paddingBottom="20dp"

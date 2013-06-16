@@ -3,14 +3,14 @@ package HttpServletReqWrapper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-public class ModifiedServletRequest extends HttpServletRequestWrapper {
+public class ModifiedServletRequestTrans extends HttpServletRequestWrapper {
 
 	private int transid;
 	String old_date;
 	String partial_pay_record;
 	
 	
-	public ModifiedServletRequest(HttpServletRequest request, int t_id, String old_date, String partial_pay_record) {
+	public ModifiedServletRequestTrans(HttpServletRequest request, int t_id, String old_date, String partial_pay_record) {
 		super(request);
 		if(partial_pay_record != null)
 			this.partial_pay_record = partial_pay_record;

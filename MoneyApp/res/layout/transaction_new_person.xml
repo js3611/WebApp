@@ -21,12 +21,15 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:onClick="onAddClicked"
+        android:background="@drawable/custom_button"
         android:text="Add" />
 
     <ListView
         android:id="@+id/friends_list"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent" 
+        android:divider="@color/lightgreen"
+        android:dividerHeight="1dp">
     </ListView>
 
 </LinearLayout>

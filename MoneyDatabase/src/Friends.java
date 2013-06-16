@@ -169,7 +169,7 @@ rc 311 = successful confirm
 			if (!friends.isBeforeFirst() && !count.isBeforeFirst()) { // Something went wrong
 				writer.println(getReturnCode(jb,31));
 				
-			} else if (!friends.isBeforeFirst()) { // YOU HAVE NO FRIENDS or soemthing went wrong
+			} else if (!friends.isBeforeFirst()) { // YOU HAVE NO FRIENDS or something went wrong
 				int total = count.getInt("count");
 				if (total == 0)
 					 writer.println(getReturnCode(jb,33));

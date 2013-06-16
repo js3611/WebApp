@@ -11,16 +11,16 @@
     <LinearLayout
         android:id="@+id/new_transaction"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <TextView
             android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
             android:text="Item:"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -28,19 +28,19 @@
             android:id="@+id/item_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
-            android:inputType="textCapSentences|textAutoCorrect"
-            android:hint="e.g. Dinner" />
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:hint="e.g. Dinner"
+            android:inputType="textCapSentences|textAutoCorrect" />
 
         <TextView
             android:id="@+id/item_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
             android:text="Note: (Optional)"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -48,19 +48,19 @@
             android:id="@+id/item_description_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
-            android:inputType="textCapSentences|textAutoCorrect"
-            android:hint="e.g. Remember when we went to Nandos, I paid for you because you didn&apos;t have enough cash" />
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:hint="e.g. Remember when we went to Nandos, I paid for you because you didn&apos;t have enough cash"
+            android:inputType="textCapSentences|textAutoCorrect" />
 
         <TextView
             android:id="@+id/total"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
             android:text="Total: "
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -68,41 +68,54 @@
             android:id="@+id/amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
             android:hint="e.g. £30"
-            android:inputType="numberDecimal"   
+            android:inputType="numberDecimal"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/who_owe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
             android:text="Who owe?"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <ListView
             android:id="@+id/PersonList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp" >
+            android:layout_height="400dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:layout_weight="2" >
         </ListView>
     </LinearLayout>
-
+    
+    <Button
+        android:id="@+id/eq_split_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_above="@+id/done_button"
+        android:layout_alignLeft="@+id/done_button"
+        android:layout_alignRight="@+id/done_button"
+        android:layout_marginBottom="@dimen/marginTB"
+        android:background="@drawable/custom_button"
+        android:text="Equal Split"
+        android:textSize="25sp" />
+    
     <Button
         android:id="@+id/done_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/buttonHeight"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginBottom="@dimen/marginTB"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:layout_marginRight="@dimen/marginRL"
         android:background="@drawable/custom_button"
         android:onClick="newTransactionHandler"
         android:text="DONE"
@@ -122,7 +135,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="@dimen/marginRL"
         android:text="Urgency: "
         android:textAppearance="?android:attr/textAppearanceLarge" />
      
@@ -141,10 +154,10 @@
         android:id="@+id/eq_split_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:layout_marginRight="@dimen/marginRL"
+        android:layout_marginTop="@dimen/marginTB"
+        android:layout_marginBottom="@dimen/marginTB"
         android:background="@drawable/custom_button"
         android:textSize="25sp"
         android:text="Equal Split" />
