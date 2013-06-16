@@ -12,7 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import HttpServletReqWrapper.ModifiedServletRequest;
+import HttpServletReqWrapper.ModifiedServletRequestTrans;
 import JSONBuilder.JSONBuilder;
 import IdMap.IDtoNameMap;
 
@@ -393,7 +393,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				
 				
 				String msg = "Yo " + /*friend_firstname + */", " + user_firstname + " needs his money from "+
-							 trans.getString("name") + ". This comes to £" + total + ". Pay it back soon or "+
+							 trans.getString("name") + ". This comes to \A3" + total + ". Pay it back soon or "+
 							 "I'll come and smash your legs bro.";
 						
 				
@@ -552,7 +552,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				}
 			}
 			
-			ModifiedServletRequest msr = new ModifiedServletRequest(request,-1,old_date,preservedAmounts);
+			ModifiedServletRequestTrans msr = new ModifiedServletRequestTrans(request,-1,old_date,preservedAmounts);
 			//I'm assuming that we post all the relevant fields necessary for the newTransaction in the request
 			// to this operation too
 			handlePostOperation("newTransaction", conn, msr, writer);
@@ -613,7 +613,8 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			if (allTransactions.next()){ // The select statement returned correctly
 				do {
 					int current_transid = allTransactions.getInt("transid");
-					ModifiedServletRequest modifiedReq = new ModifiedServletRequest(request,current_transid,null,null);	
+					ModifiedServletRequestTrans modifiedReq = 
+							new ModifiedServletRequestTrans(request,current_transid,null,null);	
 					handlePostOperation("debtRepaid", conn, modifiedReq, writer);
 					
 				} while (allTransactions.next());
