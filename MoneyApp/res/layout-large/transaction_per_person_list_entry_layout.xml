@@ -13,10 +13,10 @@
             android:id="@+id/profile_icon"
             android:layout_width="72dp"
             android:layout_height="72dp" 
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:layout_marginBottom="@dimen/marginTB"
             android:src="@drawable/thai" />
 
         <TextView
@@ -26,7 +26,7 @@
             android:layout_toRightOf="@id/profile_icon"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/marginTB"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="Name"
@@ -41,7 +41,7 @@
            android:layout_below="@+id/nameView"
            android:layout_toRightOf="@+id/profile_icon"
            android:layout_marginLeft="10dp"
-           android:layout_marginBottom="10dp"
+           android:layout_marginBottom="@dimen/marginTB"
            android:paddingLeft="10dp"
            android:paddingRight="10dp"
            android:text="Price"
@@ -50,12 +50,12 @@
 
        <ImageView
            android:id="@id/next_icon"
-           android:layout_width="48dp"
-           android:layout_height="48dp"
+           android:layout_width="72dp"
+           android:layout_height="72dp"
            android:layout_alignParentRight="true"
            android:layout_centerVertical="true"
-           android:layout_marginTop="10dp"
-           android:layout_marginRight="10dp"
+           android:layout_marginTop="@dimen/marginTB"
+           android:layout_marginRight="@dimen/marginRL"
            android:contentDescription="@string/next"
            android:src="@drawable/next_button_icon" />
                 

@@ -12,5 +12,7 @@
     <dimen name="buttonHeight">60dp</dimen>
     <dimen name="list_size">450dp</dimen>
     <dimen name="new_trans_button">200dp</dimen>
+    <dimen name="marginTB">10dp</dimen>
+    <dimen name="marginRL">15dp</dimen>
 
 </resources>

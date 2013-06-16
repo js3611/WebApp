@@ -13,6 +13,7 @@
     <dimen name="extMarginMain">100dp</dimen>
     <dimen name="buttonHeight">50dp</dimen>
     <dimen name="new_trans_button">70dp</dimen>
-    
+    <dimen name="marginTB">10dp</dimen>
+    <dimen name="marginRL">15dp</dimen>
 
 </resources>
