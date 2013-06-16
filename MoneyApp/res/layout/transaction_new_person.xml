@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:onClick="onAddClicked"
+        android:background="@drawable/custom_button"
         android:text="Add" />
 
     <ListView

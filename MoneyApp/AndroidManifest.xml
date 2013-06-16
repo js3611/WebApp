@@ -162,6 +162,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.moneyapp.MainMenu" />
         </activity>
+        <activity
+            android:name="com.example.moneyapp.PerItemDetails"
+            android:label="@string/title_activity_per_item_details"
+            android:parentActivityName="com.example.moneyapp.transaction.PerItem" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.moneyapp.transaction.PerItem" />
+        </activity>
     </application>
 
 </manifest>
