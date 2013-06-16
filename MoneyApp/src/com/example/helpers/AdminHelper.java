@@ -36,6 +36,61 @@ public class AdminHelper {
 		case 20:
 			errorMessage = "No transaction to show";
 			return new Pair<String, Boolean>(errorMessage, true);
+		case 31:
+			errorMessage =  "Failed to load list of friends";
+			break;
+		case 32:
+			return goodResult;
+		case 33:
+			errorMessage = "No friends";
+			break;
+		case 34:
+			errorMessage = "Failed to load";
+			break;
+		case 35:
+			errorMessage = "No requests";
+			break;
+		case 36:
+			return goodResult;
+		case 37:
+			errorMessage = "Failed to send request";
+			break;
+		case 38:
+			return goodResult;
+		case 39:
+			return goodResult;
+		case 310:
+			errorMessage = "confirm failed";
+			break;
+		case 311:
+			return goodResult;
+		case 312:
+			errorMessage = "No such user exists";
+			break;
+		case 313:
+			errorMessage = "existing debts between users"; 
+			break;
+		case 314:
+			errorMessage = "something went wrong with delete";
+			break;
+		case 315:
+			return goodResult;
+		case 316:
+			return goodResult;
+		case 317:
+			errorMessage = "something went wrong";
+			break;
+		case 318:
+			errorMessage = "Edit friend failed";
+			break;
+		case 319:
+			return goodResult;
+		case 320:
+			errorMessage = "Friend request pending";
+			break;
+		case 321:
+			errorMessage  ="This person is in your friend list already";
+			break;
 		default:
 			errorMessage = "Something went wrong!";
 			break;

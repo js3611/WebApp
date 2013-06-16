@@ -72,6 +72,8 @@
     <string name="title_activity_friend">Friends</string>
     <string name="okay">Okay</string>
     <string name="cancel">Cancel</string>
+    <string name="refresh">Refresh</string>
+    <string name="add">Add</string>
     
 
 </resources>

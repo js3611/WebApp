@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.MyToast;
 import com.example.helpers.StringFilter;
 import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
@@ -47,6 +48,7 @@ public class MainActivity extends Activity {
 	public static final String URL = joMachine;// "http://146.169.53.14:59999";
 	public static final String LOGIN = "/Login";
 	public static final String TRANSACTION = "/Transaction";
+	public static final String FRIENDS = "/Friends";
 	private String errorMessage;
 	private UserDetails user;
 
@@ -83,7 +85,7 @@ public class MainActivity extends Activity {
 		String phoneNo = phoneText.getText().toString();
 
 		if (StringFilter.isIllegal(password) || StringFilter.isIllegal(phoneNo)) {
-			toastMessage("Missing entry");
+			MyToast.toastMessage(MainActivity.this,"Missing entry");
 			return;
 		}
 
@@ -91,7 +93,7 @@ public class MainActivity extends Activity {
 		if (ConnectionHelper.checkNetworkConnection(connMgr))
 			new PasswordVerifier().execute(phoneNo, password);
 		else 
-			toastMessage("No network connection");
+			MyToast.toastMessage(MainActivity.this,"No network connection");
 		
 			
 	}
@@ -108,13 +110,13 @@ public class MainActivity extends Activity {
 
 			if (result) {
 				// Toast message
-				toastMessage("Login successful!");
+				MyToast.toastMessage(MainActivity.this,"Login successful!");
 
 				Intent intent = new Intent(MainActivity.this, MainMenu.class);
 				intent.putExtra(USER_KEY, user);
 				startActivity(intent);
 			} else {
-				toastMessage(errorMessage);
+				MyToast.toastMessage(MainActivity.this,errorMessage);
 			}
 		}
 
@@ -168,11 +170,7 @@ public class MainActivity extends Activity {
 			jr.endObject();
 
 			Log.v(TAG, FriendsList.showFriends());
-			// errorMessage = HttpReaders.readIt(in, 1000);
-			// Log.v(TAG, errorMessage);
-			// int retCode = JsonCustomReader.readJsonRetCode(in);
 			return true;
-			// Handle JSONstring
 		} catch (UnsupportedEncodingException e) {
 			errorMessage = e.getMessage();
 		} catch (IOException e) {
@@ -188,12 +186,6 @@ public class MainActivity extends Activity {
 	}
 
 
-	private void toastMessage(String msg) {
-		CharSequence feedbackMsg = msg;
-		Toast toast = Toast.makeText(getApplicationContext(), feedbackMsg, Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();
-		
-	}
+
 	
 }

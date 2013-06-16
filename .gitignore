@@ -5,6 +5,7 @@
 *.class
 *~
 *.orig
+MoneyApp/bin/res/
 MoneyApp/bin/classes/
 MoneyApp/bin/resources.ap_
 MoneyApp/bin/classes.dex
