@@ -73,10 +73,10 @@
             android:id="@+id/nudge_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/marginTB"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/custom_button"
             android:text="Nudge"
             android:textSize="15sp" />
@@ -85,7 +85,7 @@
             android:id="@+id/message_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/marginTB"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
             android:background="@drawable/custom_button"
@@ -93,32 +93,10 @@
             android:textSize="15sp" />
 
         <Button
-            android:id="@+id/call_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="@dimen/marginRL"
-            android:layout_marginRight="@dimen/marginRL"
-            android:background="@drawable/custom_button"
-            android:text="Call"
-            android:textSize="15sp" />
-
-        <Button
-            android:id="@+id/add_calender_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="@dimen/marginRL"
-            android:layout_marginRight="@dimen/marginRL"
-            android:background="@drawable/custom_button"
-            android:text="Add Deadline"
-            android:textSize="15sp" />
-
-        <Button
             android:id="@+id/new_trans_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/marginTB"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
             android:background="@drawable/custom_button"
@@ -129,7 +107,7 @@
             android:id="@+id/pay_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/marginTB"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
             android:background="@drawable/custom_button"

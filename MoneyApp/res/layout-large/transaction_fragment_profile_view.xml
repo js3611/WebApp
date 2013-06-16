@@ -72,11 +72,10 @@
             android:id="@+id/nudge_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
             android:layout_marginBottom="30dp"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="150dp"
             android:background="@drawable/custom_button"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
@@ -87,7 +86,6 @@
             android:id="@+id/message_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
             android:layout_marginBottom="30dp"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
@@ -98,38 +96,9 @@
             android:textSize="25sp" />
 
         <Button
-            android:id="@+id/call_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="@dimen/marginRL"
-            android:layout_marginRight="@dimen/marginRL"
-            android:background="@drawable/custom_button"
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp"
-            android:text="Call"
-            android:textSize="25sp" />
-
-        <Button
-            android:id="@+id/add_calender_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="@dimen/marginRL"
-            android:layout_marginRight="@dimen/marginRL"
-            android:background="@drawable/custom_button"
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp"
-            android:text="Add Deadline"
-            android:textSize="25sp" />
-
-        <Button
             android:id="@+id/new_trans_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
             android:layout_marginBottom="30dp"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
@@ -143,7 +112,6 @@
             android:id="@+id/pay_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/surname"
             android:layout_marginBottom="30dp"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
