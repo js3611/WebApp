@@ -237,8 +237,8 @@ rc 311 = successful confirm
 	 				"WHERE confirmed = false AND "+
 					"friendid = " + userid + ";");
 					
-			ResultSet count = requestCount.executeQuery("SELECT count(userid) "+
-					"FROM friends WHERE confirmed = true AND "+
+			ResultSet count = requestCount.executeQuery("SELECT count(userid) as count "+
+					"FROM friends WHERE confirmed = false AND "+
 					"friendid = " + userid + ";");
 	 	
 	 	
@@ -246,13 +246,14 @@ rc 311 = successful confirm
 				writer.println(getReturnCode(jb,35));
 				
 			} else if (!requests.isBeforeFirst()) { // No requests or soemthing went wrong
+				count.next();
 				int total = count.getInt("count");
 				if (total == 0)
 					 writer.println(getReturnCode(jb,34));
 				else
 					writer.println(getReturnCode(jb,35));
 					
-			} else {	
+			} else {	 
 			//print all current requests
 				jb.beginObject().append("returnCode",36).beginArray();
 
@@ -269,9 +270,9 @@ rc 311 = successful confirm
 								.append("phonenumber", phonenumber)
 				  .endObject();
 				}
-					jb.endArray().endObject();
-					writer.println(jb.build());
-				}
+				jb.endArray().endObject();
+				writer.println(jb.build());
+			}
 	 		
 	 	} 
 	 	else if (operation.equals("searchFriend")) {
@@ -375,10 +376,11 @@ rc 311 = successful confirm
 	 		int userid = Integer.parseInt(request.getParameter("userid"));
 	 		int friendid = Integer.parseInt(request.getParameter("friendid"));
 	 		
-	 		int rs = confirmStmt.executeUpdate("UPDATE friends " +
-	 					"SET confirm = true WHERE userid = " + 
-	 					friendid + " AND friendid = " +
-	 					userid + ";");
+	 		int rs = confirmStmt.executeUpdate(
+	 				"UPDATE friends " +
+	 				"SET confirmed = true " +
+	 				"WHERE userid = " + friendid + " " +
+	 				"AND friendid = " +	userid + ";");
 	 					
 	 		if (rs == 0)
 	 			writer.println(getReturnCode(jb,310));
