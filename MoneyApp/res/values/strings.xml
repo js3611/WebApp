@@ -72,6 +72,6 @@
     <string name="title_activity_friend">Friends</string>
     <string name="okay">Okay</string>
     <string name="cancel">Cancel</string>
-    
+    <string name="title_activity_per_item_details">PerItemDetails</string>
 
 </resources>

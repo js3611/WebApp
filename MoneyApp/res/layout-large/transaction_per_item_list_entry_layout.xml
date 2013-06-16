@@ -13,10 +13,10 @@
             android:id="@+id/profile_icon"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:layout_marginBottom="10dp"
             android:src="@drawable/thai" />
 
         <TextView
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/marginTB"
             android:layout_marginBottom="10dp"
             android:layout_toRightOf="@+id/profile_icon"
             android:text="Subject"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/marginTB"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:layout_toRightOf="@id/subject_view"
@@ -63,7 +63,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="@dimen/marginTB"
                 android:layout_marginLeft="10dp"
                 android:text="date" 
                 android:scrollHorizontally="false" />
@@ -86,7 +86,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginTop="15dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="@dimen/marginRL"
             android:contentDescription="@string/next"
             android:src="@drawable/next_button_icon" />
     </RelativeLayout>

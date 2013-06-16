@@ -6,16 +6,18 @@
 
         <ImageView
             android:id="@+id/profile_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
             android:src="@drawable/thai" />
 
         <TextView
             android:id="@+id/name_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
             android:layout_toRightOf="@+id/profile_icon"
             android:layout_toLeftOf="@+id/next_icon"
             android:text="Name"
@@ -24,10 +26,11 @@
    
         <ImageView
             android:id="@+id/next_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
             android:contentDescription="@string/next"
             android:src="@drawable/next_button_icon" />
 </RelativeLayout>

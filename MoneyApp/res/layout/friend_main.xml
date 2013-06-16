@@ -12,8 +12,12 @@
         android:id="@+id/activity_friend_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" >
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" 
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:divider="@color/lightgreen"
+        android:dividerHeight="1dp">
     </ListView>
 
 </RelativeLayout>
