@@ -3,19 +3,19 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import HttpServletReqWrapper.ModifiedServletRequestMsg;
 import JSONBuilder.JSONBuilder;
 /**
  * Servlet implementation class for Servlet: Login
  * 
  */
-public class Message extends javax.servlet.http.HttpServlet implements
+public class Messages extends javax.servlet.http.HttpServlet implements
 		javax.servlet.Servlet {
 	static final long serialVersionUID = 1L;
 
@@ -36,7 +36,6 @@ public class Message extends javax.servlet.http.HttpServlet implements
 		JSONBuilder jb = new JSONBuilder();
 	
 		if (operation == null) {
-			JSONBuilder jb = new JSONBuilder();
 			writer.println(getReturnCode(jb,0));
 			return;
 		}
@@ -130,7 +129,7 @@ rc 413 = could not add message content
 rc 414 = done
 */	
 	
-	private void handleOperation(String operation, Conncection conn,
+	private void handleOperation(String operation, Connection conn,
 	 	HttpServletRequest request, PrintWriter writer) throws Exception {
 		
 	if (operation.equals("messageList")) {
@@ -156,7 +155,7 @@ rc 414 = done
 		//NOTE that the group_chat field will be false if convo is not between group and thus
 		//groupid and group_name will not be useful (though group = 0.)
 			jb.beginObject().append("returnCode",43).beginArray();
-			(while messageList.next()){
+			while (messageList.next()){
 				jb.beginObject().append("conversationid", messageList.getInt("conversationid"))
 								.append("last_message_date", messageList.getString("_date"))
 								.append("last_message_time", messageList.getString("_time"))
@@ -191,12 +190,12 @@ rc 414 = done
 		else {
 		/* select mc.content, mc._date,mc._time, mc.userid, a.firstname, a.surname from messagecontent mc inner join appuser a on(mc.userid=a.userid) where conversationid = 2 ORDER BY _date ASC, _time ASC; */
 			jb.beginObject().append("returnCode",45).append("other_person", other_person).beginArray();
-			(while messages.next()){
-				jb.beginObject().append("content", messageList.getInt("content"))
-								.append("date", messageList.getString("_date"))
-								.append("time", messageList.getString("_time"))
-								.append("senderid", messageList.getInt("userid"))
-								.append("firstname", messageList.getString("firstname"))
+			while (messages.next()){
+				jb.beginObject().append("content", messages.getInt("content"))
+								.append("date", messages.getString("_date"))
+								.append("time", messages.getString("_time"))
+								.append("senderid", messages.getInt("userid"))
+								.append("firstname", messages.getString("firstname"))
 				  .endObject();
 			}
 			jb.endArray().endObject();
@@ -248,9 +247,11 @@ rc 414 = done
 						friendid + " AND user2 = " +
 						userid + ") returning conversationid");
 						
+		
 		if (rs.next()) { // means a message between these two people already exists
-			ModifiedServeltRequestMsg msr = new ModifiedServletRequestMsg(request,conversationid);
-			handleOperation("sendMessage",conn, msr, writer)
+			newConversationid = rs.getInt("conversationid");
+			ModifiedServletRequestMsg msr = new ModifiedServletRequestMsg(request,newConversationid);
+			handleOperation("sendMessage",conn, msr, writer);
 		}
 		else{
 						
@@ -265,15 +266,15 @@ rc 414 = done
 		if (message.next()) {
 			newConversationid = message.getInt("conversationid");
 			
-			int rs = contentStmt.executeUpdate("INSERT INTO messagecontent (content, "+
+			int result = contentStmt.executeUpdate("INSERT INTO messagecontent (content, "+
 						"_date, _time, conversationid, userid) VALUES (" +
 						content + ", " +
 						date + ", " + 
 						time + ", " +
-						conversationid + ", " +
+						newConversationid + ", " +
 						userid + ")");
 						
-			if (rs == 0) // wrong
+			if (result == 0) // wrong
 				writer.println(getReturnCode(jb,49));
 			else
 				writer.println(getReturnCode(jb,410));
@@ -290,11 +291,12 @@ rc 414 = done
 		Statement newMessageStmt = conn.createStatement();
 		Statement contentStmt = conn.createStatement();
 		Statement newGroupStmt = conn.createStatement();
+		int newConversationid = 0;
 		
 		//Again sending the list in the form (userid,userid,userid...)
 		String userList = request.getParameter("userList");
 		String[] users = userList.split(",");
-		int numUsers = user.size();
+		int numUsers = users.length;
 		
 		//TODO MUST CHECK THIS GROUP DOESNT ALREADY EXIST THIS IS TROUBLESOME
 		//MEANS HAVE TO INNER JOIN ON CHATGROUPS AND THEN CHECK ALL THE PEOPLE INVOLVED
@@ -328,7 +330,7 @@ rc 414 = done
 						content + ", " +
 						date + ", " + 
 						time + ", " +
-						conversationid + ", " +
+						newConversationid + ", " +
 						userid + ")");
 						
 				if (rs == 0) // wrong
@@ -341,7 +343,7 @@ rc 414 = done
 			
 			}else  // new group not created
 				writer.println(getReturnCode(jb,411));
-	
+	}
 	}
 
 }

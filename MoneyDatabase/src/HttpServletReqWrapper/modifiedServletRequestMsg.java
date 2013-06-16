@@ -18,7 +18,7 @@ public class ModifiedServletRequestMsg extends HttpServletRequestWrapper {
 	@Override
 	public String getParameter(String param) {
 		if (param.equals("conversationid")) {
-			return Integer.toString(this.transid);
+			return Integer.toString(this.conversationid);
 		}else {
 			return super.getParameter(param);
 		}

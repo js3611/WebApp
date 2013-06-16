@@ -393,7 +393,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				
 				
 				String msg = "Yo " + /*friend_firstname + */", " + user_firstname + " needs his money from "+
-							 trans.getString("name") + ". This comes to \A3" + total + ". Pay it back soon or "+
+							 trans.getString("name") + ". This comes to " + total + " pounds. Pay it back soon or "+
 							 "I'll come and smash your legs bro.";
 						
 				
