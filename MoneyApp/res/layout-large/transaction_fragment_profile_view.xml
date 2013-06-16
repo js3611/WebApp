@@ -138,8 +138,8 @@
             android:paddingTop="20dp"
             android:text="New Transaction"
             android:textSize="25sp" />
-        
-                <Button
+
+        <Button
             android:id="@+id/pay_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -148,12 +148,11 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:background="@drawable/custom_button"
+            android:onClick="handlePayment"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
             android:text="Pay"
-            android:onClick="handlePayment"
             android:textSize="25sp" />
-        
     </LinearLayout>
 
 </ScrollView>

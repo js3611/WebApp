@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.helpers.metadata.UserInfo;
@@ -60,8 +61,14 @@ public class NewPerson extends Activity {
 		user = UserDetails.getUser(getIntent());
 		numberOfOwers = 0;
 
-		/* Get friends from database */
-		new DownloadFriends().execute(user.getUserid());
+		/* Get friends from FriendsList */
+		details = FriendsList.getInstance();
+		owers = new UserDetails[details.size()];
+		NewPersonAdapter npa = new NewPersonAdapter(details, thisActivity);
+		friendList.setAdapter(npa);
+		registerForContextMenu(friendList);
+		
+		//new DownloadFriends().execute(user.getUserid());
 		
 		friendList.setOnItemClickListener(new OnItemClickListener() {
 
@@ -86,7 +93,7 @@ public class NewPerson extends Activity {
 		});
 
 	}
-	
+/*
 	private class DownloadFriends extends AsyncTask<Integer, Void, ArrayList<UserDetails>> {
 
 		@Override
@@ -127,7 +134,7 @@ public class NewPerson extends Activity {
 		}
 		
 	}
-
+*/
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -135,7 +142,7 @@ public class NewPerson extends Activity {
 		return true;
 	}
 	
-	public void onAddClicked(View view) {
+	public void onAddClicked(View view) { 
 	
 		Intent intent = new Intent(getApplicationContext(), NewTransaction.class);
 		ArrayList<UserInfo> owerinfos = new ArrayList<UserInfo>(numberOfOwers);
@@ -148,10 +155,6 @@ public class NewPerson extends Activity {
 		
 		setResult(RESULT_OK, intent);
 		finish();
-		
-//		startActivity(intent);
-
-		
 		
 	}
 }

@@ -249,7 +249,8 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				ResultSet debtSet = friendsGetStmt.executeQuery(
 						"SELECT d.userid, d.owesuserid, d.amount, d.partial_pay " +
 						"FROM transactions t INNER JOIN debt d on (t.transid=d.transid)"+
-						"WHERE (d.owesuserid = " + userid +" OR d.userid = " + userid +");");
+						"WHERE (d.owesuserid = " + userid +" OR d.userid = " + userid +")" +
+						"AND total_paid_off=false;");
 
 				if (!debtSet.isBeforeFirst()) {
 					writer.println(getReturnCode(jb,20));

@@ -18,6 +18,7 @@ import android.support.v4.app.NavUtils;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,6 +28,8 @@ import android.widget.ListView;
 import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.HttpReaders;
+import com.example.helpers.Icons;
+import com.example.helpers.MyMath;
 import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
@@ -94,11 +97,9 @@ public class PerPerson extends Activity {
 					Log.v(TAG, detail.toString());
 					Intent intent = getIntent().setClass(PerPerson.this,
 							PerPersonProfile.class);
-					intent.putExtra(Transactions.NAME_STR, detail.getOwesuser());
+					intent.putExtra(Transactions.FRIENDID_STR,detail.getOwesuserid());
 					intent.putExtra(Transactions.PRICE_STR, detail.getPrice());
 					intent.putExtra(Transactions.ICON_STR, detail.getIcon());
-					intent.putExtra(Transactions.FRIENDID_STR,
-							detail.getOwesuserid());
 					startActivity(intent);
 				}
 
@@ -165,20 +166,24 @@ public class PerPerson extends Activity {
 
 				if (!pair.getSecond()) {
 					errorMessage = pair.getFirst();
+					Log.v(TAG, "No Transactions");
 					return false;
 				}
-
+				Log.v(TAG, "Read fine");
 				if (jr.peek() == JsonToken.END_OBJECT) {
 					Log.v(TAG, "No Transactions");
 					return true;
 				}
+				Log.v(TAG, "Reading transactions");
 				/* Read TransactionDetails */
 				ArrayList<TransactionDetail> rawData = JsonCustomReader
 						.readJSONTransactions(jr, in);
 				jr.endObject();
-
+				Log.v(TAG, "Process raw data now");
+				
 				details = processPerPerson2(rawData);
-
+				Log.v(TAG, "Processed fine");
+				
 				return true;
 			} catch (UnsupportedEncodingException e) {
 				errorMessage = e.getMessage();
@@ -189,106 +194,23 @@ public class PerPerson extends Activity {
 
 		}
 
-		/* A method to combine the bills and diplay total difference */
-		private ArrayList<TransactionDetail> processPerPerson(
-				ArrayList<TransactionDetail> rawData) {
-
-			ArrayList<TransactionDetail> newDetails = new ArrayList<TransactionDetail>();
-			Map<String, Double> personPriceMap = new HashMap<String, Double>();
-			Map<String, UserDetails> personDetailMap = new HashMap<String, UserDetails>();
-
-			/* for each transaction */
-			for (TransactionDetail transactionDetail : rawData) {
-
-				// Log.v(TAG, transactionDetail.toString());
-				/* If the transaction is to user */
-				if (user.getFirstName().equals(transactionDetail.getUser())) {
-					/* get who owes */
-					String owesUser = transactionDetail.getOwesuser();
-					/* put the icon now */
-					// Log.v(TAG, "pays to " + owesUser);
-					if (personPriceMap.containsKey(owesUser)) {
-						/*
-						 * If there is a person in the map already, subtract the
-						 * value
-						 */
-						personPriceMap.put(
-								owesUser,
-								personPriceMap.get(owesUser)
-										- (transactionDetail
-												.getRemainingToPay()));
-					} else {
-						/*
-						 * This is the case they owe you, so you have to pay
-						 * negative amount
-						 */
-						personPriceMap.put(owesUser,
-								-transactionDetail.getRemainingToPay());
-						/* Add the detail of the person who you owe to a map */
-						personDetailMap.put(
-								owesUser,
-								new UserDetails(transactionDetail
-										.getOwesuserid(), "", owesUser, 0, 0,
-										"", "", transactionDetail.getIcon()));
-					}
-					// Log.v(TAG,
-					// "pays to " + owesUser + ": "
-					// + personPriceMap.get(owesUser));
-				} else {
-					/* If user owes someone, then increase the total */
-					String owesUser = transactionDetail.getUser();
-
-					if (personPriceMap.containsKey(owesUser)) {
-						personPriceMap.put(
-								owesUser,
-								personPriceMap.get(owesUser)
-										+ (transactionDetail
-												.getRemainingToPay()));
-					} else {
-						personPriceMap.put(owesUser,
-								transactionDetail.getRemainingToPay());
-						personDetailMap.put(owesUser, new UserDetails(
-								transactionDetail.getUserid(), "", owesUser, 0,
-								0, "", "", transactionDetail.getIcon()));
-					}
-					// Log.v(TAG,
-					// "pays to" + owesUser + ": "
-					// + personPriceMap.get(owesUser));
-
-				}
-			}
-
-			// Log.v(TAG, "After editing");
-
-			for (Map.Entry<String, Double> entry : personPriceMap.entrySet()) {
-				TransactionDetail tDetail = new TransactionDetail(
-						personDetailMap.get(entry.getKey()).getProfilePicture(),
-						0, entry.getKey(), user.getFirstName(), personDetailMap
-								.get(entry.getKey()).getUserid(), user
-								.getUserid(), "", entry.getValue(), (double) 0,
-						"", "");
-				// Log.v(TAG, tDetail.toString());
-				newDetails.add(tDetail);
-			}
-			return newDetails;
-		}
-
 		private ArrayList<TransactionDetail> processPerPerson2(
 				ArrayList<TransactionDetail> rawData) {
 
 			ArrayList<TransactionDetail> newDetails = new ArrayList<TransactionDetail>();
 			Map<Integer, Double> personPriceMap = new HashMap<Integer, Double>();
+			//SparseArray<Double> personPriceArray = new SparseArray<Double>();
 
 			/* for each transaction */
 			for (TransactionDetail transactionDetail : rawData) {
 
-				// Log.v(TAG, transactionDetail.toString());
+				 Log.v(TAG, transactionDetail.toString());
 				/* If the transaction is to user */
-				if (user.getUserid() == transactionDetail.getOwesuserid()) {
+				if (user.getUserid() != transactionDetail.getOwesuserid()) {
 					/* get who owes */
 					int owesUser = transactionDetail.getOwesuserid();
 					/* put the icon now */
-					// Log.v(TAG, "pays to " + owesUser);
+//					 Log.v(TAG, "pays to " + owesUser);
 					if (personPriceMap.containsKey(owesUser)) {
 						/*
 						 * If there is a person in the map already, subtract the
@@ -307,9 +229,9 @@ public class PerPerson extends Activity {
 						personPriceMap.put(owesUser,
 								-transactionDetail.getRemainingToPay());
 					}
-					// Log.v(TAG,
-					// "pays to " + owesUser + ": "
-					// + personPriceMap.get(owesUser));
+//					Log.v(TAG,
+//					 "pays to " + owesUser + ": "
+//					 + personPriceMap.get(owesUser));
 				} else {
 					/* If user owes someone, then increase the total */
 					int owesUser = transactionDetail.getUserid();
@@ -324,26 +246,33 @@ public class PerPerson extends Activity {
 						personPriceMap.put(owesUser,
 								transactionDetail.getRemainingToPay());
 					}
-					// Log.v(TAG,
-					// "pays to" + owesUser + ": "
-					// + personPriceMap.get(owesUser));
+//					 Log.v(TAG, "pays to" + owesUser + ": "+ personPriceMap.get(owesUser));
 
 				}
 			}
 
-			// Log.v(TAG, "After editing");
+			 //Log.v(TAG, "After editing");
 
+			 
+			 
 			for (Map.Entry<Integer, Double> entry : personPriceMap.entrySet()) {
+				
+				int icon = Icons.getIcon(entry.getValue());
+				
 				TransactionDetail tDetail = new TransactionDetail(
-						R.drawable.ic_launcher, 0,
+						icon, 0,
 						FriendsList.getFirstname(entry.getKey()),
 						user.getFirstName(), entry.getKey(), user.getUserid(),
-						"", entry.getValue(), 0.0, "", "");
-
+						"", MyMath.round(entry.getValue()), 0.0, "", "");
+				//Log.v(TAG, "Now have: "+ tDetail.toString());
 				newDetails.add(tDetail);
 			}
+			
+			//Log.v(TAG, "After editing");
 			return newDetails;
 		}
+
+
 
 		@Override
 		protected void onPostExecute(ArrayList<TransactionDetail> result) {

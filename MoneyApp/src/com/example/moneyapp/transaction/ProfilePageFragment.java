@@ -1,6 +1,10 @@
 package com.example.moneyapp.transaction;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +15,8 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +24,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.DateGen;
 import com.example.helpers.HttpReaders;
+import com.example.helpers.MyToast;
+import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
@@ -31,9 +40,12 @@ import com.example.moneyapp.R;
 public class ProfilePageFragment extends Fragment {
 
 	public static final String TAG = "ProfilePageFragment";
+	private String errorMessage = "";
 	
 	private ViewGroup view;
-	private UserDetails friend;
+	//private UserDetails friend;
+	private int friendid;
+	private int icon;
 	private UserDetails user;
 	private double total_price;
 	
@@ -61,25 +73,29 @@ public class ProfilePageFragment extends Fragment {
 		
 		view = rootView;
 		
-		((ImageView) view.findViewById(R.id.big_profile_icon)).setImageResource(R.drawable.ic_launcher);
-		((TextView) view.findViewById(R.id.firstName)).setText("");
-		((TextView) view.findViewById(R.id.surname)).setText("");
-		((TextView) view.findViewById(R.id.price)).setText("");
-		((TextView) view.findViewById(R.id.oweDirection)).setText("");
-
-		
-		
 		//Fill in details
 		Bundle extras = getActivity().getIntent().getExtras();
 		if (extras != null) {
 			user = (UserDetails) extras.getSerializable(MainActivity.USER_KEY);
-			int friendid = extras.getInt(Transactions.FRIENDID_STR);
+			friendid = extras.getInt(Transactions.FRIENDID_STR);
+			icon = extras.getInt(Transactions.ICON_STR);
 			total_price = extras.getDouble(Transactions.PRICE_STR);
 			Log.v(TAG, "friend id: "+friendid);
 			Log.v(TAG, "total price: "+total_price);
-			new DownloadFriend().execute(friendid);		
 		}
 		
+		String firstname = FriendsList.getFirstname(friendid);
+		String surname = FriendsList.getSurname(friendid);
+		
+		((ImageView) view.findViewById(R.id.big_profile_icon)).setImageResource(icon);
+		((TextView) view.findViewById(R.id.firstName)).setText(firstname);
+		((TextView) view.findViewById(R.id.surname)).setText(surname);
+		((TextView) view.findViewById(R.id.price)).setText(Math.abs(total_price) + " pounds");
+		((TextView) view.findViewById(R.id.oweDirection)).setText(setDirection(total_price,firstname));
+		if (total_price <= 0) {
+			view.findViewById(R.id.pay_button).setEnabled(false);
+		}
+			
 		return rootView;
 	}
 
@@ -90,7 +106,7 @@ public class ProfilePageFragment extends Fragment {
 			return name +" owes you: ";
 		}
 	}
-	
+	/*
 	private class DownloadFriend extends AsyncTask<Integer, Void, Void>{
 
 		@Override
@@ -106,11 +122,6 @@ public class ProfilePageFragment extends Fragment {
 				Log.v(TAG, url);
 				InputStream in = CustomHttpClient
 						.executeHttpGet(url);
-//				InputStream in = CustomHttpClient
-//						.executeHttpGet(MainActivity.url
-//								+ MainActivity.TRANSACTION + "?" + "op=" + op
-//								+ "&" + "viewMode=" + viewMode + "&"
-//								+ "friendid=" + userid);
 
 				Pair<Integer, UserDetails> friendPair = JsonCustomReader
 						.readJsonFriend(in);
@@ -128,20 +139,20 @@ public class ProfilePageFragment extends Fragment {
 			((ImageView) view.findViewById(R.id.big_profile_icon)).setImageResource(friend.getProfilePicture());
 			((TextView) view.findViewById(R.id.firstName)).setText(friend.getFirstName());
 			((TextView) view.findViewById(R.id.surname)).setText(friend.getSurname());
-			((TextView) view.findViewById(R.id.price)).setText("�"+Math.abs(total_price));
+			((TextView) view.findViewById(R.id.price)).setText(Math.abs(total_price) + " pounds");
 			((TextView) view.findViewById(R.id.oweDirection)).setText(setDirection(total_price,friend.getFirstName()));
 		}
 		
-	}
+	}*/
 	
 	public void makeFullPayment() {
-		new MakePayment().execute(user.getUserid(),friend.getUserid());
+		new MakePayment().execute(user.getUserid(),friendid);
 	}
 	
-	private class MakePayment extends AsyncTask<Integer, Void, Void>{
+	private class MakePayment extends AsyncTask<Integer, Void, Boolean>{
 
 		@Override
-		protected Void doInBackground(Integer... params) {
+		protected Boolean doInBackground(Integer... params) {
 			try {
 				Log.v(TAG, "Making full payment");
 				String url = MainActivity.URL + MainActivity.TRANSACTION;			
@@ -154,33 +165,51 @@ public class ProfilePageFragment extends Fragment {
 				
 				InputStream in = CustomHttpClient
 						.executeHttpPost(url,nameValueP);
-//				InputStream in = CustomHttpClient
-//						.executeHttpGet(MainActivity.url
-//								+ MainActivity.TRANSACTION + "?" + "op=" + op
-//								+ "&" + "viewMode=" + viewMode + "&"
-//								+ "friendid=" + userid);
 
-				Log.v(TAG, HttpReaders.readIt(in,5000));
+				return processInput(in);
 
-				
-//				Pair<Integer, UserDetails> friendPair = JsonCustomReader
-//						.readJsonFriend(in);
-//				int retCode = friendPair.getFirst();
-//				friend = friendPair.getSecond();
 
 			} catch (Exception e) {
 				Log.v(TAG, e.getMessage());
 			}
-			return null;
+			return false;
 		}
 		
+		private boolean processInput(InputStream in) {
+			
+			JsonReader jr;
+			try {
+				jr = new JsonReader(new BufferedReader(new InputStreamReader(
+						in, "UTF-8")));
+
+				jr.setLenient(true);
+				jr.beginObject();
+
+				/* Read ReturnCode */
+				Pair<String, Boolean> pair = AdminHelper
+						.handleResponse(JsonCustomReader
+								.readJSONRetCode(jr, in));
+
+				errorMessage = pair.getFirst();
+				return pair.getSecond();
+				
+			} catch (UnsupportedEncodingException e) {
+				errorMessage = e.getMessage();
+			} catch (IOException e) {
+				errorMessage = e.getMessage();
+			}
+			return false;
+
+			
+		}
+
 		@Override
-		protected void onPostExecute(Void result) {
-			((ImageView) view.findViewById(R.id.big_profile_icon)).setImageResource(friend.getProfilePicture());
-			((TextView) view.findViewById(R.id.firstName)).setText(friend.getFirstName());
-			((TextView) view.findViewById(R.id.surname)).setText(friend.getSurname());
-			((TextView) view.findViewById(R.id.price)).setText("�"+Math.abs(total_price));
-			((TextView) view.findViewById(R.id.oweDirection)).setText(setDirection(total_price,friend.getFirstName()));
+		protected void onPostExecute(Boolean result) {
+			MyToast.toastMessage(getActivity(), errorMessage);
+			if (!result) return;
+			((ImageView) view.findViewById(R.id.big_profile_icon)).setImageResource(R.drawable.happy);
+			((TextView) view.findViewById(R.id.price)).setText(Math.abs(total_price) + " pounds");
+			((TextView) view.findViewById(R.id.oweDirection)).setText(setDirection(total_price,FriendsList.getFirstname(friendid)));
 		}
 		
 	}

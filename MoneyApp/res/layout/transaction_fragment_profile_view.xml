@@ -1,131 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/logContent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/logContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <ImageView
-            android:id="@+id/big_profile_icon"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-            android:contentDescription="@string/profile"
-            android:src="@drawable/terence" />
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@id/big_profile_icon"
-            android:gravity="center_vertical" >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
-            <TextView
-                android:id="@+id/firstName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="First Name"
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="15dp"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/surname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/firstName"
-                android:layout_marginLeft="15dp"
-                android:text="Surname" />
-
-            <TextView
-                android:id="@+id/oweDirection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/surname"
-                android:layout_marginLeft="15dp"
-                android:text="You Owe him:" />
-
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/big_profile_icon"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/oweDirection"
-                android:text="£30"
+                android:layout_alignParentTop="true"
                 android:layout_marginRight="15dp"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:layout_marginTop="15dp"
+                android:contentDescription="@string/profile"
+                android:src="@drawable/terence" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@id/big_profile_icon"
+                android:gravity="center_vertical" >
+
+                <TextView
+                    android:id="@+id/firstName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    android:text="First Name"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/surname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/firstName"
+                    android:layout_marginLeft="15dp"
+                    android:text="Surname" />
+
+                <TextView
+                    android:id="@+id/oweDirection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/surname"
+                    android:layout_marginLeft="15dp"
+                    android:text="You Owe him:" />
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/oweDirection"
+                    android:layout_marginRight="15dp"
+                    android:text="£30"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
 
-    <Button
-        android:id="@+id/nudge_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/surname"
-        android:background="@drawable/custom_button"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp"
-        android:text="Nudge" />
+        <Button
+            android:id="@+id/nudge_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/surname"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/custom_button"
+            android:text="Nudge"
+            android:textSize="15sp" />
 
-    <Button
-        android:id="@+id/message_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/surname"
-        android:background="@drawable/custom_button"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp"
-        android:text="Message" />
+        <Button
+            android:id="@+id/message_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/surname"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/custom_button"
+            android:text="Message"
+            android:textSize="15sp" />
 
-    <Button
-        android:id="@+id/call_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/surname"
-        android:background="@drawable/custom_button"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp"
-        android:text="Call" />
+        <Button
+            android:id="@+id/call_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/surname"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/custom_button"
+            android:text="Call"
+            android:textSize="15sp" />
 
-    <Button
-        android:id="@+id/add_calender_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/surname"
-        android:background="@drawable/custom_button"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp"
-        android:text="Add Deadline" />
+        <Button
+            android:id="@+id/add_calender_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/surname"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/custom_button"
+            android:text="Add Deadline"
+            android:textSize="15sp" />
 
-    <Button
-        android:id="@+id/new_trans_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/surname"
-        android:background="@drawable/custom_button"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="15sp"
-        android:text="New Transaction" 
-        android:layout_alignBottom="@+id/profileMenu" />
-    
+        <Button
+            android:id="@+id/new_trans_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/profileMenu"
+            android:layout_below="@+id/surname"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/custom_button"
+            android:text="New Transaction"
+            android:textSize="15sp" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/pay_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/surname"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/custom_button"
+            android:onClick="handlePayment"
+            android:text="Pay"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</ScrollView>
