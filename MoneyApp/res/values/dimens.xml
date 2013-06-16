@@ -1,5 +1,5 @@
 <resources>
-
+    
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -12,6 +12,7 @@
     <dimen name="dateAndPerson">150dp</dimen>
     <dimen name="extMarginMain">100dp</dimen>
     <dimen name="buttonHeight">50dp</dimen>
+    <dimen name="new_trans_button">70dp</dimen>
     
 
 </resources>

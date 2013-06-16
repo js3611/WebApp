@@ -16,7 +16,7 @@
             android:layout_marginTop="7dp"
             android:layout_marginBottom="7dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="@dimen/new_trans_button"
             android:contentDescription="@string/next"
             android:src="@drawable/add_button" />
 
