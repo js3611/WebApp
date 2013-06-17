@@ -7,7 +7,12 @@
     <ListView 
         android:id="@+id/RequestList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:layout_marginRight="@dimen/marginRL"
+        android:divider="@color/lightgreen"
+        android:dividerHeight="1dp"
+        android:clickable="true">
         
     </ListView>
 
