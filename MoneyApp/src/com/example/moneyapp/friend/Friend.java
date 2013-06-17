@@ -411,10 +411,10 @@ public class Friend extends Activity implements
 					}
 				});
 
-		builder.setNegativeButton(R.string.delete,
+		builder.setNegativeButton(R.string.reject,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						Log.v(TAG, "Delete pressed");
+						Log.v(TAG, "Reject pressed");
 						deleteFriends();
 					}
 				});
