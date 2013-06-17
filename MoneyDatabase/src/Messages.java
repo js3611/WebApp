@@ -101,7 +101,6 @@ public class Messages extends javax.servlet.http.HttpServlet implements
 	}
 	
 	
-		
 /*TODO
 doGet:
 1. get message list
@@ -253,8 +252,7 @@ rc 414 = done
 			ModifiedServletRequestMsg msr = new ModifiedServletRequestMsg(request,newConversationid);
 			handleOperation("sendMessage",conn, msr, writer);
 		}
-		else{
-						
+		else{			
 
 		ResultSet message = newMessageStmt.executeQuery("INSERT INTO message( _date, "+
 									"_time, user1, user2) VALUES (" + 
@@ -285,7 +283,7 @@ rc 414 = done
 		}
 
 	}
-	else if (operation.equals("newGroupMessage")) {
+	else if (operation.equals("newGroupMessage")) {	
 		JSONBuilder jb = new JSONBuilder();
 		int groupid = 0;
 		Statement newMessageStmt = conn.createStatement();
@@ -298,13 +296,85 @@ rc 414 = done
 		String[] users = userList.split(",");
 		int numUsers = users.length;
 		
-		//TODO MUST CHECK THIS GROUP DOESNT ALREADY EXIST THIS IS TROUBLESOME
-		//MEANS HAVE TO INNER JOIN ON CHATGROUPS AND THEN CHECK ALL THE PEOPLE INVOLVED
-		String group_name = request.getParameter("group_name");
+		int group_count = Integer.parseInt(request.getParameter("group_count"));
+		Statement checkExistStmt = conn.createStatement();
+		Statement checkGroupStmt = conn.createStatement();
+		int current_group = 0;
+		boolean same_group = true;
+		
+		//TODO:
+		/* If (group exists) {
+			get_group_id
+			send message to conversation
+			}
+			else {
+				groupid = create_group
+				add_all chatgroups()
+				send message to conversation()
+			}
+		*/	
+		
+		ResultSet groups = checkExistStmt.executeQuery("SELECT c.groupid FROM " +
+							"chatgroups c INNER JOIN messagegroups m " +
+							"on (m.groupid = c.groupid) WHERE group_count = " +
+							group_count+":");
+								
+		if(groups.next()){	// There exists group of similar size for inspection
+		
+			current_group = group.getInt("groupid");
+			//gets all users in the current_group
+			ResultSet people_in_group = checkGroupStmt.executeQuery("SELECT userid FROM "+
+						"chatgroups WHERE groupid = " +
+						current_group + ";");
+			//For each person in result set, compare against the userList passed before
+			while(people_in_group.next()) {
+				for (int i = 0; i< group_count ; i++){	
+					if (people_in_group.getInt("userid") == users[i]){ //person is in the new group
+						person_exists = true;
+						break;
+					}
+				}
+				
+				if (!person_exists) { //If the person doesn't exist then something is wrong
+					create_message_and_group(request, writer, current_group);
+					break;				
+				}
+				
+			}
+			//If no more people in next and the break hasn't occured then this group must be equivalent				
+			// Adds the new message
+			
+			String date = request.getParameter("_date");
+			String time = request.getParameter("_time");
+			int userid = Integer.parseInt(request.getParameter("userid"));
+			String content = request.getParameter("content");
+			
+			int rs = contentStmt.executeUpdate("INSERT INTO messagecontent (content, "+
+						"_date, _time, conversationid, userid) VALUES (" +
+						content + ", " +
+						date + ", " + 
+						time + ", " +
+						current_group + ", " +
+						userid + ")");
+						
+				if (rs == 0) // wrong
+					writer.println(getReturnCode(jb,413));
+				else
+					writer.println(getReturnCode(jb,414));
+
+		} else {
+			create_message_and_group(request, writer, 0);
+		}
+	}
+	}
+	
+	private void create_message_and_group(HttpServlet request, PrintWriter writer, int CONVO_ID) {
+	 	String group_name = request.getParameter("group_name");
 		
 		ResultSet messagegroup = newGroupStmt.executeQuery("INSERT INTO messagegroups(group_name) "+
 									"VALUES ( " +
-									group_name +") returning groupid;");
+									group_name +", " + 
+									group_count + ") returning groupid;");
 							
 		if(messagegroup.next()) { //new group created and that id returned
 			groupid = messagegroup.getInt("groupid");
@@ -315,6 +385,7 @@ rc 414 = done
 		
 			String content = request.getParameter("content");
 				
+				
 			ResultSet message = newMessageStmt.executeQuery("INSERT INTO message( _date, "+
 										"_time, user1, groupid, group_chat) VALUES (" + 
 										date + ", " +
@@ -323,14 +394,17 @@ rc 414 = done
 										groupid +", true) returning conversationid");
 			
 			if(message.next()) {
-				newConversationid = message.getInt("conversationid");
 			
+			if (CONVO_ID == 0) {
+				CONVO_ID = message.getInt("conversationid");
+			}
+				// Adds the new message
 				int rs = contentStmt.executeUpdate("INSERT INTO messagecontent (content, "+
 						"_date, _time, conversationid, userid) VALUES (" +
 						content + ", " +
 						date + ", " + 
 						time + ", " +
-						newConversationid + ", " +
+						CONVO_ID+ ", " +
 						userid + ")");
 						
 				if (rs == 0) // wrong
@@ -343,7 +417,6 @@ rc 414 = done
 			
 			}else  // new group not created
 				writer.println(getReturnCode(jb,411));
-	}
 	}
 
 }

@@ -11,14 +11,21 @@
         
     	<ImageView 
     	    android:id="@+id/iconView"
-    	    android:layout_width="wrap_content"
-    	    android:layout_height="40dp" />
+    	    android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:layout_marginBottom="10dp"/>
     	
     	<TextView
     	    android:id="@+id/From"
     	    android:layout_width="fill_parent"
 	    	android:layout_height="wrap_content"
    			android:layout_gravity="center"
+   			android:layout_marginLeft="10dp"
+            android:layout_marginTop="@dimen/marginTB"
+            android:layout_marginBottom="@dimen/marginTB"
    			android:textAppearance="?android:attr/textAppearanceMedium"
    			android:textColor="#003366" />
     </LinearLayout>
@@ -32,12 +39,12 @@
     <TextView 
         android:id="@+id/content"
         android:layout_width="fill_parent"
-	    android:layout_height="wrap_content" />
+	    android:layout_height="wrap_content"/>
 
     <TextView 
         android:id="@+id/time"
         android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:gravity="right" />
+	    android:gravity="right"/>
     
 </LinearLayout>
