@@ -1,6 +1,10 @@
 package com.example.moneyapp.transaction;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +13,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -16,7 +22,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.metadata.Pair;
 import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.R;
@@ -25,12 +33,13 @@ public class PerItem extends Activity {
 
 	//Debug
 	private static final String TAG = "PerItem";
+	private String errorMessage;
+	
 	private PerItem thisActivity;
 	//The List view
 	ListView transList;
 	//A list of data for each entry, which the adapter retrieves from.
 	ArrayList<TransactionDetail> details;
-	String name = "Jo";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +54,7 @@ public class PerItem extends Activity {
 		details = new ArrayList<TransactionDetail>();
 		//new DownloadPerItem(transList, thisActivity, details).execute("");
 		new DownloadContent().execute("");
-		registerForContextMenu(transList);
+		//registerForContextMenu(transList);
 
 		transList.setOnItemClickListener(new OnItemClickListener() {
 
@@ -79,8 +88,10 @@ public class PerItem extends Activity {
 						"op="+op+"&"+ 
 						"viewMode="+viewMode+"&"+
 						"userid="+userid );
-
-				details = JsonCustomReader.readJsonPerPerson(in);
+				
+				
+				processInput(in);
+			
 			} catch (Exception e) {
 				TransactionDetail Detail;
 				Detail = new TransactionDetail();
@@ -93,11 +104,56 @@ public class PerItem extends Activity {
 			return details;
 		}
 		
+		private boolean processInput(InputStream in) {
+
+			JsonReader jr;
+			try {
+				jr = new JsonReader(new BufferedReader(new InputStreamReader(
+						in, "UTF-8")));
+
+				jr.setLenient(true);
+				jr.beginObject();
+
+				/* Read ReturnCode */
+				Pair<String, Boolean> pair = AdminHelper
+						.handleResponse(JsonCustomReader
+								.readJSONRetCode(jr, in));
+
+				if (!pair.getSecond()) {
+					errorMessage = pair.getFirst();
+					Log.v(TAG, "No Transactions");
+					return false;
+				}
+				Log.v(TAG, "Read fine");
+				if (jr.peek() == JsonToken.END_OBJECT) {
+					Log.v(TAG, "No Transactions");
+					return true;
+				}
+				Log.v(TAG, "Reading transactions");
+				/* Read TransactionDetails */
+				ArrayList<TransactionDetail> rawData = JsonCustomReader
+						.readJSONTransactions(jr, in);
+				jr.endObject();
+				
+				Log.v(TAG, "parsed fine");
+				
+				details = rawData;
+							
+				return true;
+			} catch (UnsupportedEncodingException e) {
+				errorMessage = e.getMessage();
+			} catch (IOException e) {
+				errorMessage = e.getMessage();
+			}
+			return false;
+
+		}
+		
 		@Override
 		protected void onPostExecute(ArrayList<TransactionDetail> result) {
 			super.onPostExecute(result);
 			
-			transList.setAdapter(new PerItemAdapter(result, thisActivity));
+			transList.setAdapter(new PerItemAdapter(details, thisActivity));
 			//registerForContextMenu(transList);
 		}
 	}

@@ -12,22 +12,20 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.JsonReader;
-import android.util.JsonToken;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.DateGen;
-import com.example.helpers.HttpReaders;
 import com.example.helpers.MyToast;
 import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
@@ -94,6 +92,8 @@ public class ProfilePageFragment extends Fragment {
 		((TextView) view.findViewById(R.id.oweDirection)).setText(setDirection(total_price,firstname));
 		if (total_price <= 0) {
 			view.findViewById(R.id.pay_button).setEnabled(false);
+		} else {
+			view.findViewById(R.id.nudge_button).setEnabled(false);
 		}
 			
 		return rootView;
@@ -207,9 +207,12 @@ public class ProfilePageFragment extends Fragment {
 		protected void onPostExecute(Boolean result) {
 			MyToast.toastMessage(getActivity(), errorMessage);
 			if (!result) return;
+			/* If successful, then reset all the entries */
 			((ImageView) view.findViewById(R.id.big_profile_icon)).setImageResource(R.drawable.happy);
-			((TextView) view.findViewById(R.id.price)).setText(Math.abs(total_price) + " pounds");
+			((TextView) view.findViewById(R.id.price)).setText(0 + " pounds");
 			((TextView) view.findViewById(R.id.oweDirection)).setText(setDirection(total_price,FriendsList.getFirstname(friendid)));
+			((Button) view.findViewById(R.id.nudge_button)).setEnabled(false);
+			((TextView) view.findViewById(R.id.oweDirection)).setEnabled(false);
 		}
 		
 	}
