@@ -3,6 +3,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.ServletException;
@@ -285,11 +286,8 @@ rc 414 = done
 	}
 	else if (operation.equals("newGroupMessage")) {	
 		JSONBuilder jb = new JSONBuilder();
-		int groupid = 0;
-		Statement newMessageStmt = conn.createStatement();
 		Statement contentStmt = conn.createStatement();
-		Statement newGroupStmt = conn.createStatement();
-		int newConversationid = 0;
+
 		
 		//Again sending the list in the form (userid,userid,userid...)
 		String userList = request.getParameter("userList");
@@ -300,19 +298,6 @@ rc 414 = done
 		Statement checkExistStmt = conn.createStatement();
 		Statement checkGroupStmt = conn.createStatement();
 		int current_group = 0;
-		boolean same_group = true;
-		
-		//TODO:
-		/* If (group exists) {
-			get_group_id
-			send message to conversation
-			}
-			else {
-				groupid = create_group
-				add_all chatgroups()
-				send message to conversation()
-			}
-		*/	
 		
 		ResultSet groups = checkExistStmt.executeQuery("SELECT c.groupid FROM " +
 							"chatgroups c INNER JOIN messagegroups m " +
@@ -320,8 +305,8 @@ rc 414 = done
 							group_count+":");
 								
 		if(groups.next()){	// There exists group of similar size for inspection
-		
-			current_group = group.getInt("groupid");
+			boolean person_exists = false;
+			current_group = groups.getInt("groupid");
 			//gets all users in the current_group
 			ResultSet people_in_group = checkGroupStmt.executeQuery("SELECT userid FROM "+
 						"chatgroups WHERE groupid = " +
@@ -329,19 +314,19 @@ rc 414 = done
 			//For each person in result set, compare against the userList passed before
 			while(people_in_group.next()) {
 				for (int i = 0; i< group_count ; i++){	
-					if (people_in_group.getInt("userid") == users[i]){ //person is in the new group
+					if (people_in_group.getInt("userid") == (Integer.parseInt(users[i]))){ //person is in the new group
 						person_exists = true;
 						break;
 					}
 				}
 				
 				if (!person_exists) { //If the person doesn't exist then something is wrong
-					create_message_and_group(request, writer, current_group);
+					create_message_and_group(request, conn,writer, current_group);
 					break;				
 				}
 				
 			}
-			//If no more people in next and the break hasn't occured then this group must be equivalent				
+			//If no more people in next and the break hasn't occurred then this group must be equivalent				
 			// Adds the new message
 			
 			String date = request.getParameter("_date");
@@ -363,19 +348,26 @@ rc 414 = done
 					writer.println(getReturnCode(jb,414));
 
 		} else {
-			create_message_and_group(request, writer, 0);
+			create_message_and_group(request, conn, writer, 0);
 		}
 	}
 	}
 	
-	private void create_message_and_group(HttpServlet request, PrintWriter writer, int CONVO_ID) {
+	private void create_message_and_group(HttpServletRequest request,Connection conn, PrintWriter writer, int CONVO_ID) throws SQLException{
+		JSONBuilder jb = new JSONBuilder();
+		Statement newGroupStmt = conn.createStatement();
+		Statement newMessageStmt = conn.createStatement();
+		Statement contentStmt = conn.createStatement();
 	 	String group_name = request.getParameter("group_name");
+	 	String group_count = request.getParameter("group_count");
+
 		
 		ResultSet messagegroup = newGroupStmt.executeQuery("INSERT INTO messagegroups(group_name) "+
 									"VALUES ( " +
 									group_name +", " + 
 									group_count + ") returning groupid;");
-							
+		int groupid = 0;
+		
 		if(messagegroup.next()) { //new group created and that id returned
 			groupid = messagegroup.getInt("groupid");
 			
@@ -415,7 +407,7 @@ rc 414 = done
 				else //Could not add this new message
 					writer.println(getReturnCode(jb,412));
 			
-			}else  // new group not created
+			} else  // new group not created
 				writer.println(getReturnCode(jb,411));
 	}
 

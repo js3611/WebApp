@@ -54,7 +54,7 @@ public class PerItem extends Activity {
 
 				if (selectedNewTransaction(pos)) {
 					startActivity(new Intent(PerItem.this, NewTransaction.class));
-				} else { //normail detail window
+				} else { //normal detail window
 					startActivity(new Intent(PerItem.this, Transactions.class));
 				}
 			}
