@@ -37,7 +37,7 @@
         
         <TextView
             android:id="@+id/borrowedLent"
-            android:layout_width="@dimen/priceDim"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
@@ -45,7 +45,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:layout_toRightOf="@id/subject_view"
-            android:text="total borrowed:"
+            android:text="TOTAL BORROWED:"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColorHint="@color/shadowgreen" 
             android:textSize="12sp"/>

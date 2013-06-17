@@ -20,25 +20,11 @@
             android:src="@drawable/thai" />
 
         <TextView
-            android:id="@+id/borrowedLent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/profile_icon"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="@dimen/marginTB"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:text="Borrowed"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#003366"
-            android:textSize="16sp" />
-        
-        <TextView
             android:id="@+id/nameView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/borrowedLent"
+            android:layout_toRightOf="@id/profile_icon"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="@dimen/marginTB"
@@ -50,10 +36,27 @@
             android:textSize="16sp" />
         
         <TextView
+            android:id="@+id/borrowedLent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/nameView"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="@dimen/marginTB"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="Borrowed"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#003366"
+            android:textSize="16sp" />
+        
+        <TextView
            android:id="@+id/priceView"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:layout_toRightOf="@+id/nameView"
+           android:layout_toRightOf="@+id/borrowedLent"
+           android:layout_centerVertical="true"
            android:layout_marginTop="20dp"
            android:layout_marginLeft="10dp"
            android:layout_marginBottom="@dimen/marginTB"
