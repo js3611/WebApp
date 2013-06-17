@@ -11,6 +11,7 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 
+import com.example.helpers.HttpReaders;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.R;
@@ -29,6 +30,8 @@ public class JsonCustomReader {
 
 	public static int readJsonRetCode(InputStream in)
 			throws UnsupportedEncodingException, IOException {
+		
+		
 		JsonReader jr = new JsonReader(new BufferedReader(
 				new InputStreamReader(in, "UTF-8")));
 		jr.setLenient(true);

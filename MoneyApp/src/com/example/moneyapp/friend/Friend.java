@@ -58,6 +58,7 @@ public class Friend extends Activity implements
 	private UserDetails user;
 	private UserDetails newFriend;
 	private boolean[] tickIndex;
+	private int opFlag;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +74,8 @@ public class Friend extends Activity implements
 
 		/* Get friends from FriendsList */
 		details = FriendsList.getInstance();
-		FriendAdapter npa = new FriendAdapter(details, thisActivity);
-		friendList.setAdapter(npa);
+		friendAdapter = new FriendAdapter(details, thisActivity);
+		friendList.setAdapter(friendAdapter);
 		registerForContextMenu(friendList);
 		new DownloadNotificationTask().execute();
 	}
@@ -114,8 +115,7 @@ public class Friend extends Activity implements
 	}
 
 	private void refresh() {
-		// TODO Auto-generated method stub
-
+		friendAdapter.notifyDataSetChanged(); 
 	}
 
 	private void addFriend() {
@@ -179,6 +179,7 @@ public class Friend extends Activity implements
 
 			if (result) { // User exists
 				// Another Dialog to confirm "add friend"
+				Log.v(TAG,newFriend.getUserid()+"");
 				new AddFriendTask().execute(user.getUserid(),newFriend.getUserid());
 				// MyToast.toastMessage(thisActivity,"user exists!");
 
@@ -232,7 +233,6 @@ public class Friend extends Activity implements
 				errorMessage = e.getMessage();
 			}
 			return false;
-
 		}
 	}
 	
@@ -311,10 +311,9 @@ public class Friend extends Activity implements
 					Log.v(TAG, user.toString());
 				}
 				//Show dialog with people who wish to add
-				//TODO
 				showDialog();
 			} else { //Failed to get notifications or no new notifications
-				MyToast.toastMessage(thisActivity, errorMessage);
+				//MyToast.toastMessage(thisActivity, errorMessage);
 			}
 		}
 
@@ -431,56 +430,68 @@ public class Friend extends Activity implements
     }
 
 	protected void deleteFriends() {
+		opFlag = DELETE_OP;
 		for (int i = 0; i < tickIndex.length; i++) {
 			if (tickIndex[i]) {
-				new FriendTask().execute(DELETE_OP,user.getUserid(),newFriends.get(i).getUserid());
+				Log.v(TAG, newFriends.get(i).toString());
+				new FriendTask().execute(opFlag, user.getUserid(),newFriends.get(i).getUserid(),i);
 			}
 		}
 	}
 
 	protected void confirmFriends() {
+		opFlag = CONFIRM_OP;
 		for (int i = 0; i < tickIndex.length; i++) {
 			if (tickIndex[i]) {
-				new FriendTask().execute(CONFIRM_OP,user.getUserid(),newFriends.get(i).getUserid());
+				new FriendTask().execute(opFlag, user.getUserid(),newFriends.get(i).getUserid(),i);
 			}
 		}
-		MyToast.toastMessage(thisActivity, "Confirmed friends!");
+		MyToast.toastMessage(thisActivity, "confirmed friends");
 	}   
 
 	private class FriendTask extends AsyncTask<Integer, Void, Boolean> {
 
+		int position = 0;
+		int opcode = 0;
+		
 		@Override
 		protected Boolean doInBackground(Integer... params) {
-			return addFriend(params[0],params[1],params[2]);
+			return addFriend(params[0],params[1],params[2],params[3]);
 		}
 
 		@Override
 		protected void onPostExecute(Boolean result) {
 
 			if (result) { 
-				MyToast.toastMessage(thisActivity,"added friend");
+				if (opcode == CONFIRM_OP) {
+					FriendsList.addFriend(newFriends.get(position));
+					friendAdapter.notifyDataSetChanged(); 		
+				} 
+				
 			} else {
 				MyToast.toastMessage(thisActivity, errorMessage);
 			}
 		}
 
-		private boolean addFriend(int opcode, int userid, int friendid) {
+		private boolean addFriend(int op, int userid, int friendid, int pos) {
+			opcode = op;
+			position = pos;
+			
 			List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(3);
-			if (opcode==CONFIRM_OP) {
-				Log.v(TAG, "I'm here in confirm");
+			if (op==CONFIRM_OP) {
 				nameValueP.add(new BasicNameValuePair("op", "confirmRequest"));
-			} else if (opcode==DELETE_OP){
+			} else if (op==DELETE_OP){
 				nameValueP.add(new BasicNameValuePair("op", "deleteFriend"));
 			}
-			Log.v(TAG, userid+"");
-			Log.v(TAG, friendid+"");
+
 			nameValueP.add(new BasicNameValuePair("userid", Integer.toString(userid)));
 			nameValueP.add(new BasicNameValuePair("friendid", Integer.toString(friendid)));
 
 			try {
 				InputStream in = CustomHttpClient.executeHttpPost(
-						MainActivity.URL + MainActivity.FRIENDS, nameValueP);
+						MainActivity.URL + MainActivity.FRIENDS, nameValueP); 
 				return processInput(in);
+				
 			} catch (Exception e) {
 				errorMessage = e.toString();
 			}

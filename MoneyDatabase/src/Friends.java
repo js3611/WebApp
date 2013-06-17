@@ -45,7 +45,7 @@ public class Friends extends javax.servlet.http.HttpServlet implements
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
 			writer.println("<h1>Driver not found: " + e + e.getMessage()
-							+ "</h1>");
+					+ "</h1>");
 		}
 
 		try {
@@ -227,7 +227,7 @@ rc 311 = successful confirm
 	 		Statement requestCount = conn.createStatement();
 	 		JSONBuilder jb = new JSONBuilder();
 	 		
-	 		int userid = Integer.parseInt(request.getParameter("userid"));
+	 		int friendid = Integer.parseInt(request.getParameter("userid"));
 	 		
 	 		//Since when adding someone the person adding is "userid", get all requests that have user as "friendid"
 	 		//This shows that they are the ones being added, or, "Requested"
@@ -235,11 +235,11 @@ rc 311 = successful confirm
 	 		ResultSet requests = getRequests.executeQuery("SELECT * FROM friends f "+
 	 				"INNER JOIN appuser a on (f.userid = a.userid)" +
 	 				"WHERE confirmed = false AND "+
-					"friendid = " + userid + ";");
+					"friendid = " + friendid + ";");
 					
 			ResultSet count = requestCount.executeQuery("SELECT count(userid) as count "+
 					"FROM friends WHERE confirmed = false AND "+
-					"friendid = " + userid + ";");
+					"friendid = " + friendid + ";");
 	 	
 	 	
 	 		if (!requests.isBeforeFirst() && !count.isBeforeFirst()) { // Something went wrong
@@ -258,13 +258,13 @@ rc 311 = successful confirm
 				jb.beginObject().append("returnCode",36).beginArray();
 
 				while(requests.next()) {	
-								
-				int friendid = requests.getInt("friendid");
+				//Your friend id is actually userid
+				int userid = requests.getInt("userid");
 				String firstname = requests.getString("firstname");
 				String surname = requests.getString("surname");
 				String phonenumber = requests.getString("phonenumber");
 								
-				jb.beginObject().append("friendid",friendid)
+				jb.beginObject().append("userid",userid)
 								.append("firstname", firstname)
 								.append("surname", surname)
 								.append("phonenumber", phonenumber)
@@ -280,7 +280,7 @@ rc 311 = successful confirm
 	 		 	Statement addStmt = conn.createStatement();
 	 		 	JSONBuilder jb = new JSONBuilder();
 	 		 	
-	 		 	int phonenumber = Integer.parseInt(request.getParameter("phonenumber"));
+	 		 	String phonenumber = request.getParameter("phonenumber");
 	 	
 	 			ResultSet rs = addStmt.executeQuery("SELECT userid, firstname, surname " +
 	 							"FROM appuser WHERE phonenumber = '" +
@@ -347,29 +347,32 @@ rc 311 = successful confirm
 	 		JSONBuilder jb = new JSONBuilder();
 	 		
 	 		int friendid = Integer.parseInt(request.getParameter("friendid"));
+	 		int userid = Integer.parseInt(request.getParameter("userid"));
 	 		
 	 		//finds out if any money should exchange between these two people.
-	 		ResultSet outstanding_debts = searchStmt.executeQuery("SELECT * FROM debts WHERE " +
-	 							"userid = " + friendid + " OR " +
-	 						    "friendid = " + friendid + ";");
+	 		ResultSet outstanding_debts = 
+	 			searchStmt.executeQuery(
+	 					"SELECT * " +
+	 					"FROM debt " +
+	 					"WHERE " +"(userid = " + friendid + "AND owesuserid ="+ userid +" AND paid_off=false)" 
+	 					+" OR " + "(userid = " + userid + "AND owesuserid ="+ friendid +" AND paid_off=false);");
 	 						    
 	 		if (!outstanding_debts.isBeforeFirst()) {// No debts
-	 			int userid = Integer.parseInt(request.getParameter("userid"));
 	 		
-	 			int rs = dltStmt.executeUpdate("DELETE FROM FRIENDS WHERE (userid = " +
-	 							userid + " AND friendid = " +
-	 							friendid + ":");
+	 			int rs = dltStmt.executeUpdate(
+	 					"DELETE FROM friends " +
+	 					"WHERE (userid = " + friendid + " AND friendid = " + userid + ")" +
+	 					"OR" +"(userid = " + userid + " AND friendid = " + friendid + ");");
 	 							
-	 			if (rs == 0) //delete didnt work
+	 			if (rs == 0) //delete didn't work
 	 				writer.println(getReturnCode(jb,314));
-	 			else
+	 			else //deleted
 	 				writer.println(getReturnCode(jb,315));	
 	 		}
 	 		else // else debts exist so cannot delete
 	 			writer.println(getReturnCode(jb,313));			
 	 		
-	 	}
-	 	else if (operation.equals("confirmRequest")) {
+	 	} else if (operation.equals("confirmRequest")) {
 	 		Statement confirmStmt = conn.createStatement();
 	 		JSONBuilder jb = new JSONBuilder();
 	 		
