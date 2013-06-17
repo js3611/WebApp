@@ -84,7 +84,7 @@
             android:layout_marginTop="@dimen/marginTB"
             android:text="Who owe?"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
+<!-- 
         <ListView
             android:id="@+id/PersonList"
             android:layout_width="match_parent"
@@ -94,7 +94,20 @@
             android:layout_marginTop="@dimen/marginTB"
             android:layout_weight="2" >
         </ListView>
+         -->
     </LinearLayout>
+
+            <ListView
+            android:id="@+id/PersonList"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@+id/new_transaction"
+            android:layout_above="@+id/eq_split_button"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+
+            android:layout_weight="2" >
+        </ListView>
     
     <Button
         android:id="@+id/eq_split_button"
@@ -105,6 +118,7 @@
         android:layout_alignRight="@+id/done_button"
         android:layout_marginBottom="@dimen/marginTB"
         android:background="@drawable/custom_button"
+        android:onClick="equalSplit"
         android:text="Equal Split"
         android:textSize="25sp" />
     

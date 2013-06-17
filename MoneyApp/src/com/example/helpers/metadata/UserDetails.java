@@ -99,6 +99,27 @@ public class UserDetails implements Serializable {
 		
 		return null;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + userid;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserDetails other = (UserDetails) obj;
+		if (userid != other.userid)
+			return false;
+		return true;
+	}
+	
 	
 	
 }
