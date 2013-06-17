@@ -133,7 +133,7 @@
         <activity
             android:name="com.example.moneyapp.transaction.NewTransaction"
             android:label="@string/title_activity_new_transaction"
-            android:windowSoftInputMode="adjustNothing" >
+            android:windowSoftInputMode="adjustNothing|stateHidden" >
         </activity>
         <activity
             android:name="com.example.moneyapp.MainLargeActivity"
@@ -145,7 +145,10 @@
         </activity>
         <activity
             android:name="com.example.moneyapp.transaction.NewPerson"
-            android:label="@string/title_activity_new_person" >
+            android:label="@string/title_activity_new_person"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.MinWidth"
+            android:excludeFromRecents="true" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

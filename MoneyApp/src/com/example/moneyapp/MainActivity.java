@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 	public static final String USER_KEY = "com.example.moneyapp.USERDETAILS";
 	public static final String edge02 = "http://146.169.52.2:59999";
 	public static final String pixel20 = "http://146.169.53.180:59999";
-	public static final String joMachine = "http://129.31.227.146:8080/MoneyDatabase";
+	public static final String joMachine = "http://129.31.230.112:8080/MoneyDatabase";
 	public static final String joMachineEmulator = "http://10.0.2.2:8080/MoneyDatabase";
 	public static final String URL = joMachine;// "http://146.169.53.14:59999";
 	public static final String LOGIN = "/Login";

@@ -120,6 +120,10 @@ public class PerPersonProfile extends FragmentActivity implements PayDialog.Noti
 			// activity and pops the
 			// back stack.
 			super.onBackPressed();
+			//Start new activity of PerPerson
+/*			Intent i = getIntent();
+			i.setClass(getApplicationContext(), PerPerson.class);
+			i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); */
 		} else { // Otherwise,select the previous step.
 			mPager.setCurrentItem(mPager.getCurrentItem() - 1);
 		}

@@ -49,6 +49,7 @@ public class LogPageFragment extends Fragment {
 		/* Set fields */
 		thisActivity = getActivity();
 		user = (UserDetails) thisActivity.getIntent().getExtras().getSerializable(MainActivity.USER_KEY);
+		details = new ArrayList<TransactionDetail>();
 
 		// profile
 		((TextView) rootView.findViewById(R.id.log_title)).setText("Log Transaction");

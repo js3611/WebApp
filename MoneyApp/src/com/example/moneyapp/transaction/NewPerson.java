@@ -8,6 +8,7 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -37,6 +38,7 @@ public class NewPerson extends Activity {
 	private ArrayList<UserDetails> details;
 	private UserDetails user;
 	private UserDetails[] owers;
+	private ArrayList<UserInfo> owerinfos = null;
 	private int numberOfOwers;
 	
 
@@ -66,9 +68,7 @@ public class NewPerson extends Activity {
 		owers = new UserDetails[details.size()];
 		NewPersonAdapter npa = new NewPersonAdapter(details, thisActivity);
 		friendList.setAdapter(npa);
-		registerForContextMenu(friendList);
-		
-		//new DownloadFriends().execute(user.getUserid());
+		//registerForContextMenu(friendList);
 		
 		friendList.setOnItemClickListener(new OnItemClickListener() {
 
@@ -91,50 +91,68 @@ public class NewPerson extends Activity {
 			}
 
 		});
+		
+		/* Tick off friends already selected */
+		new SelectTask().execute();
+		//setSelectedFriends(intent);
 
 	}
-/*
-	private class DownloadFriends extends AsyncTask<Integer, Void, ArrayList<UserDetails>> {
+
+	private class SelectTask extends AsyncTask<Void, Void, Void> {
 
 		@Override
-		protected ArrayList<UserDetails> doInBackground(Integer... params) {
-			try {
-				int userid = params[0];
-				String op = "getFriendsList";
-				String viewMode = "perPerson";
+		protected Void doInBackground(Void... params) {
+				while(friendList.getChildAt(0)==null);
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			setSelectedFriends(getIntent());
+		}
+	}
+	
+	private void setSelectedFriends(Intent intent) {
+		ArrayList<? extends Parcelable> owerinfo = intent.getExtras().getParcelableArrayList(Transactions.FRIENDIDS_STR); 
+		if(owerinfo == null)
+			return;
 				
-				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
-						MainActivity.TRANSACTION + "?"+
-						"op="+op+"&"+ 
-						"viewMode="+viewMode+"&"+
-						"userid="+userid );
-
-				Pair<Integer,ArrayList<UserDetails>> rawData = JsonCustomReader
-						.readJsonFriends(in);
-				details = rawData.getSecond();
-			} catch (Exception e) {
-				UserDetails Detail;
-				Detail = new UserDetails();
-				Detail.setProfilePicture(R.drawable.ic_launcher);
-				Detail.setFirstName("ERROR" + e.getMessage());
-				details.add(Detail);
+		for (Parcelable parcelable : owerinfo) {
+			if (parcelable instanceof UserInfo) {
+				UserInfo userinfo = (UserInfo) parcelable;
+				UserDetails user = userinfo.getUserDetail();
+				tickUser(user);
+				numberOfOwers++;
 			}
-
-			return details;
 		}
-		
-		@Override
-		protected void onPostExecute(ArrayList<UserDetails> result) {
-			super.onPostExecute(result);
-			
-			owers = new UserDetails[result.size()];
-			NewPersonAdapter npa = new NewPersonAdapter(result, thisActivity);
-			friendList.setAdapter(npa);
-			registerForContextMenu(friendList);
-		}
-		
 	}
-*/
+
+	private void tickUser(UserDetails friend) {
+		Log.v(TAG, "ticking user");
+
+		for (int i = 0; i <details.size(); i++) {
+			UserDetails currFriend = details.get(i);
+			if (currFriend!=null) {
+				Log.v(TAG, "position "+i);
+				View view = friendList.getChildAt(i);
+				
+				if (friend.getUserid() == currFriend.getUserid()) {
+					
+					//Tick off the friend
+
+					Log.v(TAG,"Ticking "+ friend.getFirstName());
+					CheckBox cb = (CheckBox) view.findViewById(R.id.checkBox1);
+					cb.setChecked(true);
+					//owerinfos.add(new UserInfo(user));
+			
+					owers[i] = friend;
+					//triggerClick TODO
+				}
+			}
+			
+		}
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -145,7 +163,7 @@ public class NewPerson extends Activity {
 	public void onAddClicked(View view) { 
 	
 		Intent intent = new Intent(getApplicationContext(), NewTransaction.class);
-		ArrayList<UserInfo> owerinfos = new ArrayList<UserInfo>(numberOfOwers);
+		owerinfos = new ArrayList<UserInfo>(numberOfOwers);
 		for (UserDetails user : owers) {
 			if(user!=null)
 				owerinfos.add(new UserInfo(user));

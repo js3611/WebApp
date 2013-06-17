@@ -46,6 +46,7 @@ public class PerPerson extends Activity {
 	private PerPerson thisActivity;
 	// The List view
 	private ListView transList;
+	private PerPersonAdapter ppa;
 	// A list of data for each entry, which the adapter retrieves from.
 	private ArrayList<TransactionDetail> details;
 	private UserDetails user;
@@ -63,12 +64,34 @@ public class PerPerson extends Activity {
 		user = UserDetails.getUser(getIntent());
 
 		/* Asynchronously populate the list view the data */
-		new DownloadContent().execute(Integer.toString(user.getUserid()));
+//		new DownloadContent().execute(Integer.toString(user.getUserid()));
 
 		/* Set the behaviour when entry of a list is clicked */
 		setListEntryOnClickListener();
 
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		/* Asynchronously populate the list view the data */
+		new DownloadContent().execute(Integer.toString(user.getUserid()));
+		Log.v(TAG, "Resumed");
+	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		Log.v(TAG, "Restarted");
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		Log.v(TAG, "Restarted");
+	}
+	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -278,8 +301,10 @@ public class PerPerson extends Activity {
 		protected void onPostExecute(ArrayList<TransactionDetail> result) {
 			super.onPostExecute(result);
 
-			transList.setAdapter(new PerPersonAdapter(result, thisActivity));
-			registerForContextMenu(transList);
+			ppa = new PerPersonAdapter(result, thisActivity);
+			transList.setAdapter(ppa);
+			ppa.notifyDataSetChanged();
+//			registerForContextMenu(transList);
 		}
 
 	}
