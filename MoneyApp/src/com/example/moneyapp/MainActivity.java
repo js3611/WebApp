@@ -49,6 +49,7 @@ public class MainActivity extends Activity {
 	public static final String LOGIN = "/Login";
 	public static final String TRANSACTION = "/Transaction";
 	public static final String FRIENDS = "/Friends";
+	public static final String MESSAGE = "/Messages";
 	private String errorMessage;
 	private UserDetails user;
 

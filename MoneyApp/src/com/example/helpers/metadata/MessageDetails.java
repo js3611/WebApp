@@ -1,6 +1,9 @@
 package com.example.helpers.metadata;
 
-public class MessageDetails {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class MessageDetails implements Parcelable{
 
 	private int icon;
 	private int conversationID;
@@ -151,5 +154,31 @@ public class MessageDetails {
 	public String getDate() {
 		return date;
 	}
+
+	@Override
+	public String toString() {
+		return "MessageDetails [icon=" + icon + ", conversationID="
+				+ conversationID + ", last_message_date=" + last_message_date
+				+ ", last_message_time=" + last_message_time + ", user1="
+				+ user1 + ", user2=" + user2 + ", group_chat=" + group_chat
+				+ ", groupid=" + groupid + ", group_name=" + group_name
+				+ ", content=" + content + ", senderid=" + senderid
+				+ ", firstname=" + firstname + ", date=" + date + ", time="
+				+ time + "]";
+	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 	
 }

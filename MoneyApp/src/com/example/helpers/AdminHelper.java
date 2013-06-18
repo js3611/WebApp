@@ -96,6 +96,37 @@ public class AdminHelper {
 		case 321:
 			errorMessage  ="This person is in your friend list already";
 			break;
+		case 42:
+			errorMessage  ="You have no current Messages";
+			break;
+		case 43:
+			return goodResult;
+		case 44:
+			errorMessage  ="Could not retrieve messages! Please try again";
+			break;
+		case 45:
+			return goodResult;
+		case 46:
+			errorMessage  ="Could not send message. Please try again";
+			break;
+		case 47:
+			return goodResult;
+		case 48:
+			errorMessage  ="Could not make new message. Please try again";
+			break;
+		case 410:
+			return goodResult;
+		case 411:
+			errorMessage  ="Could not create this group! please try again";
+			break;
+		case 412:
+			errorMessage  ="Could not add conversation to database, please try again";
+			break;
+		case 413:
+			errorMessage  ="Could not send message to group. Please try again";
+			break;
+		case 414:
+			return goodResult;	
 		default:
 			errorMessage = "Something went wrong!";
 			break;
@@ -103,4 +134,6 @@ public class AdminHelper {
 		return new Pair<String, Boolean>(errorMessage, false);
 	}
 
+	
+	
 }
