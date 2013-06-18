@@ -31,7 +31,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/messageMargin"
-            android:src="@drawable/next_button_icon" />"
+            android:src="@drawable/send_message_button" />"
         
         
     </RelativeLayout>
