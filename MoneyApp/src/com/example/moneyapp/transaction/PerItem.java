@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -163,6 +165,7 @@ public class PerItem extends Activity {
 		protected void onPostExecute(ArrayList<TransactionDetail> result) {
 			super.onPostExecute(result);
 			
+			Collections.sort(details);
 			transList.setAdapter(new PerItemAdapter(details, thisActivity,user));
 			//registerForContextMenu(transList);
 		}
@@ -175,37 +178,4 @@ public class PerItem extends Activity {
 		return true;
 	}
 	
-	public static ArrayList<TransactionDetail> addDummies(ArrayList<TransactionDetail> details) {
-		TransactionDetail Detail;
-		Detail = new TransactionDetail();
-		Detail.setIcon(R.drawable.thai);
-		Detail.setOwesuser("Thai");
-		Detail.setSubject("Dinner");
-		Detail.setPrice(30);
-		details.add(Detail);
-
-		Detail = new TransactionDetail();
-		Detail.setIcon(R.drawable.terence);
-		Detail.setOwesuser("Terence");
-		Detail.setSubject("lunch");
-		Detail.setPrice(50);
-		details.add(Detail);
-		
-		Detail = new TransactionDetail();
-		Detail.setIcon(R.drawable.jo);
-		Detail.setOwesuser("Jo");
-		Detail.setSubject("Malaga");
-		Detail.setPrice(340);
-		details.add(Detail);
-		
-		Detail = new TransactionDetail();
-		Detail.setIcon(R.drawable.terence);
-		Detail.setOwesuser("Terence"); 
-		Detail.setSubject("Dinner");
-		Detail.setPrice(30);
-		details.add(Detail);
-		
-		return details;
-	}
-
 }

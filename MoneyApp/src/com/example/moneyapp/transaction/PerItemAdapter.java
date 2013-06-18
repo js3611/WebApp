@@ -3,15 +3,17 @@ package com.example.moneyapp.transaction;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.net.NetworkInfo.DetailedState;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.R;
 
-public class PerItemAdapter extends CustomAdapter<TransactionDetail> {
+public class PerItemAdapter extends CustomAdapter<TransactionDetail>  {
 
 	UserDetails user;
 	
@@ -69,12 +71,20 @@ public class PerItemAdapter extends CustomAdapter<TransactionDetail> {
 			return v;
 		TransactionDetail detail = _data.get(position);
 		viewHolder.image.setImageResource(detail.getIcon());
-		viewHolder.date_view.setText(""/*detail.getDate()*/);
+		viewHolder.date_view.setText(""+detail.getDate());
 		viewHolder.subject_view.setText(detail.getSubject());
-		viewHolder.from_view.setText(detail.getOwesuser());
+		viewHolder.from_view.setText(setFrom(position));
 		viewHolder.price_view.setText("" + detail.getPrice());
 		viewHolder.borrowedLent.setText(setBorrowedLent(position));
 		return v;
+	}
+
+	private CharSequence setFrom(int position) {
+		int userid = _data.get(position).getUserid();
+		if (userid==user.getUserid())
+			return "Me"; //user.getFirstName()+ " " + user.getSurname();
+		else 
+			return FriendsList.getFirstname(userid) + " " + FriendsList.getSurname(userid);
 	}
 
 	private CharSequence setBorrowedLent(int position) {

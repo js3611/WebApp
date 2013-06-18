@@ -161,7 +161,7 @@ public class PerPersonProfile extends FragmentActivity implements PayDialog.Noti
 	
 	public void handlePayment(View view) {
 		Log.v(TAG, "Making a payment");
-        PayDialog payD = new PayDialog();
+        PayDialog payD = PayDialog.newInstance(MainMenu.PER_PERSON_VIEW);
         payD.show(getFragmentManager(), "Payment");
 	
 	}

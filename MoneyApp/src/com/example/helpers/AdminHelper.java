@@ -41,6 +41,11 @@ public class AdminHelper {
 		case 22:
 			errorMessage = "No transactio to show";
 			break;
+		case 23:
+			return goodResult;
+		case 24:
+			errorMessage = "failed to partial pay";
+			break;
 		case 31:
 			errorMessage =  "Failed to load list of friends";
 			break;

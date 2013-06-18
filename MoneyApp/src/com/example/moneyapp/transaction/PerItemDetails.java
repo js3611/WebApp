@@ -6,8 +6,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -15,25 +20,35 @@ import android.util.JsonReader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.DateGen;
+import com.example.helpers.HttpReaders;
 import com.example.helpers.MyToast;
 import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
+import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
 
-public class PerItemDetails extends Activity {
+public class PerItemDetails extends Activity implements PayDialog.NoticeDialogListener {
 
 	private static final String TAG = "PerItemDetails";
 	private String errorMessage;
+	
+	//Constants
+	private int PARTIAL_PAY = 0;
+	private int FULLY_PAY = 1;
+	
 	private PerItemDetails thisActivity;
 	private UserDetails user;
 	//ID of the person who made the transaction
@@ -242,6 +257,120 @@ public class PerItemDetails extends Activity {
 				MyToast.toastMessage(thisActivity, errorMessage);
 			}
 		}
+	}
+	
+	public void handlePayment(View view) {
+		if (!can_delete) {
+			Log.v(TAG, "Making a payment (Per Item)");
+	        PayDialog payD = PayDialog.newInstance(MainMenu.PER_TRANSACTION_VIEW);
+	        payD.show(getFragmentManager(), "Payment");
+		} else {
+			//update
+		}
+	}
+	
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog) {
+		// Do nothing, its not visible
+	}
+
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		// Do nothing
+		
+	}
+
+	@Override
+	public void onDialogPartialClick(DialogFragment dialog) {
+		//partialRepay		
+		new MakePayment().execute("partialRepay",
+					Integer.toString(transaction.getUserid()),
+					Integer.toString(/*transaction.getOwesuserid()*/user.getUserid()),
+					Integer.toString(transaction.getTransactionID()),
+					Double.toString(5.0));
+	}
+
+	@Override
+	public void onDialogFullyClick(DialogFragment dialog) {
+		//debtRepaid
+		new MakePayment().execute("debtRepay",
+				Integer.toString(transaction.getUserid()),
+				Integer.toString(transaction.getOwesuserid()));
+	}
+	
+	private class MakePayment extends AsyncTask<String, Void, Boolean>{
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			try {
+
+				for (String string : params) {
+					Log.v(TAG, "Printing params" + string);
+				}
+				
+				String url = MainActivity.URL + MainActivity.TRANSACTION;			
+				List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(3);
+				nameValueP.add(new BasicNameValuePair("op", params[0]));
+				nameValueP.add(new BasicNameValuePair("userid", params[1]));
+				nameValueP.add(new BasicNameValuePair("owesuserid", params[2]));
+				nameValueP.add(new BasicNameValuePair("transid", params[3]));
+				nameValueP.add(new BasicNameValuePair("new_partial_pay", params[4]));
+				nameValueP.add(new BasicNameValuePair("date", DateGen.getDate()));
+				
+				InputStream in = CustomHttpClient
+						.executeHttpPost(url,nameValueP);
+
+				Log.v(TAG,HttpReaders.readIt(in, 1000));
+				
+				return processInput(in);
+
+
+			} catch (Exception e) {
+				Log.v(TAG, e.getMessage());
+			}
+			return false;
+		}
+		
+		private boolean processInput(InputStream in) {
+			
+			JsonReader jr;
+			try {
+				jr = new JsonReader(new BufferedReader(new InputStreamReader(
+						in, "UTF-8")));
+
+				jr.setLenient(true);
+				jr.beginObject();
+
+				/* Read ReturnCode */
+				Pair<String, Boolean> pair = AdminHelper
+						.handleResponse(JsonCustomReader
+								.readJSONRetCode(jr, in));
+
+				errorMessage = pair.getFirst();
+				return pair.getSecond();
+				
+			} catch (UnsupportedEncodingException e) {
+				errorMessage = e.getMessage();
+			} catch (IOException e) {
+				errorMessage = e.getMessage();
+			}
+			return false;
+
+			
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			
+			if (!result) {
+				MyToast.toastMessage(thisActivity, errorMessage);
+				return;
+			}
+			MyToast.toastMessage(thisActivity, "Payment successful!");
+			
+			startActivity(getIntent().setClass(thisActivity, PerItem.class));
+		}
+		
 	}
 	
 }

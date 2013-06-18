@@ -1,5 +1,6 @@
 package com.example.moneyapp.transaction;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,14 +13,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
 
+@SuppressLint("ValidFragment")
 public class PayDialog extends DialogFragment {
 
+	private static final String VIEW_MODE = "com.moneyapp.view_mode";
 	protected static final int PARTIAL_PAY = 0;
-
-	public PayDialog() {
-		// TODO Auto-generated constructor stub
+	
+	public PayDialog() {}
+	
+	public static PayDialog newInstance(int view_mode) {
+		
+		PayDialog f = new PayDialog();
+		Bundle args = new Bundle();
+		args.putInt(VIEW_MODE, view_mode);
+		f.setArguments(args);
+		return f;
+				
 	}
 
 	@Override
@@ -41,7 +53,14 @@ public class PayDialog extends DialogFragment {
 		           }
 		       });
 		*/
-	    CharSequence[] display = {"Partially (via New Transaction)","Fully"};
+	    int view_mode = getArguments().getInt(VIEW_MODE);
+	    String partial = null;
+	    if (view_mode == MainMenu.PER_PERSON_VIEW) {
+	    	partial = "Partially (via New Transaction)";
+	    } else {
+	    	partial = "Partially";
+	    }
+	    CharSequence[] display = {partial,"Fully"};
         builder.setItems(display, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int which) {
                 	   if (which == PARTIAL_PAY) {

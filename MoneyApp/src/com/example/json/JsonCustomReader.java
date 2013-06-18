@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import android.util.Log;
 
 import com.example.helpers.MyMath;
 import com.example.helpers.metadata.MessageDetails;
@@ -144,7 +145,7 @@ public class JsonCustomReader {
 				price = MyMath.round(jr.nextDouble());
 			} else if (name.equals("partial_pay")) {
 				partial_pay = MyMath.round(jr.nextDouble());
-			} else if (name.equals("_date")) {
+			} else if (name.equals("date")) {
 				date = jr.nextString();
 			} else if (name.equals("description")) {
 				description = jr.nextString();
@@ -157,7 +158,7 @@ public class JsonCustomReader {
 				owesuser, user, owesuserid, userid, subject, price,
 				partial_pay, date, deadline);
 		td.setDescription(description);
-		//Log.v("JSON", "Read transaction detail: " + td.toString());
+		Log.v("JSON", "Read transaction detail: " + td.toString());
 		return td;
 	}
 

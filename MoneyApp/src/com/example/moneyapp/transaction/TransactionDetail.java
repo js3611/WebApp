@@ -1,6 +1,10 @@
 package com.example.moneyapp.transaction;
 
-public class TransactionDetail {
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class TransactionDetail implements Comparable<TransactionDetail>{
 
 	private int icon;
 	private int transactionID;
@@ -143,6 +147,22 @@ public class TransactionDetail {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Override
+	public int compareTo(TransactionDetail another) {
+		
+		 return (transactionID > another.transactionID ? -1 :
+             (transactionID == another.transactionID ? 0 : 1));
+		/*
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date d1 = format.parse(getDate());
+		Date d2 = format.parse(another.getDate());
+		
+		if (d1.compareTo(d2) == 0) {
+			
+		}
+*/
 	}
 
 	
