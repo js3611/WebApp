@@ -254,7 +254,7 @@ rc 414 = done
 		}
 		else{			
 
-		ResultSet message = new MessageStmt.executeQuery("INSERT INTO message( _date, "+
+		ResultSet message = newMessageStmt.executeQuery("INSERT INTO message( _date, "+
 									"_time, user1, user2) VALUES (" + 
 									date + ", " +
 									time + ", " +

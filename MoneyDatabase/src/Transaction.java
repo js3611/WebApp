@@ -74,7 +74,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 						"SELECT t.transid, t.name,a._date, a.userid, sum(a.amount) - sum(a.partial_pay) as amount " +
 						"FROM " + "transactions t INNER JOIN " +
 							"(SELECT t.transid, t.name, t._date, d.amount, d.partial_pay, d.userid, d.owesuserid " +
-							"FROM " + "transactions t INNER JOIN debt d on (t.transid = d.transid) " +
+							"FROM " + "transactions t INNER JOIN debt d ON (t.transid = d.transid) AND d.paid_off=false  " +
 							"WHERE(d.userid = " + userid + "OR d.owesuserid = " +userid + ") " +
 							"AND t.total_paid_off = false ORDER BY t._date DESC) " + "as a ON (t.transid = a.transid) " +
 						"GROUP BY t.transid, t.name, a.userid, a._date" + ";");
@@ -153,7 +153,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				// Gets the individual debts of each transaction (should have 1
 				// result if user owes, multiple if user is owed)
 				ResultSet debtSet = debtsStmt
-						.executeQuery("SELECT d.transid, d.amount, a.userid, a.firstname, a.surname, amount FROM" 
+						.executeQuery("SELECT d.transid, d.amount, d.userid, a.firstname, a.surname, amount FROM" 
 								+ "  debt d INNER JOIN appuser a ON (d.owesuserid = a.userid)"  
 								+ " AND d.transid = " + transid +";" );
 				
@@ -568,26 +568,31 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			int owesuserid = Integer.parseInt(request.getParameter("owesuserid"));
 			//THIS DOUBLE NEEDS TO BE WORKED OUT CLIENT SIDE
 			double new_partial_pay = Double.parseDouble(request.getParameter("new_partial_pay"));			
-			String paid_off = request.getParameter("paid_off");
+
 	
-			int rs = updateStmt.executeUpdate("UPDATE debt SET partial_pay = "
+			ResultSet rs = updateStmt.executeQuery("UPDATE debt SET partial_pay = "
 											+ new_partial_pay 
 											+ " WHERE transid = " 
 											+ transid 
 											+ " AND userid = "
 											+ userid
-											+ " AND owesuerid = "
+											+ " AND owesuserid = "
 											+ owesuserid 
-											+ "; ");
-
-			//If this payment completes the debt we can delegate to the debtRepaid operation
-			if (paid_off.equals("true"))
-				handlePostOperation("debtRepaid", conn, request, writer); 
+											+ " Returning partial_pay, amount; ");
 									
-			if (rs != 0) 	//Update was successful
-				writer.println(getReturnCode(jb,3));
+			if (rs.next()) {  	//Update was successful
+				writer.println(getReturnCode(jb,23));
+				
+				double partial_pay = rs.getDouble("partial_pay");
+				double amount = rs.getDouble("amount");
+				double epsilon = 0.0001;
+				double total = amount-partial_pay;
+				//If this payment completes the debt we can delegate to the debtRepaid operation
+				if (total < epsilon || total > epsilon )
+					handlePostOperation("debtRepaid", conn, request, writer); 
+			}
 			else			//Update went wrong
-				writer.println(getReturnCode(jb,4));
+				writer.println(getReturnCode(jb,24));
 
 			
 		} else if (operation.equals("personRepay")){
@@ -649,7 +654,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			//This is if the last debt has been repaid of a transaction and we can ALSO complete the transaction
 			ResultSet results = checkStmt
 					.executeQuery("SELECT * FROM debt WHERE transid = "
-							+ transid + "AND paid_off = false;");
+							+ transid + " AND paid_off = false;");
 		
 			if (!results.isBeforeFirst()) { // NO RESULTS SO ALL DEBTS HAVE BEEN PAID
 									// transaction completion

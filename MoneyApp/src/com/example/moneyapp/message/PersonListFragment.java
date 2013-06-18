@@ -151,7 +151,8 @@ public class PersonListFragment extends ListFragment {
 
 		//EDIT FROM HERE
 		int conversationid = 3;//gotten from clicking on the list bit
-		new DownloadDetails().execute(conversationid);
+		String name = "fix%20this";
+		new DownloadDetails().execute(Integer.toString(conversationid), Integer.toString(user.getUserid()),name);
 		
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
@@ -203,16 +204,16 @@ public class PersonListFragment extends ListFragment {
 	}
 	
 	
-	private class DownloadDetails extends AsyncTask<Integer, Void, ArrayList<MessageDetails>> {
+	private class DownloadDetails extends AsyncTask<String, Void, ArrayList<MessageDetails>> {
 
 		@Override
-		protected ArrayList<MessageDetails> doInBackground(Integer... params) {
+		protected ArrayList<MessageDetails> doInBackground(String... params) {
 			try {
-				int conversationid = params[0];
+				int conversationid = Integer.parseInt(params[0]);
 				// populate with non sample
 				int userid = 4;
-				String name = "Fix";
-				//int userid = user.getUserid();
+				String name = params[2];
+				//int userid = Integer.parseInt(params[1]);
 				String op = "messageDetails";
 				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
 						MainActivity.MESSAGE + "?"+
