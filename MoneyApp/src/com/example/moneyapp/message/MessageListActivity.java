@@ -89,6 +89,7 @@ public class MessageListActivity extends FragmentActivity implements
 			arguments.putString(PersonDetailFragment.ARG_ITEM_ID, id);
 			PersonDetailFragment fragment = new PersonDetailFragment();
 			fragment.setArguments(arguments);
+			//put arguments
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.person_detail_container, fragment).commit();
 

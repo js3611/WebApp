@@ -166,27 +166,31 @@ public class PersonListFragment extends ListFragment {
 	public static ArrayList<MessageDetails> addDummies(ArrayList<MessageDetails> details) {
 		MessageDetails Detail;
 		Detail = new MessageDetails();
-		Detail.setIcon(R.drawable.jo);
-		Detail.setFrom("jo");
-		Detail.setSub("Dinner");
-		Detail.setDesc("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla auctor.");
-		Detail.setTime("12/12/2012 12:12");
+		Detail.setIcon(R.drawable.terence);
+		Detail.setLast_message_date("2013-04-05");
+		Detail.setLast_message_time("11:00:00");
+		Detail.setUser1(2);
+		Detail.setUser2(4);
+		Detail.setGroup_chat(false);		
 		details.add(Detail);
 
 		Detail = new MessageDetails();
 		Detail.setIcon(R.drawable.thai);
-		Detail.setFrom("thai");
-		Detail.setSub("Party");
-		Detail.setDesc("Dolor sit amet, consectetur adipiscing elit. Nulla auctor.");
-		Detail.setTime("13/12/2012 10:12");
+		Detail.setLast_message_date("2013-05-05");
+		Detail.setLast_message_time("11:00:00");
+		Detail.setUser1(2);
+		Detail.setUser2(3);
+		Detail.setGroup_chat(false);		
 		details.add(Detail);
 
 		Detail = new MessageDetails();
-		Detail.setIcon(R.drawable.terence);
-		Detail.setFrom("terence");
-		Detail.setSub("Mail");
-		Detail.setDesc("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-		Detail.setTime("13/12/2012 02:12");
+		Detail.setIcon(R.drawable.pleasure);
+		Detail.setLast_message_date("2013-06-05");
+		Detail.setLast_message_time("06:00:00");
+		Detail.setUser1(2);
+		Detail.setGroup_chat(true);	
+		Detail.setGroupid(2);
+		Detail.setGroup_name("Test Group");
 		details.add(Detail);
 		
 		return details;

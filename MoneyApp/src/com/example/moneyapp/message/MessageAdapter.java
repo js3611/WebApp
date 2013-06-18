@@ -42,30 +42,43 @@ public class MessageAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = convertView;
+		MessageViewHolder viewHolder;
 		if (v == null) {
+			viewHolder = new MessageViewHolder();
+			
 			LayoutInflater vi = (LayoutInflater)_c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = vi.inflate(R.layout.message_list_entry, null);
 		
+			viewHolder.image = (ImageView) v.findViewById(R.id.profile_icon);
+	        viewHolder.name_view = (TextView) v.findViewById(R.id.name_view);
+	        viewHolder.time_view = (TextView) v.findViewById(R.id.time_view);
+	        viewHolder.date_view = (TextView) v.findViewById(R.id.date_view);
+	        viewHolder.message_view = (TextView) v.findViewById(R.id.msg_view);
+	        v.setTag(viewHolder);
+		} else {
+			viewHolder = (MessageViewHolder)v.getTag();
 		}
-        ImageView image = (ImageView) v.findViewById(R.id.iconView);
-        TextView fromView = (TextView) v.findViewById(R.id.From);
-        TextView subView = (TextView) v.findViewById(R.id.subject);
-        TextView descView = (TextView) v.findViewById(R.id.content);
-        TextView timeView = (TextView) v.findViewById(R.id.time);
-
+        
+		String name = null;
         MessageDetails msg = _data.get(position);
-        String name = msg.getFrom();
+        
+        if (msg.getGroup_chat()) 
+        	name = msg.getFirstname();
+        else
+        	name = msg.getGroup_name(); 
+        	
         if (name.equals("jo")) {
-        	 image.setImageResource(R.drawable.jo);
+        	 viewHolder.image.setImageResource(R.drawable.jo);
         } else if (name.equals("thai")) {
-        	 image.setImageResource(R.drawable.thai); 
+        	viewHolder.image.setImageResource(R.drawable.thai); 
         } else {
-        	 image.setImageResource(R.drawable.terence);
+        	 viewHolder.image.setImageResource(R.drawable.terence);
         }
-        fromView.setText(name);
-        subView.setText("Subject: "+msg.getSub());
-        descView.setText(msg.getDesc());
-        timeView.setText(msg.getTime());                             
+        viewHolder.name_view.setText(name);
+        //gets only part of the content of the last message (how to get last message? can use query on date and time matching on conversationid 
+        viewHolder.message_view.setText(msg.getContent().substring(0, 15)); 
+        viewHolder.date_view.setText(msg.getDate());
+        viewHolder.time_view.setText(msg.getTime());
                      
 		return v;
 	}
@@ -74,5 +87,12 @@ public class MessageAdapter extends BaseAdapter {
 		 
 	}
 	
+	static class MessageViewHolder {
+		ImageView image;
+		TextView name_view;
+		TextView message_view;
+		TextView date_view;
+		TextView time_view;
+	}
 	
 }

@@ -1,6 +1,8 @@
 package com.example.moneyapp.transaction;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -304,10 +307,14 @@ public class NewTransaction extends Activity {
 
 			Log.v(TAG, errorMessage);
 			// Handle JSONstring
-			int response = JsonCustomReader.readJsonRetCode(in);
+			JsonReader jr = new JsonReader(new BufferedReader(new InputStreamReader(in)));
+			jr.beginObject();
+			int response = JsonCustomReader.readJSONRetCode(jr,in);
+			jr.endObject();
 			Pair<String, Boolean> pair = TransactionHelper
 					.handleResponse(response);
 			errorMessage = pair.getFirst();
+			
 			return pair.getSecond();
 
 		} catch (Exception e) {

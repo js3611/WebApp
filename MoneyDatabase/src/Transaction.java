@@ -30,15 +30,6 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 		String operation = request.getParameter("op");
 		String viewMode = request.getParameter("viewMode");
 			
-
-		// TODO FIND A WAY OF GETTING THE VIEWMODE AND USER ID FROM THE DEVICE
-		
-		if (operation == null) {
-			JSONBuilder jb = new JSONBuilder();
-			writer.println(getReturnCode(jb,0));
-			return;
-		}
-
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
@@ -52,11 +43,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 							"jdbc:postgresql://db.doc.ic.ac.uk/g1227132_u?&ssl=true"
 									+ "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 							"g1227132_u", "W0zFGMaqup");
-
-//			if (idToNameMap == null)
-//				idToNameMap = IDtoNameMap.getInstance(null,0);
-			
-			
+	
 			handleGetOperation(operation, viewMode, conn, request, writer);
 
 		} catch (Exception e) {
@@ -68,6 +55,12 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 	private void handleGetOperation(String operation, String viewMode, Connection conn,
 			HttpServletRequest request, PrintWriter writer) throws Exception {
 		
+		if (operation == null) {
+			JSONBuilder jb = new JSONBuilder();
+			writer.println(getReturnCode(jb,0));
+			return;
+		}
+		
 		if (viewMode.equals("perItem")) {	
 			
 			if (operation.equals("viewLiveTransactions")) {
@@ -77,13 +70,14 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				int userid = Integer.parseInt(request.getParameter("userid"));
 				
 				// Shows all transactions that have yet to be completed
-				ResultSet transactionSet = transStmt
-						.executeQuery("SELECT t.transid, t.name, t._date, t.total_amount, d.owesuserid FROM "
-								+ "transactions t INNER JOIN debt d on t.transid = d.transid WHERE (d. userid = "
-								+ userid
-								+ " OR d.owesuserid = "
-								+ userid
-								+ ") AND t.total_paid_off = false GROUP BY t.transid, t.name, t._date, t.total_amount, d.owesuserid ORDER BY t._date DESC");
+				ResultSet transactionSet = transStmt.executeQuery(
+						"SELECT t.transid, t.name, sum(a.amount) - sum(a.partial_pay) as amount " +
+						"FROM " + "transactions t INNER JOIN " +
+							"(SELECT t.transid, t.name, t._date, d.amount, d.partial_pay, d.owesuserid " +
+							"FROM " + "transactions t INNER JOIN debt d on (t.transid = d.transid) " +
+							"WHERE(d.userid = " + userid + "OR d.owesuserid = " +userid + ") " +
+							"AND t.total_paid_off = false ORDER BY t._date DESC) " + "as a ON (t.transid = a.transid) " +
+						"GROUP BY t.transid, t.name" + ";");
 	
 				if (!transactionSet.isBeforeFirst()) {
 					writer.println(getReturnCode(jb,4));
@@ -93,13 +87,11 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 					while (transactionSet.next()) {
 						int transId = transactionSet.getInt("transid");
 						String transName = transactionSet.getString("name");
-						String transDate = transactionSet.getString("_date");
-						Double transAmount = transactionSet.getDouble("total_amount");
+						Double transAmount = transactionSet.getDouble("amount");
 						
 						jb.beginObject().append("transid", transId)
 										.append("name",transName)
-										.append("total_amount",transAmount)
-										.append("_date",transDate)
+										.append("amount",transAmount)
 						  .endObject();
 						}
 						jb.endArray().endObject();			
@@ -119,7 +111,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 								+ userid
 								+ " OR d.owesuserid = "
 								+ userid
-								+ ") AND t.total_paid_off = true GROUP BY t.transid, t.name, t.complete_date, t.total_amount,t._date, d.owesuserid ORDER BY t._date DESC");
+								+ ") AND t.total_paid_off = true ORDER BY t._date DESC");
 	
 				if (!transactionSet.isBeforeFirst()) {
 					writer.println(getReturnCode(jb,4));
@@ -237,10 +229,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				} else {
 						writer.println(getReturnCode(jb,4));
 				} 
-			}
-			
-			
-			if (operation.equals("viewFriendsOwe")) {
+			} else if (operation.equals("viewFriendsOwe")) {
 				Statement friendsGetStmt = conn.createStatement();
 				int userid = Integer.parseInt(request.getParameter("userid"));
 
@@ -250,7 +239,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 						"SELECT d.userid, d.owesuserid, d.amount, d.partial_pay " +
 						"FROM transactions t INNER JOIN debt d on (t.transid=d.transid)"+
 						"WHERE (d.owesuserid = " + userid +" OR d.userid = " + userid +")" +
-						"AND total_paid_off=false;");
+						"AND paid_off=false;");
 
 				if (!debtSet.isBeforeFirst()) {
 					writer.println(getReturnCode(jb,20));
@@ -536,7 +525,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			int old_trans_id = Integer.parseInt(request.getParameter("transid"));
 			String old_date = request.getParameter("_date");
 			
-			ResultSet records = getStmt.executeQuery("SELECT (t.transid, d.owesuserid, d.partial_pay "
+			ResultSet records = getStmt.executeQuery("SELECT t.transid, d.owesuserid, d.partial_pay "
 								+ "FROM transactions t INNER JOIN debt d on (t.transid = d.transid) WHERE " 
 								+ "transid = "
 								+ old_trans_id + ";");
@@ -621,7 +610,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			} else { // Something went wrong, there should be a debt alive
 				writer.println(getReturnCode(jb,69));			
 			}
-		} else if (operation.equals("debtRepaid")) {
+		} else if (operation.equals("debtRepaid")) { //
 			// WHEN A PERSON PAYS THEIR PART OF A TRANSACTION
 			Statement updateStmt = conn.createStatement();
 			Statement checkStmt = conn.createStatement();
