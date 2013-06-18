@@ -71,16 +71,16 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				
 				// Shows all transactions that have yet to be completed
 				ResultSet transactionSet = transStmt.executeQuery(
-						"SELECT t.transid, t.name, sum(a.amount) - sum(a.partial_pay) as amount " +
+						"SELECT t.transid, t.name,a._date, a.userid, sum(a.amount) - sum(a.partial_pay) as amount " +
 						"FROM " + "transactions t INNER JOIN " +
-							"(SELECT t.transid, t.name, t._date, d.amount, d.partial_pay, d.owesuserid " +
+							"(SELECT t.transid, t.name, t._date, d.amount, d.partial_pay, d.userid, d.owesuserid " +
 							"FROM " + "transactions t INNER JOIN debt d on (t.transid = d.transid) " +
 							"WHERE(d.userid = " + userid + "OR d.owesuserid = " +userid + ") " +
 							"AND t.total_paid_off = false ORDER BY t._date DESC) " + "as a ON (t.transid = a.transid) " +
-						"GROUP BY t.transid, t.name" + ";");
+						"GROUP BY t.transid, t.name, a.userid, a._date" + ";");
 	
 				if (!transactionSet.isBeforeFirst()) {
-					writer.println(getReturnCode(jb,4));
+					writer.println(getReturnCode(jb,22));
 				}
 				else {
 					jb.beginObject().append("returnCode",1).beginArray();
@@ -88,10 +88,14 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 						int transId = transactionSet.getInt("transid");
 						String transName = transactionSet.getString("name");
 						Double transAmount = transactionSet.getDouble("amount");
+						int transUserid = transactionSet.getInt("userid");
+						String date = transactionSet.getString("_date");
 						
 						jb.beginObject().append("transid", transId)
 										.append("name",transName)
 										.append("amount",transAmount)
+										.append("userid",transUserid)
+										.append("date",date)
 						  .endObject();
 						}
 						jb.endArray().endObject();			
@@ -150,60 +154,67 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				// result if user owes, multiple if user is owed)
 				ResultSet debtSet = debtsStmt
 						.executeQuery("SELECT d.transid, d.amount, a.userid, a.firstname, a.surname, amount FROM" 
-								+ "  debt d INNER JOIN appuser a ON (d.owesuserid = a.userid OR d.userid = a.userid)"  
-								+ " AND d.transid = " + transid +" ;" );
+								+ "  debt d INNER JOIN appuser a ON (d.owesuserid = a.userid)"  
+								+ " AND d.transid = " + transid +";" );
 				
 				if (!detailsSet.isBeforeFirst() || !debtSet.isBeforeFirst()) { // SELECTs returned
 															// nothing , i.e.
 															// something went
 															// wrong
-					writer.println(getReturnCode(jbDebt,4));
-				} 
+					writer.println(getReturnCode(jbDebt,22));
+				} else {
+						
+					// Print the details of the transaction first then the people
+					// involved in it after
+					detailsSet.next();
+					int details_transid = detailsSet.getInt("transid");
+					String details_name = detailsSet.getString("name");
+					double details_amount = detailsSet.getDouble("total_amount");
+					String details_date = detailsSet.getString("_date");
+					int details_urgency = detailsSet.getInt("urgency");
+					String details_complete_date = detailsSet.getString("complete_date");
+					String details_description = detailsSet.getString("description");
+					String details_paid_off = detailsSet.getString("total_paid_off");
+						
+					// TODO CHANGE THIS IN THE IMPLEMENTATION, ADDED "CAN_DELETE"	
+					// WILL ALLOW DETERMINATION OF WHETHER USER CAN DELETE THIS TRANSACTION
+					//CHECK AND CHANGE
+					debtSet.next();
+					int transactionStarter = debtSet.getInt("userid");
+					boolean deletable = (userid == transactionStarter);
+						
+					jbDetails.beginObject().append("returnCode",21).append("can_delete", deletable);
+					jbDetails.beginObject().append("transid", details_transid)
+										   .append("name",details_name)
+										   .append("total_amount",details_amount)
+										   .append("date",details_date)
+										   .append("urgency",details_urgency)
+										   .append("description",details_description)
+										   .append("complete_date",details_complete_date)
+										   .append("total_paid_off",details_paid_off)
+										   .append("userid", transactionStarter);
+										  // .append("can_delete", deletable);
+					jbDetails.endObject();
 					
-				// Print the details of the transaction first then the people
-				// involved in it after
-				int details_transid = detailsSet.getInt("transid");
-				String details_name = detailsSet.getString("name");
-				double details_amount = detailsSet.getDouble("total_amount");
-				String details_date = detailsSet.getString("_date");
-				int details_urgency = detailsSet.getInt("urgency");
-				String details_complete_date = detailsSet.getString("complete_date");
-				String details_description = detailsSet.getString("description");
-				String details_paid_off = detailsSet.getString("total_paid_off");
+					jbDetails.beginArray();
+					//writer.println(jbDetails.build());
 					
-				// TODO CHANGE THIS IN THE IMPLEMENTATION, ADDED "CAN_DELETE"	
-				// WILL ALLOW DETERMINATION OF WHETHER USER CAN DELETE THIS TRANSACTION
-				//CHECK AND CHANGE
-				boolean deletable = (userid == debtSet.getInt("userid"));
-					
-				jbDetails.beginObject().append("transid", details_transid)
-									   .append("name",details_name)
-									   .append("total_amount",details_amount)
-									   .append("date",details_date)
-									   .append("urgency",details_urgency)
-									   .append("description",details_description)
-									   .append("complete_date",details_complete_date)
-									   .append("total_paid_off",details_paid_off)
-									   .append("can_delete", deletable);
-
-				jbDetails.endObject();
-				writer.println(jbDetails.build());
-				
-				while (debtSet.next()) {
-					int transId = debtSet.getInt("transid");
-					double amount = debtSet.getDouble("amount");
-					int friendid = debtSet.getInt("userid");
-					String friendfname = debtSet.getString("firstname");					
-					
-					jbDebt.beginObject().append("transid", transId)
-										.append("userid",friendid)
-										.append("firstname",friendfname)
-										.append("amount",amount)
-										.endObject();
-					}
-					jbDebt.endArray().endObject();			
-					writer.println(jbDebt.build());
-			}	
+					do {
+						int transId = debtSet.getInt("transid");
+						double amount = debtSet.getDouble("amount");
+						int friendid = debtSet.getInt("userid");
+						String friendfname = debtSet.getString("firstname");					
+						
+						jbDetails.beginObject().append("transid", transId)
+											.append("userid",friendid)
+											.append("firstname",friendfname)
+											.append("amount",amount)
+							  .endObject();
+						} while (debtSet.next()); 
+					jbDetails.endArray().endObject();			
+					writer.println(jbDetails.build());
+				}	
+			}
 		} else if (viewMode.equals("perPerson")) {
 			
 			if(operation.equals("getFriendsList")) {

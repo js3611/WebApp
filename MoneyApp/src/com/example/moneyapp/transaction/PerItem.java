@@ -66,7 +66,7 @@ public class PerItem extends Activity {
 					startActivity(new Intent(PerItem.this, NewTransaction.class));
 				} else { //normal detail window
 					Intent intent = getIntent().setClass(thisActivity, PerItemDetails.class);
-					intent.putExtra(Transactions.TRANSID_STR, details.get(pos).getTransactionID());
+					intent.putExtra(Transactions.TRANSID_STR, details.get(pos).getUserid());
 					startActivity(intent);
 				}
 			}

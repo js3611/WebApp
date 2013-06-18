@@ -1,16 +1,32 @@
 package com.example.moneyapp.message;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.JsonReader;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.helpers.AdminHelper;
+import com.example.helpers.CustomHttpClient;
+import com.example.helpers.HttpReaders;
 import com.example.helpers.metadata.MessageDetails;
+import com.example.helpers.metadata.Pair;
+import com.example.helpers.metadata.UserDetails;
+import com.example.json.JsonCustomReader;
+import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.R;
 import com.example.moneyapp.dummy.DummyContent;
 
@@ -42,6 +58,12 @@ public class PersonListFragment extends ListFragment {
 	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
 
+	private String TAG = "PersonListFragment";
+	private UserDetails user;
+	ArrayList<MessageDetails> details;
+	private String errorMessage = "";
+	String next_party;
+	String next_name;
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
@@ -80,8 +102,8 @@ public class PersonListFragment extends ListFragment {
 		//Fill the screen with dummy entries
 		details = addDummies(details);
 
-	
 		setListAdapter(new MessageAdapter(details, getActivity()));
+		UserDetails user = UserDetails.getUser(getActivity().getIntent());
 		/*
 		// TODO: replace with a real list adapter.
 		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
@@ -127,9 +149,26 @@ public class PersonListFragment extends ListFragment {
 			long id) {
 		super.onListItemClick(listView, view, position, id);
 
+		//EDIT FROM HERE
+		int conversationid = 3;//gotten from clicking on the list bit
+		new DownloadDetails().execute(conversationid);
+		
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+		//mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+		
+		Bundle arguments = new Bundle();
+		arguments.putString(PersonDetailFragment.ARG_ITEM_ID, getActivity().getIntent()
+				.getStringExtra(PersonDetailFragment.ARG_ITEM_ID));
+		arguments.putString("next_name", next_name);
+		arguments.putString("next_party",next_party);
+		arguments.putParcelableArrayList("messageDetails", details);
+		
+		
+		PersonDetailFragment frag = new PersonDetailFragment();
+		frag.setArguments(arguments);
+		getFragmentManager().beginTransaction().commit();
+		
 	}
 
 	@Override
@@ -163,12 +202,91 @@ public class PersonListFragment extends ListFragment {
 		mActivatedPosition = position;
 	}
 	
+	
+	private class DownloadDetails extends AsyncTask<Integer, Void, ArrayList<MessageDetails>> {
+
+		@Override
+		protected ArrayList<MessageDetails> doInBackground(Integer... params) {
+			try {
+				int conversationid = params[0];
+				// populate with non sample
+				int userid = 4;
+				String name = "Fix";
+				//int userid = user.getUserid();
+				String op = "messageDetails";
+				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
+						MainActivity.MESSAGE + "?"+
+						"op="+op+"&"+ 
+						"name="+ name+ "&" +
+						"userid=" + userid + "&" +
+						"conversationid=" + conversationid);
+				processInput(in);					
+				return details;
+			} catch (Exception e) {
+				Log.v(TAG, e.getMessage());
+			}
+
+			return details;
+		}
+		
+		@Override
+		protected void onPostExecute(ArrayList<MessageDetails> result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+		}
+		
+	}
+	
+	private boolean processInput(InputStream in) {
+		
+		JsonReader jr;
+		try {
+			jr = new JsonReader(new BufferedReader(new InputStreamReader(
+					in, "UTF-8")));
+
+			jr.setLenient(true);
+			jr.beginObject();
+
+			/* Read ReturnCode */
+			Pair<String, Boolean> pair = AdminHelper
+					.handleResponse(JsonCustomReader
+							.readJSONRetCode(jr, in));
+			
+			if (!pair.getSecond()) {
+				errorMessage = pair.getFirst();
+				Log.v(TAG, "No Details found.");
+				return false; 
+			}
+			
+			jr.nextName();
+			String next_party = jr.nextString();
+			jr.nextName();
+			String name = jr.nextString();
+			ArrayList<MessageDetails> messageDetails = JsonCustomReader.readJsonMessages(jr, in);
+			jr.endObject();
+
+			errorMessage = pair.getFirst();
+			details = messageDetails;
+			return true;
+			
+		} catch (UnsupportedEncodingException e) {
+			errorMessage = e.getMessage();
+		} catch (IOException e) {
+			errorMessage = e.getMessage();
+		}
+		return false;
+
+		
+	}
+	
 	public static ArrayList<MessageDetails> addDummies(ArrayList<MessageDetails> details) {
 		MessageDetails Detail;
 		Detail = new MessageDetails();
 		Detail.setIcon(R.drawable.terence);
+		Detail.setFirstname("terence");
 		Detail.setLast_message_date("2013-04-05");
 		Detail.setLast_message_time("11:00:00");
+		Detail.setContent("PLEASE");
 		Detail.setUser1(2);
 		Detail.setUser2(4);
 		Detail.setGroup_chat(false);		
@@ -176,10 +294,23 @@ public class PersonListFragment extends ListFragment {
 
 		Detail = new MessageDetails();
 		Detail.setIcon(R.drawable.thai);
+		Detail.setFirstname("thai");
 		Detail.setLast_message_date("2013-05-05");
 		Detail.setLast_message_time("11:00:00");
+		Detail.setContent("WORK");
 		Detail.setUser1(2);
 		Detail.setUser2(3);
+		Detail.setGroup_chat(false);		
+		details.add(Detail);
+		
+		Detail = new MessageDetails();
+		Detail.setIcon(R.drawable.jo);
+		Detail.setFirstname("jo");
+		Detail.setLast_message_date("2013-05-05");
+		Detail.setLast_message_time("11:00:00");
+		Detail.setContent("YES");
+		Detail.setUser1(2);
+		Detail.setUser2(2);
 		Detail.setGroup_chat(false);		
 		details.add(Detail);
 
@@ -187,6 +318,7 @@ public class PersonListFragment extends ListFragment {
 		Detail.setIcon(R.drawable.pleasure);
 		Detail.setLast_message_date("2013-06-05");
 		Detail.setLast_message_time("06:00:00");
+		Detail.setContent("Snippet of last message");
 		Detail.setUser1(2);
 		Detail.setGroup_chat(true);	
 		Detail.setGroupid(2);

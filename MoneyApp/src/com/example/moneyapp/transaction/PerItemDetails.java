@@ -19,7 +19,14 @@ public class PerItemDetails extends Activity {
 		// Show the Up button in the action bar.
 		setupActionBar();
 	}
-
+	
+	@Override
+	protected void onStart() {
+		
+		super.onStart();
+	}
+	
+	
 	/**
 	 * Set up the {@link android.app.ActionBar}.
 	 */

@@ -119,7 +119,7 @@ rc 47 = add was correctly registered
 
 2. Make new Single message
 rc 48 =  adding new message wrong
-rc 49 = adding messagecontent to that emssage went wrong
+rc 46 = adding messagecontent to that emssage went wrong
 rc 410 = fine
 	
 3. Make new Group message	
@@ -173,9 +173,8 @@ rc 414 = done
 	else if (operation.equals("messageDetails")) {
 		JSONBuilder jb = new JSONBuilder();
 		Statement viewStmt = conn.createStatement();
-		Statement detailStmt = conn.createStatement();
 		int conversationid = Integer.parseInt(request.getParameter("conversationid"));
-		int other_person = Integer.parseInt(request.getParameter("userid")); 
+		int other_party = Integer.parseInt(request.getParameter("userid")); 
 		String name = request.getParameter("name");	//Note, depending on whether the message is a group_chat or not, the
 													//name sent is either the person you are talking to or the group name. 
 													// same applies for the other_person/userid
@@ -189,9 +188,9 @@ rc 414 = done
 			writer.println(getReturnCode(jb,44));
 		else {
 		/* select mc.content, mc._date,mc._time, mc.userid, a.firstname, a.surname from messagecontent mc inner join appuser a on(mc.userid=a.userid) where conversationid = 2 ORDER BY _date ASC, _time ASC; */
-			jb.beginObject().append("returnCode",45).append("other_person", other_person).beginArray();
+			jb.beginObject().append("returnCode",45).append("other_party", other_party).append("name",name).beginArray();
 			while (messages.next()){
-				jb.beginObject().append("content", messages.getInt("content"))
+				jb.beginObject().append("content", messages.getString("content"))
 								.append("date", messages.getString("_date"))
 								.append("time", messages.getString("_time"))
 								.append("senderid", messages.getInt("userid"))
@@ -274,7 +273,7 @@ rc 414 = done
 						userid + ")");
 						
 			if (result == 0) // wrong
-				writer.println(getReturnCode(jb,49));
+				writer.println(getReturnCode(jb,46));
 			else
 				writer.println(getReturnCode(jb,410));
 			
