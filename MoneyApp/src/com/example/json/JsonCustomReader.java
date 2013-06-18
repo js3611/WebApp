@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
+import com.example.helpers.MyMath;
 import com.example.helpers.metadata.MessageDetails;
 import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.R;
@@ -140,9 +141,9 @@ public class JsonCustomReader {
 			} else if (name.equals("name")) {
 				subject = jr.nextString();
 			} else if (name.equals("amount") || name.equals("total_amount")) {
-				price = jr.nextDouble();
+				price = MyMath.round(jr.nextDouble());
 			} else if (name.equals("partial_pay")) {
-				partial_pay = jr.nextDouble();
+				partial_pay = MyMath.round(jr.nextDouble());
 			} else if (name.equals("_date")) {
 				date = jr.nextString();
 			} else if (name.equals("description")) {

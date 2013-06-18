@@ -12,12 +12,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.JsonReader;
-import android.util.JsonToken;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
@@ -31,6 +32,7 @@ import com.example.moneyapp.R;
 
 public class PerItemDetails extends Activity {
 
+	private static final String TAG = "PerItemDetails";
 	private String errorMessage;
 	private PerItemDetails thisActivity;
 	private UserDetails user;
@@ -60,7 +62,9 @@ public class PerItemDetails extends Activity {
 		transid = getIntent().getExtras().getInt(Transactions.TRANSID_STR);
 		userid = getIntent().getExtras().getInt(Transactions.USERID_STR);
 		individualAmount = getIntent().getExtras().getDouble(Transactions.PRICE_STR);
+		Log.v(TAG, "user id:"+userid+" individual amount: "+individualAmount);
 		if (userid == user.getUserid()) {
+			Log.v(TAG, "can delete");
 			can_delete = true;
 		}
 		thisActivity = this;
@@ -157,7 +161,7 @@ public class PerItemDetails extends Activity {
 				Log.v(TAG, "Reading status");
 				
 				jr.nextName();
-				can_delete = jr.nextBoolean();
+				/* can_delete = */ jr.nextBoolean();
 				
 				Log.v(TAG, "Reading transactions");
 				/* Read UsersTransactionDetails */
@@ -185,6 +189,7 @@ public class PerItemDetails extends Activity {
 		}
 		
 		private void fillPersonCostArray(ArrayList<UserDetails> users) {
+			person_cost_pairs = new ArrayList<Pair<UserDetails,Double>>();
 			for (UserDetails userDetails : users) {
 				person_cost_pairs.add(new Pair<UserDetails, Double>(userDetails, userDetails.getAmount()));
 			}
@@ -197,22 +202,27 @@ public class PerItemDetails extends Activity {
 			
 			if(result){
 			// Set views
-				EditText item_text = (EditText) findViewById(R.id.item_text);
-				EditText item_description_text = (EditText) findViewById(R.id.item_description_text);
-				EditText total_text = (EditText) findViewById(R.id.amount_text);
-				item_text.setText(transaction.getSubject());
-				item_description_text.setText(transaction.getDescription());
-				total_text.setText(Double.toString(transaction.getPrice()));
 				
-				if (can_delete) { //If the owner of the 
+				if (can_delete) { //If the user made the transaction, see list of ppl 
 					personAdapter = new PersonAdapter(person_cost_pairs, thisActivity);
 					owerList.setAdapter(personAdapter);
+					Button payButton = (Button) findViewById(R.id.pay_button);
+					payButton.setText("Edit");
 					//registerForContextMenu(transList);
-				} else {
+				} else { //Normally see who to pay to 
+
+					//Modify label & amount to pay
+					TextView tv = (TextView) findViewById(R.id.who_owe);
+					tv.setText("Pays to: ");
+					transaction.setPrice(individualAmount);
 					
 					ArrayList<Pair<UserDetails, Double>> owerArr = new ArrayList<Pair<UserDetails,Double>>();
 					UserDetails newOwer = new UserDetails();
-					newOwer.setFirstName(transaction.getUser());
+
+					//Get the user's info
+					newOwer.setFirstName(FriendsList.getFirstname(userid));
+					newOwer.setSurname(FriendsList.getSurname(userid));
+
 					owerArr.add(new Pair<UserDetails, Double>(newOwer, individualAmount));
 					
 					personAdapter = new OwerAdapter(owerArr, thisActivity);
@@ -220,6 +230,16 @@ public class PerItemDetails extends Activity {
 					owerList.setAdapter(personAdapter);
 										
 				}
+				
+				
+				EditText item_text = (EditText) findViewById(R.id.item_text);
+				EditText item_description_text = (EditText) findViewById(R.id.item_description_text);
+				EditText total_text = (EditText) findViewById(R.id.amount_text);
+				item_text.setText(transaction.getSubject());
+				item_description_text.setText(transaction.getDescription());
+				total_text.setText(Double.toString(transaction.getPrice()));
+
+				
 			} else {
 				MyToast.toastMessage(thisActivity, errorMessage);
 			}

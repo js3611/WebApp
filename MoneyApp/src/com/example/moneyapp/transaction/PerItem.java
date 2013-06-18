@@ -67,7 +67,7 @@ public class PerItem extends Activity {
 				} else { //normal detail window
 					Intent intent = getIntent().setClass(thisActivity, PerItemDetails.class);
 					intent.putExtra(Transactions.TRANSID_STR, details.get(pos).getTransactionID());
-					intent.putExtra(Transactions.USERID_STR, details.get(pos).getTransactionID());
+					intent.putExtra(Transactions.USERID_STR, details.get(pos).getUserid());
 					intent.putExtra(Transactions.PRICE_STR, details.get(pos).getPrice()-details.get(pos).getPartial_pay());
 					
 					startActivity(intent);
