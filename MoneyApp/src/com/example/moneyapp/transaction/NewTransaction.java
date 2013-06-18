@@ -16,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import com.example.helpers.metadata.UserDetails;
 import com.example.helpers.metadata.UserInfo;
 import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
+import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
 
 public class NewTransaction extends Activity {
@@ -264,8 +266,17 @@ public class NewTransaction extends Activity {
 				// Toast message
 				MyToast.toastMessage(NewTransaction.this, msg);
 				/* Need to somehow know where to go back to */
-				Intent intent = getIntent().setClass(NewTransaction.this,
-						PerPerson.class);
+				
+				SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+				int view_mode = sharedPref.getInt(getString(R.string.view_mode), MainMenu.PER_PERSON_VIEW);
+				Intent intent = getIntent();
+				//intent.putExtra(MainActivity.USER_KEY, user);
+				view_mode = MainMenu.PER_TRANSACTION_VIEW;
+				if (view_mode == MainMenu.PER_PERSON_VIEW) 
+					intent.setClass(NewTransaction.this, PerPerson.class);
+				else 
+					intent.setClass(NewTransaction.this, PerItem.class);
+				
 				startActivity(intent);
 			} else {
 				// Toast message

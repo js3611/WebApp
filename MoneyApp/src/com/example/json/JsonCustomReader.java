@@ -38,6 +38,7 @@ public class JsonCustomReader {
 		String password = "";
 		String phoneNo = "";
 		int profilePicture = R.drawable.ic_launcher;
+		double amount = 0;
 
 		if (jr.peek() == JsonToken.NAME) {
 			jr.nextName();
@@ -62,6 +63,8 @@ public class JsonCustomReader {
 				password = jr.nextString();
 			} else if (name.equals("phonenumber")) {
 				phoneNo = jr.nextString();
+			} else if (name.equals("amount")){
+				amount = jr.nextDouble();
 			} else {
 				jr.skipValue();
 			}
@@ -69,6 +72,7 @@ public class JsonCustomReader {
 		jr.endObject();
 		UserDetails ud = new UserDetails(userid, surname, firstName,
 				calendarid, wishlist, password, phoneNo, profilePicture);
+		ud.setAmount(amount);
 		//Log.v("JSON", ud.toString());
 		return ud;
 		
@@ -106,7 +110,7 @@ public class JsonCustomReader {
 		return details;
 	}
 
-	private static TransactionDetail readData(JsonReader jr,InputStream in) throws IOException {
+	public static TransactionDetail readData(JsonReader jr,InputStream in) throws IOException {
 		int icon = R.drawable.ic_launcher;
 		int transactionID = 0;
 		String owesuser = null;
@@ -118,6 +122,7 @@ public class JsonCustomReader {
 		double partial_pay = 0;
 		String date = null;
 		String deadline = null;
+		String description = "";
 	
 		jr.beginObject();
 		while (jr.hasNext()) {
@@ -140,6 +145,8 @@ public class JsonCustomReader {
 				partial_pay = jr.nextDouble();
 			} else if (name.equals("_date")) {
 				date = jr.nextString();
+			} else if (name.equals("description")) {
+				description = jr.nextString();
 			} else {
 				jr.skipValue();
 			}
@@ -148,6 +155,7 @@ public class JsonCustomReader {
 		TransactionDetail td = new TransactionDetail(icon, transactionID,
 				owesuser, user, owesuserid, userid, subject, price,
 				partial_pay, date, deadline);
+		td.setDescription(description);
 		//Log.v("JSON", "Read transaction detail: " + td.toString());
 		return td;
 	}

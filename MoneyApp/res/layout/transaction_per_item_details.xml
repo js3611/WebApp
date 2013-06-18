@@ -3,7 +3,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/new_transaction"
+        android:id="@+id/transaction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -95,7 +95,7 @@
             android:id="@+id/PersonList"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:layout_below="@+id/new_transaction"
+            android:layout_below="@+id/transaction"
             android:layout_above="@+id/eq_split_button"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"

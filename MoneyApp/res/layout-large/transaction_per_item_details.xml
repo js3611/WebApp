@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
     <LinearLayout
-        android:id="@+id/new_transaction"
+        android:id="@+id/transaction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -26,7 +26,7 @@
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
             android:layout_marginTop="@dimen/marginTB"
-            android:editable="false"
+            android:clickable="false"
             android:inputType="textCapSentences|textAutoCorrect" />
 
         <TextView
@@ -46,7 +46,7 @@
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
             android:layout_marginTop="@dimen/marginTB"
-            android:editable="false"
+            android:clickable="false"
             android:inputType="textCapSentences|textAutoCorrect" />
 
         <TextView
@@ -60,12 +60,13 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <EditText
-            android:id="@+id/amount"
+            android:id="@+id/amount_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
             android:layout_marginTop="@dimen/marginTB"
+            android:clickable="false"
             android:inputType="numberDecimal"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -78,30 +79,28 @@
             android:layout_marginTop="@dimen/marginTB"
             android:text="Who owe?"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <ListView
-            android:id="@+id/PersonList"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/list_size"
-            android:layout_alignBottom="@+id/pay_button"
-            android:layout_alignTop="@+id/new_transaction"
-            android:layout_marginLeft="@dimen/marginRL"
-            android:layout_marginRight="@dimen/marginRL"
-            android:layout_marginTop="@dimen/marginTB"
-            android:layout_weight="2" >
-        </ListView>
-
-        <Button
-            android:id="@+id/pay_button"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/buttonHeight"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/marginTB"
-            android:layout_marginLeft="@dimen/marginRL"
-            android:layout_marginRight="@dimen/marginRL"
-            android:background="@drawable/custom_button"
-            android:text="@string/pay"
-            android:textSize="25sp" />
     </LinearLayout>
 
-</ScrollView>
+    <ListView
+        android:id="@+id/PersonList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/transaction"
+        android:layout_above="@+id/pay_button"
+        android:layout_marginLeft="@dimen/marginRL" >
+
+    </ListView>
+
+    <Button
+        android:id="@+id/pay_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/marginTB"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:layout_marginRight="@dimen/marginRL"
+        android:background="@drawable/custom_button"
+        android:text="@string/pay"
+        android:textSize="25sp" />
+
+</RelativeLayout>

@@ -36,6 +36,11 @@ public class AdminHelper {
 		case 20:
 			errorMessage = "No transaction to show";
 			return new Pair<String, Boolean>(errorMessage, true);
+		case 21:
+			return goodResult;
+		case 22:
+			errorMessage = "No transactio to show";
+			break;
 		case 31:
 			errorMessage =  "Failed to load list of friends";
 			break;

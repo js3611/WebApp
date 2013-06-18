@@ -63,10 +63,13 @@ public class PerItem extends Activity {
 			public void onItemClick(AdapterView<?> a, View v, int pos, long id) {
 
 				if (selectedNewTransaction(pos)) {
-					startActivity(new Intent(PerItem.this, NewTransaction.class));
+					startActivity(getIntent().setClass(PerItem.this, NewTransaction.class));
 				} else { //normal detail window
 					Intent intent = getIntent().setClass(thisActivity, PerItemDetails.class);
 					intent.putExtra(Transactions.TRANSID_STR, details.get(pos).getTransactionID());
+					intent.putExtra(Transactions.USERID_STR, details.get(pos).getTransactionID());
+					intent.putExtra(Transactions.PRICE_STR, details.get(pos).getPrice()-details.get(pos).getPartial_pay());
+					
 					startActivity(intent);
 				}
 			}

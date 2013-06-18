@@ -20,8 +20,8 @@ import com.example.moneyapp.transaction.PerPerson;
 public class MainMenu extends Activity {
 
 	public static final String TAG = "MainMenu";
-	private static final int PER_PERSON_VIEW = 1;
-	private static final int PER_TRANSACTION_VIEW = 2;
+	public static final int PER_PERSON_VIEW = 1;
+	public static final int PER_TRANSACTION_VIEW = 2;
 	
 	private UserDetails user;
 	
@@ -62,7 +62,7 @@ public class MainMenu extends Activity {
 		int view_mode = sharedPref.getInt(getString(R.string.view_mode), PER_PERSON_VIEW);
 		Intent intent = getIntent();
 		//intent.putExtra(MainActivity.USER_KEY, user);
-		//view_mode = PER_TRANSACTION_VIEW;
+		view_mode = PER_TRANSACTION_VIEW;
 		if (view_mode == PER_PERSON_VIEW) 
 			intent.setClass(MainMenu.this, PerPerson.class);
 		else 
