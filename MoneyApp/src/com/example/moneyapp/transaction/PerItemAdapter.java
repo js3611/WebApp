@@ -8,12 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.R;
 
 public class PerItemAdapter extends CustomAdapter<TransactionDetail> {
 
-	public PerItemAdapter(ArrayList<TransactionDetail> data, Context c) {
+	UserDetails user;
+	
+	public PerItemAdapter(ArrayList<TransactionDetail> data, Context c, UserDetails user) {
 		super(data, c);
+		this.user = user;
 	}
 
 	/* Fill the entry with data here */
@@ -44,6 +48,8 @@ public class PerItemAdapter extends CustomAdapter<TransactionDetail> {
 						.findViewById(R.id.date_view);
 				viewHolder.from_view = (TextView) v
 						.findViewById(R.id.from_view);
+				viewHolder.borrowedLent = (TextView) v
+						.findViewById(R.id.borrowedLent);
 				break;
 
 			case TYPE_NEW_ENTRY:
@@ -67,7 +73,15 @@ public class PerItemAdapter extends CustomAdapter<TransactionDetail> {
 		viewHolder.subject_view.setText(detail.getSubject());
 		viewHolder.from_view.setText(detail.getOwesuser());
 		viewHolder.price_view.setText("" + detail.getPrice());
+		viewHolder.borrowedLent.setText(setBorrowedLent(position));
 		return v;
+	}
+
+	private CharSequence setBorrowedLent(int position) {
+		if (user.getUserid() == _data.get(position).getUserid()) 
+			return "TOTAL LENT:";
+		else 
+			return "TOTAL BORROWED:";
 	}
 
 	public void onEntryClick(View view) {
@@ -81,6 +95,7 @@ public class PerItemAdapter extends CustomAdapter<TransactionDetail> {
 		TextView price_view;
 		TextView date_view;
 		TextView from_view;
+		TextView borrowedLent;
 	}
 
 }

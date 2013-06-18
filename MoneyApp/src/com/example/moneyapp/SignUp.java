@@ -36,9 +36,9 @@ import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
 
-public class SignIn extends Activity {
+public class SignUp extends Activity {
 
-	public static final String TAG = "SignIn";
+	public static final String TAG = "SignUp";
 	private TextView errorView;
 	private String errorMessage;
 	private UserDetails userDetails;
@@ -46,14 +46,14 @@ public class SignIn extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_sign_in);
+		setContentView(R.layout.activity_sign_up);
 		errorView = (TextView) findViewById(R.id.errorView);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.sign_in, menu);
+		getMenuInflater().inflate(R.menu.sign_up, menu);
 		return true;
 	}
 
@@ -108,7 +108,7 @@ public class SignIn extends Activity {
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();
 
-				Intent intent = new Intent(SignIn.this, MainMenu.class);
+				Intent intent = new Intent(SignUp.this, MainMenu.class);
 				intent.putExtra(MainActivity.USER_KEY, userDetails);
 				startActivity(intent);
 			} else {

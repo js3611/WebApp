@@ -109,7 +109,7 @@ public class LogPageFragment extends Fragment {
 		protected void onPostExecute(ArrayList<TransactionDetail> result) {
 			super.onPostExecute(result);
 			
-			logList.setAdapter(new PerItemAdapter(result, thisActivity));
+			logList.setAdapter(new PerItemAdapter(result, thisActivity,user));
 			//registerForContextMenu(transList);
 		}
 	}

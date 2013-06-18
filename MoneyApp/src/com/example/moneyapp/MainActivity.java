@@ -20,12 +20,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
@@ -40,6 +39,7 @@ import com.example.json.JsonCustomReader;
 public class MainActivity extends Activity {
 	public static final String TAG = "MainActivity";
 	public static final int DEFAULT_DATA_LENGTH = 1000;
+	//public static final String thatcomputer = "http://146.169.53.38:59999";
 	public static final String USER_KEY = "com.example.moneyapp.USERDETAILS";
 	public static final String edge02 = "http://146.169.52.2:59999";
 	public static final String pixel20 = "http://146.169.53.180:59999";
@@ -60,6 +60,30 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		errorMessage = "";
 		user = null;
+		EditText passwordText = (EditText) findViewById(R.id.password);
+		EditText phoneText = (EditText) findViewById(R.id.phoneNumber);
+		passwordText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasFocus) {
+					EditText passwordText = (EditText) v
+							.findViewById(R.id.password);
+					passwordText.setText("");
+				}
+			}
+		});
+		phoneText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasFocus) {
+					EditText phoneText = (EditText) v
+							.findViewById(R.id.phoneNumber);
+					phoneText.setText("");
+				}
+			}
+		});
 	}
 
 	@Override
@@ -79,7 +103,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void loginHandler(View view) {
-		Log.v(TAG, "Log in on process");
+		//Log.v(TAG, "Log in on process");
 		EditText passwordText = (EditText) findViewById(R.id.password);
 		EditText phoneText = (EditText) findViewById(R.id.phoneNumber);
 		String password = passwordText.getText().toString();
@@ -130,7 +154,7 @@ public class MainActivity extends Activity {
 		nameValueP.add(new BasicNameValuePair("password", password));
 
 		try {
-			InputStream in = CustomHttpClient.executeHttpPost(URL + LOGIN,
+			InputStream in = CustomHttpClient.executeHttpPost(URL+ LOGIN,
 					nameValueP);
 
 			return processInput(in);
@@ -162,7 +186,7 @@ public class MainActivity extends Activity {
 			user = JsonCustomReader.readJSONUser(jr, in);
 			/* Read Friends */
 			if (jr.peek() == JsonToken.END_OBJECT) {
-				Log.v(TAG, "No FRIENDS");
+				//Log.v(TAG, "No FRIENDS");
 				FriendsList.createInstance(new ArrayList<UserDetails>());
 				return true;
 			}
@@ -170,7 +194,7 @@ public class MainActivity extends Activity {
 			FriendsList.createInstance(friends);
 			jr.endObject();
 
-			Log.v(TAG, FriendsList.showFriends());
+			//Log.v(TAG, FriendsList.showFriends());
 			return true;
 		} catch (UnsupportedEncodingException e) {
 			errorMessage = e.getMessage();
@@ -182,7 +206,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void signInHandler(View view) {
-		Intent intent = new Intent(MainActivity.this, SignIn.class);
+		Intent intent = new Intent(MainActivity.this, SignUp.class);
 		startActivity(intent);
 	}
 

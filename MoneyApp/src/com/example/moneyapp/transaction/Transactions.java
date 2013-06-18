@@ -19,6 +19,7 @@ public class Transactions extends Activity {
 	public static final String FRIENDIDS_STR = "com.example.moneyapp.friendids";
 	public static final String ON_RETURN_FROM_ADD = "com.example.moneyapp.onReturnFromAddNewPerson";
 	protected static final String TRANSID_STR = "com.example.moneyapp.transaction.transid";
+	public static final String USERID_STR = "com.example.moneyapp.transaction.userid";
 			
 	
 	@Override

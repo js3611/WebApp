@@ -18,6 +18,7 @@ public class UserDetails implements Serializable {
 	private String password; // WHY? what if someone wants to change password?
 	private String phoneNo;
 	private int profilePicture;
+	private double amount;
 	
 	public UserDetails(int userid, String surname, String firstName,
 			int calendarid, int wishlist, String password, String phoneNo,
@@ -118,6 +119,12 @@ public class UserDetails implements Serializable {
 		if (userid != other.userid)
 			return false;
 		return true;
+	}
+	public double getAmount() {
+		return amount;
+	}
+	public void setAmount(double  amount) {
+		this.amount = amount;
 	}
 	
 	

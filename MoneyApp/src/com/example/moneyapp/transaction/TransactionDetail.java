@@ -13,6 +13,7 @@ public class TransactionDetail {
 	private double partial_pay;
 	private String date;
 	private String deadline;
+	private String description;
 
 	public TransactionDetail(){}
 	
@@ -134,6 +135,14 @@ public class TransactionDetail {
 
 	public void setUserid(int userid) {
 		this.userid = userid;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	

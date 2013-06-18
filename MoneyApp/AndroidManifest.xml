@@ -82,8 +82,8 @@
                 android:value="com.example.moneyapp.MainMenu" />
         </activity>
         <activity
-            android:name="com.example.moneyapp.SignIn"
-            android:label="@string/title_activity_sign_in" >
+            android:name="com.example.moneyapp.SignUp"
+            android:label="@string/title_activity_sign_up" >
         </activity>
         <activity
             android:name="com.example.moneyapp.ExampleListActivity"
@@ -168,7 +168,8 @@
         <activity
             android:name="com.example.moneyapp.transaction.PerItemDetails"
             android:label="@string/title_activity_per_item_details"
-            android:parentActivityName="com.example.moneyapp.transaction.PerItem" >
+            android:parentActivityName="com.example.moneyapp.transaction.PerItem"
+            android:windowSoftInputMode="adjustNothing|stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.moneyapp.transaction.PerItem" />

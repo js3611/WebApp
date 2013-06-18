@@ -54,7 +54,7 @@ public class DownloadPerItem extends
 	
 	@Override
 	protected void onPostExecute(ArrayList<TransactionDetail> result) {
-		transList.setAdapter(new PerItemAdapter(result, c));
+		//transList.setAdapter(new PerItemAdapter(result, c));
 	}
 
 }
