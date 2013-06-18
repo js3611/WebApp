@@ -11,9 +11,12 @@
     <dimen name="borrowedDim">95dp</dimen>
     <dimen name="personBorrowedDim">100dp</dimen>
     <dimen name="dateAndPerson">130dp</dimen>
+    <dimen name="messageBoxHeightDim">150dp</dimen>
+    <dimen name="messageTextDim">450dp</dimen>
     <dimen name="extMarginMenu">225dp</dimen>
     <dimen name="extMarginMain">150dp</dimen>
     <dimen name="inMarginMain">50dp</dimen>
+    <dimen name="messageMargin">5dp</dimen>
     <dimen name="buttonHeight">60dp</dimen>
     <dimen name="list_size">450dp</dimen>
     <dimen name="new_trans_button">200dp</dimen>
