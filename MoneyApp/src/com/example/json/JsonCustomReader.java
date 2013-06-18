@@ -162,9 +162,10 @@ public class JsonCustomReader {
 		return td;
 	}
 
-	public static ArrayList<MessageDetails> readJsonMessages(InputStream in)
+	public static ArrayList<MessageDetails> readJsonMessages(JsonReader jr, InputStream in)
 			throws UnsupportedEncodingException, IOException {
-		JsonReader jr = new JsonReader(new BufferedReader(new InputStreamReader(in, "UTF-8")));
+	
+		jr.setLenient(true);
 		ArrayList<MessageDetails> details = new ArrayList<MessageDetails>();
 		/* skip name for array */
 		jr.nextName();

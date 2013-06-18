@@ -30,8 +30,7 @@ public class PerPersonProfile extends FragmentActivity implements PayDialog.Noti
 	/* Debug */
 	private static final String TAG = "PerPersonProfile";
 	private String errorMessage = "no error";
-	
-	
+
 	private static final int NUM_PAGES = 2;
 	private static final int PROFILE = 0;
 	private static final int LOG = 1;

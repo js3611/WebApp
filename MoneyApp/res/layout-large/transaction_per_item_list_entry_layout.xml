@@ -12,8 +12,8 @@
 
         <ImageView
             android:id="@+id/profile_icon"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginLeft="@dimen/marginRL"
             android:layout_marginRight="@dimen/marginRL"
             android:layout_marginTop="@dimen/marginTB"
@@ -54,14 +54,17 @@
             android:layout_width="@dimen/priceDim"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
             android:layout_marginTop="@dimen/marginTB"
             android:layout_marginBottom="@dimen/marginTB"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:layout_toRightOf="@id/borrowedLent"
+            android:layout_toLeftOf="@+id/next_icon"
             android:text="Price"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColorHint="@color/shadowgreen" />
+            android:textColorHint="@color/shadowgreen" 
+            android:scrollHorizontally="true"/>
 
         <RelativeLayout
             android:layout_width="@dimen/dateAndPerson"
@@ -77,7 +80,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerVertical="true"
-                android:layout_marginBottom="@dimen/marginTB"
                 android:layout_marginLeft="10dp"
                 android:text="date" />
 
@@ -88,7 +90,7 @@
                 android:layout_below="@+id/date_view"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:text="Person" />
+                android:text="Person"/>
         </RelativeLayout>
 
         <ImageView

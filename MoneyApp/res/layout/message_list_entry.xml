@@ -38,4 +38,10 @@
 	    android:layout_height="wrap_content"
 	    android:gravity="right" />
     
+    <TextView 
+        android:id="@+id/msgdate_view"
+        android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="right" />
+    
 </LinearLayout>

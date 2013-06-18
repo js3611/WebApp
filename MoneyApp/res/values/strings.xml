@@ -82,5 +82,6 @@
     <string name="perItem">Per Item</string>
     <string name="perPerson">Per Person</string>
     <string name="transactionType">How would you like your transactions to show?</string>
+    <string name="messageString">Enter you message here</string>
 
 </resources>

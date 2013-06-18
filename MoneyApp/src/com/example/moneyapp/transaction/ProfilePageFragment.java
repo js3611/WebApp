@@ -165,7 +165,6 @@ public class ProfilePageFragment extends Fragment {
 				
 				InputStream in = CustomHttpClient
 						.executeHttpPost(url,nameValueP);
-
 				return processInput(in);
 
 
