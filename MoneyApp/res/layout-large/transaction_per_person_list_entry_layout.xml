@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@+id/nameView"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/nameDim"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/profile_icon"
             android:layout_centerVertical="true"
@@ -33,11 +33,13 @@
             android:text="Name"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#003366"
-            android:textSize="16sp" />
+            android:textSize="16sp" 
+            android:scrollHorizontally="false"
+            android:maxLines="3"/>
         
         <TextView
             android:id="@+id/borrowedLent"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/borrowedDim"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/nameView"
             android:layout_centerVertical="true"
@@ -53,7 +55,7 @@
         
         <TextView
            android:id="@+id/priceView"
-           android:layout_width="wrap_content"
+           android:layout_width="@dimen/priceDim"
            android:layout_height="wrap_content"
            android:layout_toRightOf="@+id/borrowedLent"
            android:layout_centerVertical="true"
