@@ -16,7 +16,7 @@
     <color name="lightgreen">#66CC66</color>
     <color name="shadowgreen">#009900</color>
     <color name="lightyellow">#EEEBD9</color>
-    <color name="grey">#CCCCCC</color>
+    <color name="grey">#606060</color>
     <color name="black_overlay">#66000000</color>
 
 </resources>

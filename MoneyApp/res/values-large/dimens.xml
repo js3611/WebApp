@@ -5,6 +5,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="border_width">0.5dp</dimen>
     <dimen name="border_offset">-0.5dp</dimen>
+    <dimen name="nameDim">130dp</dimen>
     <dimen name="priceDim">120dp</dimen>
     <dimen name="subjectDim">150dp</dimen>
     <dimen name="borrowedDim">95dp</dimen>

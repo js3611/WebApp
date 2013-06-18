@@ -102,6 +102,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/extMarginMain"
         android:layout_alignParentBottom="true"
+        android:background="@drawable/signin_custom_button"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:text="@string/signUp"
         android:onClick="signInHandler"
         android:clickable="true" />

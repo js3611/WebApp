@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    
+    <TextView 
+        android:id="@+id/transaction_type"
+        style="@style/SettingsHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/marginTB"
+        android:text="@string/transactionType" />
+    
+    <View 
+        android:id="@+id/transaction_separator"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_centerVertical="true"
+        android:background="@color/lightgreen"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:layout_marginRight="@dimen/marginRL"
+        android:layout_below="@id/transaction_type"/>
+    
+    <TextView 
+        android:id="@+id/perItem"
+        style="@style/SettingsChoice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/perItem"
+        android:layout_below="@id/transaction_separator"
+        android:clickable="true"/>
+    
+    <View 
+        android:id="@+id/inner_separator1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerVertical="true"
+        android:background="@color/lightgreen"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:layout_marginRight="@dimen/marginRL"
+        android:layout_below="@id/perItem"/>
+    
+    <TextView 
+        android:id="@+id/perPerson"
+        style="@style/SettingsChoice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/perPerson"
+        android:layout_below="@id/inner_separator1"
+        android:clickable="true"/>
+    
+    <View 
+        android:id="@+id/inner_separator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerVertical="true"
+        android:background="@color/lightgreen"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:layout_marginRight="@dimen/marginRL"
+        android:layout_below="@id/perPerson"/>
+    
+</RelativeLayout>
