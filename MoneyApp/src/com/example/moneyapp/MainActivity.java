@@ -40,6 +40,7 @@ import com.example.json.JsonCustomReader;
 public class MainActivity extends Activity {
 	public static final String TAG = "MainActivity";
 	public static final int DEFAULT_DATA_LENGTH = 1000;
+	//public static final String thatcomputer = "http://146.169.53.38:59999";
 	public static final String USER_KEY = "com.example.moneyapp.USERDETAILS";
 	public static final String edge02 = "http://146.169.52.2:59999";
 	public static final String pixel20 = "http://146.169.53.180:59999";
@@ -129,7 +130,7 @@ public class MainActivity extends Activity {
 		nameValueP.add(new BasicNameValuePair("password", password));
 
 		try {
-			InputStream in = CustomHttpClient.executeHttpPost(URL + LOGIN,
+			InputStream in = CustomHttpClient.executeHttpPost(URL+ LOGIN,
 					nameValueP);
 
 			return processInput(in);
@@ -181,7 +182,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void signInHandler(View view) {
-		Intent intent = new Intent(MainActivity.this, SignIn.class);
+		Intent intent = new Intent(MainActivity.this, SignUp.class);
 		startActivity(intent);
 	}
 
