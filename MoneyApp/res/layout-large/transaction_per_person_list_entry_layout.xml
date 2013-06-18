@@ -39,7 +39,7 @@
         
         <TextView
             android:id="@+id/borrowedLent"
-            android:layout_width="@dimen/borrowedDim"
+            android:layout_width="@dimen/personBorrowedDim"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/nameView"
             android:layout_centerVertical="true"

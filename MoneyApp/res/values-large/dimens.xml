@@ -9,6 +9,7 @@
     <dimen name="priceDim">120dp</dimen>
     <dimen name="subjectDim">150dp</dimen>
     <dimen name="borrowedDim">95dp</dimen>
+    <dimen name="personBorrowedDim">100dp</dimen>
     <dimen name="dateAndPerson">130dp</dimen>
     <dimen name="extMarginMenu">225dp</dimen>
     <dimen name="extMarginMain">150dp</dimen>
