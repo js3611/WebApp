@@ -83,5 +83,24 @@
         <item name="android:textColor">@color/grey</item>
         <item name="android:textSize">18sp</item>
     </style>
+    
+    <style name="MessageSender">
+        <item name="android:paddingLeft">@dimen/marginRL</item>
+        <item name="android:paddingRight">@dimen/marginRL</item>
+        <item name="android:paddingTop">@dimen/marginTB</item>
+        <item name="android:paddingBottom">@dimen/marginTB</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    
+    <style name="MessageText">
+        <item name="android:paddingLeft">@dimen/marginRL</item>
+        <item name="android:paddingRight">@dimen/marginRL</item>
+        <item name="android:paddingTop">@dimen/marginTB</item>
+        <item name="android:paddingBottom">@dimen/marginTB</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 
 </resources>
