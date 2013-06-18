@@ -62,7 +62,7 @@ public class MainMenu extends Activity {
 		int view_mode = sharedPref.getInt(getString(R.string.view_mode), PER_PERSON_VIEW);
 		Intent intent = getIntent();
 		//intent.putExtra(MainActivity.USER_KEY, user);
-		view_mode = PER_TRANSACTION_VIEW;
+	//	view_mode = PER_TRANSACTION_VIEW;
 		if (view_mode == PER_PERSON_VIEW) 
 			intent.setClass(MainMenu.this, PerPerson.class);
 		else 

@@ -8,12 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.helpers.MyMath;
+import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.R;
 
 public class PerPersonAdapter extends CustomAdapter<TransactionDetail> {
 
+	
 	public PerPersonAdapter(ArrayList<TransactionDetail> data, Context c) {
 		super(data, c);
+		
 	}
 
 	/* Fill the entry with data here */
@@ -37,6 +41,7 @@ public class PerPersonAdapter extends CustomAdapter<TransactionDetail> {
 				viewHolder.name_view = (TextView) v.findViewById(R.id.nameView);
 				viewHolder.price_view = (TextView) v
 						.findViewById(R.id.priceView);
+				viewHolder.borrowedLent = (TextView) v.findViewById(R.id.borrowedLent);
 
 				break;
 			case TYPE_NEW_ENTRY:
@@ -60,8 +65,15 @@ public class PerPersonAdapter extends CustomAdapter<TransactionDetail> {
 		viewHolder.image.setImageResource(detail.getIcon());
 		viewHolder.name_view.setText(name);
 		viewHolder.price_view.setText("" + detail.getPrice());
-
+		viewHolder.borrowedLent.setText(setBorrowedLent(position));
 		return v;
+	}
+
+	private CharSequence setBorrowedLent(int position) {
+		if (_data.get(position).getPrice() < MyMath.EPSILON) 
+			return "lent:";
+		else 
+			return "borrowed:";
 	}
 
 	public void onEntryClick(View view) {
@@ -72,7 +84,8 @@ public class PerPersonAdapter extends CustomAdapter<TransactionDetail> {
 	static class PerPersonViewHolder {
 		public TextView price_view;
 		public TextView name_view;
-		ImageView image;
+		public ImageView image;
+		public TextView borrowedLent;
 	}
 
 }

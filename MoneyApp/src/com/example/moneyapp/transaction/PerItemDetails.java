@@ -224,9 +224,7 @@ public class PerItemDetails extends Activity {
 					newOwer.setSurname(FriendsList.getSurname(userid));
 
 					owerArr.add(new Pair<UserDetails, Double>(newOwer, individualAmount));
-					
 					personAdapter = new OwerAdapter(owerArr, thisActivity);
-					
 					owerList.setAdapter(personAdapter);
 										
 				}

@@ -163,7 +163,7 @@ public class PerItem extends Activity {
 		protected void onPostExecute(ArrayList<TransactionDetail> result) {
 			super.onPostExecute(result);
 			
-			transList.setAdapter(new PerItemAdapter(details, thisActivity));
+			transList.setAdapter(new PerItemAdapter(details, thisActivity,user));
 			//registerForContextMenu(transList);
 		}
 	}
