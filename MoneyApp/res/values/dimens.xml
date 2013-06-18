@@ -10,7 +10,9 @@
     <dimen name="priceDim">70dp</dimen>
     <dimen name="subjectDim">150dp</dimen>
     <dimen name="dateAndPerson">150dp</dimen>
-    <dimen name="extMarginMain">100dp</dimen>
+    <dimen name="extMarginMenu">100dp</dimen>
+    <dimen name="extMarginMain">80dp</dimen>
+    <dimen name="inMarginMain">50dp</dimen>
     <dimen name="buttonHeight">50dp</dimen>
     <dimen name="new_trans_button">70dp</dimen>
     <dimen name="marginTB">10dp</dimen>
