@@ -63,4 +63,19 @@ public class OwerAdapter extends PersonAdapter {
 		return v;
 	}
 	
+	@Override
+	public int getCount() {
+		return _data.size();
+	}
+
+	@Override
+	public Object getItem(int pos) {
+		return _data.get(pos);
+	}
+
+	@Override
+	public long getItemId(int pos) {
+		return pos;
+	}
+	
 }

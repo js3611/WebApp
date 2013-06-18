@@ -61,14 +61,6 @@ public class MainActivity extends Activity {
 		user = null;
 		EditText passwordText = (EditText) findViewById(R.id.password);
 		EditText phoneText = (EditText) findViewById(R.id.phoneNumber);
-		passwordText.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				EditText passwordText = (EditText) v.findViewById(R.id.password);
-				passwordText.setText("");
-			}
-		});
 		passwordText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
