@@ -7,6 +7,7 @@
     <dimen name="border_offset">-0.5dp</dimen>
     <dimen name="priceDim">120dp</dimen>
     <dimen name="subjectDim">150dp</dimen>
+    <dimen name="borrowedDim">95dp</dimen>
     <dimen name="dateAndPerson">130dp</dimen>
     <dimen name="extMarginMain">250dp</dimen>
     <dimen name="buttonHeight">60dp</dimen>
