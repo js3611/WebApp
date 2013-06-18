@@ -31,9 +31,7 @@
             android:text="Subject"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#003366" 
-            android:inputType="textMultiLine"
-            android:maxLines="3"
-            android:scrollHorizontally="false" />
+            android:maxLines="3" />
         
         <TextView
             android:id="@+id/borrowedLent"
@@ -80,8 +78,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="@dimen/marginTB"
                 android:layout_marginLeft="10dp"
-                android:text="date" 
-                android:scrollHorizontally="false" />
+                android:text="date" />
 
             <TextView
                 android:id="@+id/from_view"
@@ -90,8 +87,7 @@
                 android:layout_below="@+id/date_view"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:text="Person" 
-                android:scrollHorizontally="false" />
+                android:text="Person" />
         </RelativeLayout>
 
         <ImageView

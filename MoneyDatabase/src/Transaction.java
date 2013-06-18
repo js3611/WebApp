@@ -30,15 +30,6 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 		String operation = request.getParameter("op");
 		String viewMode = request.getParameter("viewMode");
 			
-
-		// TODO FIND A WAY OF GETTING THE VIEWMODE AND USER ID FROM THE DEVICE
-		
-		if (operation == null) {
-			JSONBuilder jb = new JSONBuilder();
-			writer.println(getReturnCode(jb,0));
-			return;
-		}
-
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
@@ -52,11 +43,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 							"jdbc:postgresql://db.doc.ic.ac.uk/g1227132_u?&ssl=true"
 									+ "&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 							"g1227132_u", "W0zFGMaqup");
-
-//			if (idToNameMap == null)
-//				idToNameMap = IDtoNameMap.getInstance(null,0);
-			
-			
+	
 			handleGetOperation(operation, viewMode, conn, request, writer);
 
 		} catch (Exception e) {
@@ -68,6 +55,12 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 	private void handleGetOperation(String operation, String viewMode, Connection conn,
 			HttpServletRequest request, PrintWriter writer) throws Exception {
 		
+		if (operation == null) {
+			JSONBuilder jb = new JSONBuilder();
+			writer.println(getReturnCode(jb,0));
+			return;
+		}
+		
 		if (viewMode.equals("perItem")) {	
 			
 			if (operation.equals("viewLiveTransactions")) {
@@ -77,16 +70,14 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				int userid = Integer.parseInt(request.getParameter("userid"));
 				
 				// Shows all transactions that have yet to be completed
-				ResultSet transactionSet = transStmt
-						.executeQuery("SELECT t.transid,t.name sum(a.amount) - sum(a.partial_pay) as amount FROM " +
-								"transactions t INNER JOIN (SELECT t.transid, t.name, t._date, d.amount, d.partial_pay, d.owesuserid FROM " +
-								"transactions t INNER JOIN debt d on (t.transid = d.transid) WHERE(d.userid = " +
-								userid + 
-								"OR d.owesuserid = " +
-								userid +
-								") AND t.total_paid_off = false ORDER BY t._date DESC) "  +
-								"as a on (t.transid = a.transid) GROUP BY t.transid, t.name;" + 
-								";");
+				ResultSet transactionSet = transStmt.executeQuery(
+						"SELECT t.transid, t.name, sum(a.amount) - sum(a.partial_pay) as amount " +
+						"FROM " + "transactions t INNER JOIN " +
+							"(SELECT t.transid, t.name, t._date, d.amount, d.partial_pay, d.owesuserid " +
+							"FROM " + "transactions t INNER JOIN debt d on (t.transid = d.transid) " +
+							"WHERE(d.userid = " + userid + "OR d.owesuserid = " +userid + ") " +
+							"AND t.total_paid_off = false ORDER BY t._date DESC) " + "as a ON (t.transid = a.transid) " +
+						"GROUP BY t.transid, t.name" + ";");
 	
 				if (!transactionSet.isBeforeFirst()) {
 					writer.println(getReturnCode(jb,4));
