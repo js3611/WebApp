@@ -205,14 +205,18 @@ public class ProfilePageFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			MyToast.toastMessage(getActivity(), errorMessage);
-			if (!result) return;
+			
+			if (!result) {
+				MyToast.toastMessage(getActivity(), errorMessage);
+				return;
+			}
 			/* If successful, then reset all the entries */
 			((ImageView) view.findViewById(R.id.big_profile_icon)).setImageResource(R.drawable.happy);
 			((TextView) view.findViewById(R.id.price)).setText(0 + " pounds");
 			((TextView) view.findViewById(R.id.oweDirection)).setText(setDirection(total_price,FriendsList.getFirstname(friendid)));
 			((Button) view.findViewById(R.id.nudge_button)).setEnabled(false);
 			((TextView) view.findViewById(R.id.oweDirection)).setEnabled(false);
+			MyToast.toastMessage(getActivity(), "Payment successful!");
 		}
 		
 	}

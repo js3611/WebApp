@@ -64,7 +64,7 @@ public class PerPersonAdapter extends CustomAdapter<TransactionDetail> {
 		String name = detail.getOwesuser();
 		viewHolder.image.setImageResource(detail.getIcon());
 		viewHolder.name_view.setText(name);
-		viewHolder.price_view.setText("" + detail.getPrice());
+		viewHolder.price_view.setText("" + Math.abs(detail.getPrice()));
 		viewHolder.borrowedLent.setText(setBorrowedLent(position));
 		return v;
 	}
