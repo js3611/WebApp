@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 public class Messages extends Activity {
 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

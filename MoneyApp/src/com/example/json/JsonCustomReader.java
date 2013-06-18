@@ -9,10 +9,8 @@ import java.util.ArrayList;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 
-import com.example.helpers.HttpReaders;
-import com.example.helpers.metadata.Pair;
+import com.example.helpers.metadata.MessageDetails;
 import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.R;
 import com.example.moneyapp.transaction.TransactionDetail;
@@ -28,120 +26,7 @@ public class JsonCustomReader {
 		return jr.nextInt();
 	}
 
-	public static int readJsonRetCode(InputStream in)
-			throws UnsupportedEncodingException, IOException {
-		
-		
-		JsonReader jr = new JsonReader(new BufferedReader(
-				new InputStreamReader(in, "UTF-8")));
-		jr.setLenient(true);
-		jr.beginObject();
-		/* Skip the name */
-		jr.nextName();
-		int response = jr.nextInt();
-
-		return response;
-	}
-
-	public static Pair<Integer, UserDetails> readJsonFriend(InputStream in)
-			throws UnsupportedEncodingException, IOException {
-		JsonReader jr = new JsonReader(new BufferedReader(
-				new InputStreamReader(in, "UTF-8")));
-		jr.setLenient(true);
-
-		int userid = 0;
-		String surname = "";
-		String firstName = "";
-		int calendarid = 0;
-		int wishlist = 0;
-		String password = "";
-		String phoneNo = "";
-		int profilePicture = R.drawable.ic_launcher;
-
-		jr.beginObject();
-		// Read return code
-		jr.nextName();
-		int retCode = jr.nextInt();
-		// Read content of user
-		jr.nextName();
-		jr.beginObject();
-		while (jr.hasNext()) {
-			String name = jr.nextName();
-			if (name.equals("userid") || name.equals("friend_id")) {
-				userid = jr.nextInt();
-			} else if (name.equals("firstname")
-					|| name.equals("friend_firstname")) {
-				firstName = jr.nextString();
-			} else if (name.equals("surname") || name.equals("friend_surname")) {
-				surname = jr.nextString();
-			} else if (name.equals("calendarid")) {
-				calendarid = jr.nextInt();
-			} else if (name.equals("wishlist")) {
-				wishlist = jr.nextInt();
-			} else if (name.equals("password")) {
-				password = jr.nextString();
-			} else if (name.equals("phonenumber")) {
-				phoneNo = jr.nextString();
-			} else {
-				jr.skipValue();
-			}
-		}
-		jr.endObject();
-		jr.endObject();
-		UserDetails ud = new UserDetails(userid, surname, firstName,
-				calendarid, wishlist, password, phoneNo, profilePicture);
-		//Log.v("JSON", ud.toString());
-		return new Pair<Integer, UserDetails>(retCode, ud);
-	}
-
-	public static Pair<Integer, UserDetails> readJsonUser(InputStream in)
-			throws UnsupportedEncodingException, IOException {
-		JsonReader jr = new JsonReader(new BufferedReader(
-				new InputStreamReader(in, "UTF-8")));
-		jr.setLenient(true);
-
-		int userid = 0;
-		String surname = "";
-		String firstName = "";
-		int calendarid = 0;
-		int wishlist = 0;
-		String password = "";
-		String phoneNo = "";
-		int profilePicture = R.drawable.ic_launcher;
-
-		jr.beginObject();
-		// Read return code
-		jr.nextName();
-		int retCode = jr.nextInt();
-		// Read content of user
-		while (jr.hasNext()) {
-			String name = jr.nextName();
-			if (name.equals("userid") || name.equals("friend_id")) {
-				userid = jr.nextInt();
-			} else if (name.equals("firstname")
-					|| name.equals("friend_firstname")) {
-				firstName = jr.nextString();
-			} else if (name.equals("surname") || name.equals("friend_surname")) {
-				surname = jr.nextString();
-			} else if (name.equals("calendarid")) {
-				calendarid = jr.nextInt();
-			} else if (name.equals("wishlist")) {
-				wishlist = jr.nextInt();
-			} else if (name.equals("password")) {
-				password = jr.nextString();
-			} else if (name.equals("phonenumber")) {
-				phoneNo = jr.nextString();
-			} else {
-				jr.skipValue();
-			}
-		}
-		jr.endObject();
-		UserDetails ud = new UserDetails(userid, surname, firstName,
-				calendarid, wishlist, password, phoneNo, profilePicture);
-		//Log.v("JSON", ud.toString());
-		return new Pair<Integer, UserDetails>(retCode, ud);
-	}
-
+	
 	public static UserDetails readJSONUser(JsonReader jr, InputStream in) 
 			throws UnsupportedEncodingException, IOException {
 		
@@ -189,32 +74,7 @@ public class JsonCustomReader {
 		
 	}
 
-	public static Pair<Integer, ArrayList<UserDetails>> readJsonFriends(
-			InputStream in) throws UnsupportedEncodingException, IOException {
-		ArrayList<UserDetails> details = new ArrayList<UserDetails>();
-		JsonReader jr;
 	
-		jr = new JsonReader(new BufferedReader(new InputStreamReader(in,
-				"UTF-8")));
-		jr.setLenient(true);
-		jr.beginObject();
-		/* read return code */
-		jr.nextName();
-		int returnCode = jr.nextInt();
-		/* skip name for array */
-		jr.skipValue();
-		/* begin processing array of data */
-		jr.beginArray();
-		while (jr.hasNext()) {
-			details.add(readJsonEachFriend(jr));
-		}
-		jr.endArray();
-		jr.endObject();
-	
-		return new Pair<Integer, ArrayList<UserDetails>>(returnCode, details);
-	
-	}
-
 	public static ArrayList<UserDetails> readJSONFriends(JsonReader jr, InputStream in)
 			throws UnsupportedEncodingException, IOException {
 		ArrayList<UserDetails> details = new ArrayList<UserDetails>();
@@ -230,49 +90,6 @@ public class JsonCustomReader {
 		
 	}
 
-	private static UserDetails readJsonEachFriend(JsonReader jr)
-			throws UnsupportedEncodingException, IOException {
-		int userid = 0;
-		String surname = "";
-		String firstName = "";
-		int calendarid = 0;
-		int wishlist = 0;
-		String password = "";
-		String phoneNo = "";
-		int profilePicture = R.drawable.ic_launcher;
-	
-		jr.beginObject();
-		// Read content of user
-		while (jr.hasNext()) {
-			String name = jr.nextName();
-			if (name.equals("userid") || name.equals("friendid")) {
-				userid = jr.nextInt();
-			} else if (name.equals("firstname")
-					|| name.equals("friend_firstname")) {
-				firstName = jr.nextString();
-			} else if (name.equals("surname") || name.equals("friend_surname")) {
-				surname = jr.nextString();
-			} else if (name.equals("calendarid")) {
-				calendarid = jr.nextInt();
-			} else if (name.equals("wishlist")) {
-				wishlist = jr.nextInt();
-			} else if (name.equals("password")) {
-				password = jr.nextString();
-			} else if (name.equals("phonenumber")) {
-				phoneNo = jr.nextString();
-			} else {
-				jr.skipValue();
-			}
-		}
-		jr.endObject();
-		
-		UserDetails ud = new UserDetails(userid, surname, firstName,
-				calendarid, wishlist, password, phoneNo, profilePicture);
-		
-		//Log.v("JSON", ud.toString());
-	
-		return ud;
-	}
 
 	public static ArrayList<TransactionDetail> readJSONTransactions(JsonReader jr, InputStream in) throws UnsupportedEncodingException, IOException {
 		
@@ -282,14 +99,14 @@ public class JsonCustomReader {
 		//Read Array
 		jr.beginArray();
 		while (jr.hasNext()) {
-			details.add(readData(jr));
+			details.add(readData(jr,in));
 		}
 		jr.endArray();
 		
 		return details;
 	}
 
-	private static TransactionDetail readData(JsonReader jr) throws IOException {
+	private static TransactionDetail readData(JsonReader jr,InputStream in) throws IOException {
 		int icon = R.drawable.ic_launcher;
 		int transactionID = 0;
 		String owesuser = null;
@@ -335,12 +152,85 @@ public class JsonCustomReader {
 		return td;
 	}
 
+	public static ArrayList<MessageDetails> readJsonMessages(InputStream in)
+			throws UnsupportedEncodingException, IOException {
+		JsonReader jr = new JsonReader(new BufferedReader(new InputStreamReader(in, "UTF-8")));
+		ArrayList<MessageDetails> details = new ArrayList<MessageDetails>();
+		/* skip name for array */
+		jr.nextName();
+		/* begin processing array of data */
+		jr.beginArray();
+		while (jr.hasNext()) {
+			details.add(readMessage(jr));
+		}
+		jr.endArray();
+		return details;
+		
+	}
+	
+	private static MessageDetails readMessage(JsonReader jr) throws IOException {
+		int icon = R.drawable.ic_launcher;
+		int conversationID = 0;
+		String last_message_date = null;
+		String last_message_time = null;
+		int user1 = 0;
+		int user2 = 0;
+		boolean group_chat = false;;
+		int groupid = 0;
+		String group_name = null;
+		String content = null;
+		int senderid = 0;
+		String firstname = null;
+		String date = null;
+		String time = null;
+		
+		
+		jr.beginObject();
+		while (jr.hasNext()) {
+			String name = jr.nextName();
+			if (name.equals("conversationid")) {
+				conversationID = jr.nextInt();
+			} else if (name.equals("last_message_date")) {
+				last_message_date = jr.nextString();
+			} else if (name.equals("last_message_time")) {
+				last_message_time = jr.nextString();
+			} else if (name.equals("user1")) {
+				user1 = jr.nextInt();
+			} else if (name.equals("user2")) {
+				user2 = jr.nextInt();
+			} else if (name.equals("group_chat")) {
+				group_chat = jr.nextBoolean();
+			} else if (name.equals("groupid")) {
+				groupid = jr.nextInt();
+			} else if (name.equals("group_name")) {
+				group_name = jr.nextString();
+			} else if (name.equals("content")) {
+				content = jr.nextString();
+			} else if (name.equals("senderid")) {
+				senderid = jr.nextInt();
+			} else if (name.equals("firstname")) {
+				firstname = jr.nextString();
+			} else if (name.equals("date")) {
+				date = jr.nextString();
+			} else if (name.equals("time")) {
+				time = jr.nextString();
+			} else {
+				jr.skipValue();
+			}
+		}
+		jr.endObject();
+		MessageDetails md = new MessageDetails(icon, conversationID, last_message_date, last_message_time,
+								user1, user2, group_chat, groupid, group_name, content, senderid,
+								firstname, date, time);
+		//Log.v("JSON", "Read transaction detail: " + td.toString());
+		return md;
+	}
+	
 	public static ArrayList<TransactionDetail> readJsonPerPerson(InputStream in)
 			throws UnsupportedEncodingException, IOException {
 	
 		ArrayList<TransactionDetail> details = new ArrayList<TransactionDetail>();
-		JsonReader jr = new JsonReader(new BufferedReader(
-				new InputStreamReader(in, "UTF-8")));
+		JsonReader jr = new JsonReader(new BufferedReader(new InputStreamReader(in, "UTF-8")));
 		jr.setLenient(true);
 		jr.beginObject();
 		jr.nextName();
@@ -350,7 +240,7 @@ public class JsonCustomReader {
 	
 		jr.beginArray();
 		while (jr.hasNext()) {
-			details.add(readData(jr));
+			details.add(readData(jr,in));
 		}
 		jr.endArray();
 	

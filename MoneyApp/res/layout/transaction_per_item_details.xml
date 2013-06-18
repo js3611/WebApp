@@ -1,16 +1,170 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".PerItemDetails" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/new_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:text="Item:"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/item_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:hint="e.g. Dinner"
+            android:inputType="textCapSentences|textAutoCorrect" />
+
+        <TextView
+            android:id="@+id/item_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:text="Note: (Optional)"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/item_description_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:hint="e.g. Remember when we went to Nandos, I paid for you because you didn&apos;t have enough cash"
+            android:inputType="textCapSentences|textAutoCorrect" />
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:text="Total: "
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:hint="e.g. £30"
+            android:inputType="numberDecimal"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/who_owe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:text="Who owe?"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+<!-- 
+        <ListView
+            android:id="@+id/PersonList"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+            android:layout_marginTop="@dimen/marginTB"
+            android:layout_weight="2" >
+        </ListView>
+         -->
+
+
+            <ListView
+            android:id="@+id/PersonList"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@+id/new_transaction"
+            android:layout_above="@+id/eq_split_button"
+            android:layout_marginLeft="@dimen/marginRL"
+            android:layout_marginRight="@dimen/marginRL"
+
+            android:layout_weight="2" >
+        </ListView>
+    
+    <Button
+        android:id="@+id/eq_split_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:layout_marginRight="@dimen/marginRL"
+        android:layout_marginBottom="@dimen/marginTB"
+        android:background="@drawable/custom_button"
+        android:onClick="toMessage"
+        android:text="Message"
+        android:textSize="25sp" />
+    
+    <Button
+        android:id="@+id/done_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginBottom="@dimen/marginTB"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:layout_marginRight="@dimen/marginRL"
+        android:background="@drawable/custom_button"
+        android:onClick="Pay"
+        android:text="Pay"
+        android:textSize="25sp" />
+    </LinearLayout>
+</ScrollView>
+<!--
+     <RelativeLayout
+        android:id="@+id/total_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+      
+     <TextView
+        android:id="@+id/urgence"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:text="Urgency: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+     
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:entries="@array/urgency_scale"
+        android:layout_toRightOf="@id/urgence"/>
+    
+    </RelativeLayout>
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/eq_split_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/marginRL"
+        android:layout_marginRight="@dimen/marginRL"
+        android:layout_marginTop="@dimen/marginTB"
+        android:layout_marginBottom="@dimen/marginTB"
+        android:background="@drawable/custom_button"
+        android:textSize="25sp"
+        android:text="Equal Split" />
+-->

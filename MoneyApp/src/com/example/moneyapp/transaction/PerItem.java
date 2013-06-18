@@ -25,6 +25,7 @@ import android.widget.ListView;
 import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.metadata.Pair;
+import com.example.helpers.metadata.UserDetails;
 import com.example.json.JsonCustomReader;
 import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.R;
@@ -40,6 +41,7 @@ public class PerItem extends Activity {
 	ListView transList;
 	//A list of data for each entry, which the adapter retrieves from.
 	ArrayList<TransactionDetail> details;
+	UserDetails user;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +54,7 @@ public class PerItem extends Activity {
 		thisActivity = this;
 		//Create a list which holds data for each entry
 		details = new ArrayList<TransactionDetail>();
-		//new DownloadPerItem(transList, thisActivity, details).execute("");
-		new DownloadContent().execute("");
+		user = UserDetails.getUser(getIntent());
 		//registerForContextMenu(transList);
 
 		transList.setOnItemClickListener(new OnItemClickListener() {
@@ -63,8 +64,10 @@ public class PerItem extends Activity {
 
 				if (selectedNewTransaction(pos)) {
 					startActivity(new Intent(PerItem.this, NewTransaction.class));
-				} else { //normail detail window
-					startActivity(new Intent(PerItem.this, Transactions.class));
+				} else { //normal detail window
+					Intent intent = getIntent().setClass(thisActivity, PerItemDetails.class);
+					intent.putExtra(Transactions.TRANSID_STR, details.get(pos).getTransactionID());
+					startActivity(intent);
 				}
 			}
 
@@ -74,22 +77,26 @@ public class PerItem extends Activity {
 		});
 
 	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		new DownloadContent().execute();
+	}
 
 	private class DownloadContent extends AsyncTask<String, Void, ArrayList<TransactionDetail>> {
 
 		@Override
 		protected ArrayList<TransactionDetail> doInBackground(String... params) {
 			try {
-				int userid = 2;
 				String op = "viewLiveTransactions";
 				String viewMode = "perItem";
 				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
 						MainActivity.TRANSACTION + "?"+
 						"op="+op+"&"+ 
 						"viewMode="+viewMode+"&"+
-						"userid="+userid );
-				
-				
+						"userid="+user.getUserid());
+					
 				processInput(in);
 			
 			} catch (Exception e) {
