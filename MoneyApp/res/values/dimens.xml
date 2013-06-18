@@ -7,9 +7,11 @@
     <dimen name="border_offset">-0.5dp</dimen>
     <dimen name="column_width">100dp</dimen>
     <dimen name="column_height">65dp</dimen>
-    <dimen name="nameDim">90dp</dimen>
+    <dimen name="nameDim">85dp</dimen>
     <dimen name="priceDim">70dp</dimen>
     <dimen name="subjectDim">150dp</dimen>
+    <dimen name="borrowedDim">80dp</dimen>
+    <dimen name="personBorrowedDim">95dp</dimen>
     <dimen name="dateAndPerson">150dp</dimen>
     <dimen name="extMarginMenu">100dp</dimen>
     <dimen name="extMarginMain">80dp</dimen>
