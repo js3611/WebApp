@@ -14,6 +14,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,7 +49,8 @@ import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
 
-public class NewTransaction extends Activity {
+public class NewTransaction extends Activity implements
+		EqSplitDialog.NoticeDialogListener {
 
 	/* Debug */
 	private static final String TAG = "New Transaction";
@@ -66,6 +68,8 @@ public class NewTransaction extends Activity {
 	private UserDetails user;
 	private boolean eq_flag = false;
 	private Activity thisActivity;
+	private boolean include_myself = false;
+	private double total_amount;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -141,17 +145,20 @@ public class NewTransaction extends Activity {
 			}
 
 			private void readPairListValues() {
-				
-				for (int i = 0; i < personList.getLastVisiblePosition() - personList.getFirstVisiblePosition(); i++) {
+
+				for (int i = 0; i < personList.getLastVisiblePosition()
+						- personList.getFirstVisiblePosition(); i++) {
 					View v = personList.getChildAt(i);
-					EditText et = (EditText) v.findViewById(R.id.new_price_text);
+					EditText et = (EditText) v
+							.findViewById(R.id.new_price_text);
 					try {
-					person_cost_pairs.get(i).setSecond(Double.parseDouble(et.getText().toString()));
+						person_cost_pairs.get(i).setSecond(
+								Double.parseDouble(et.getText().toString()));
 					} catch (NumberFormatException e) {
 						// do nothing
 					}
 				}
-				
+
 			}
 
 			private boolean selectedNewTransaction(int pos) {
@@ -159,7 +166,7 @@ public class NewTransaction extends Activity {
 			}
 
 		});
-		
+
 	}
 
 	public void newTransactionHandler(View view) {
@@ -214,22 +221,21 @@ public class NewTransaction extends Activity {
 	 */
 	private String oweridIdAmount() {
 
-		/* Need to read price entered in each edit text 
-		for (int i = 0; i < person_cost_pairs.size(); i++) {
-			View view = personList.getChildAt(i);
-			EditText text = (EditText) view.findViewById(R.id.new_price_text);
-			String contents = text.getText().toString();
-			Pair<UserDetails, Double> person = person_cost_pairs.get(i);
-			person.setSecond(Double.parseDouble(contents));
-		}
+		/*
+		 * Need to read price entered in each edit text for (int i = 0; i <
+		 * person_cost_pairs.size(); i++) { View view =
+		 * personList.getChildAt(i); EditText text = (EditText)
+		 * view.findViewById(R.id.new_price_text); String contents =
+		 * text.getText().toString(); Pair<UserDetails, Double> person =
+		 * person_cost_pairs.get(i);
+		 * person.setSecond(Double.parseDouble(contents)); }
 		 */
 
 		for (int i = 0; i < person_cost_pairs.size(); i++) {
 			Pair<UserDetails, Double> person = person_cost_pairs.get(i);
-			Log.v(TAG,person.toString());
+			Log.v(TAG, person.toString());
 		}
 
-		
 		/* Create a map from the first name to the price */
 		StringBuilder strB = new StringBuilder();
 		Map<Integer, Double> personPriceMap = new HashMap<Integer, Double>();
@@ -252,7 +258,7 @@ public class NewTransaction extends Activity {
 	}
 
 	private class AddTransaction extends AsyncTask<String, Void, Boolean> {
-				
+
 		@Override
 		protected Boolean doInBackground(String... params) {
 			return addToTransactions(params[0], params[1], params[2],
@@ -268,23 +274,24 @@ public class NewTransaction extends Activity {
 				// Toast message
 				MyToast.toastMessage(NewTransaction.this, msg);
 				/* Need to somehow know where to go back to */
-				
+
 				thisActivity.finish();
 
 				/*
-				
-				SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-				int view_mode = sharedPref.getInt(getString(R.string.view_mode), MainMenu.PER_PERSON_VIEW);
-				Intent intent = getIntent();
-				//intent.putExtra(MainActivity.USER_KEY, user);
-				view_mode = MainMenu.PER_TRANSACTION_VIEW;
-				if (view_mode == MainMenu.PER_PERSON_VIEW) 
-					intent.setClass(NewTransaction.this, PerPerson.class);
-				else 
-					intent.setClass(NewTransaction.this, PerItem.class);
-				*/
-				
-//				startActivity(intent);
+				 * 
+				 * SharedPreferences sharedPref =
+				 * getSharedPreferences(getString(R.string.preference_file_key),
+				 * Context.MODE_PRIVATE); int view_mode =
+				 * sharedPref.getInt(getString(R.string.view_mode),
+				 * MainMenu.PER_PERSON_VIEW); Intent intent = getIntent();
+				 * //intent.putExtra(MainActivity.USER_KEY, user); view_mode =
+				 * MainMenu.PER_TRANSACTION_VIEW; if (view_mode ==
+				 * MainMenu.PER_PERSON_VIEW)
+				 * intent.setClass(NewTransaction.this, PerPerson.class); else
+				 * intent.setClass(NewTransaction.this, PerItem.class);
+				 */
+
+				// startActivity(intent);
 			} else {
 				// Toast message
 				Context context = getApplicationContext();
@@ -325,14 +332,15 @@ public class NewTransaction extends Activity {
 
 			Log.v(TAG, errorMessage);
 			// Handle JSONstring
-			JsonReader jr = new JsonReader(new BufferedReader(new InputStreamReader(in)));
+			JsonReader jr = new JsonReader(new BufferedReader(
+					new InputStreamReader(in)));
 			jr.beginObject();
-			int response = JsonCustomReader.readJSONRetCode(jr,in);
+			int response = JsonCustomReader.readJSONRetCode(jr, in);
 			jr.endObject();
 			Pair<String, Boolean> pair = TransactionHelper
 					.handleResponse(response);
 			errorMessage = pair.getFirst();
-			
+
 			return pair.getSecond();
 
 		} catch (Exception e) {
@@ -346,38 +354,41 @@ public class NewTransaction extends Activity {
 
 	/* Functionalities for the button */
 	public void equalSplit(View view) {
-		eqsplit();
-	}
-
-	private void eqsplit() {
 		if (!hasTotal()) {
 			MyToast.toastMessage(NewTransaction.this, "Enter amount");
 			return;
-		}
-
-		/* Get the amount individual needs to pay */
+		} 
 		EditText _transAmount = (EditText) findViewById(R.id.amount);
-		double amount = Double.parseDouble(_transAmount.getText().toString());
-		double individual_amount = MyMath.round(amount
-				/ person_cost_pairs.size());
+		total_amount = Double.parseDouble(_transAmount.getText().toString());
+		EqSplitDialog enterAD = new EqSplitDialog();
+        enterAD.show(getFragmentManager(), "Equal Split");
+	}
 
-		for (int i = 0; i < person_cost_pairs.size(); i++) {
-			//View v = personList.getChildAt(i);
-			//EditText text = (EditText) v.findViewById(R.id.new_price_text);
+	private void eqsplit(double amount) {
+		
+		/* Get the amount individual needs to pay */
+			int userCount = (include_myself)? 1 : 0;
+		
+			double individual_amount = MyMath.round(amount
+					/ (person_cost_pairs.size() + userCount));
 
-			if (i == person_cost_pairs.size() - 1) { // the last entry will need
-														// to pay the remaining
-				individual_amount = MyMath.round(amount);
+			for (int i = 0; i < person_cost_pairs.size(); i++) {
+
+				if (i == person_cost_pairs.size() - 1 + userCount) {
+					// the last entry will need
+					// to pay the remaining
+					individual_amount = MyMath.round(amount);
+				}
+				Log.v(TAG, "Individual_amount is: " + individual_amount);
+				// text.setText(Double.toString(individual_amount));
+				Pair<UserDetails, Double> person = person_cost_pairs.get(i);
+				person.setSecond(individual_amount);
+				amount -= individual_amount;
+
 			}
-			Log.v(TAG, "Individual_amount is: " + individual_amount);
-			//text.setText(Double.toString(individual_amount)); 
-			Pair<UserDetails, Double> person = person_cost_pairs.get(i);
-			person.setSecond(individual_amount);
-			amount -= individual_amount;
-
-		}
-		personAdapter.notifyDataSetChanged();
-		eq_flag  = true;
+			personAdapter.notifyDataSetChanged();
+			eq_flag = true;
+		
 	}
 
 	/* Once returned from the NewPerson */
@@ -387,11 +398,11 @@ public class NewTransaction extends Activity {
 		if (resultCode == RESULT_OK) {
 			Log.v(TAG, "result ok");
 			addOwers(data);
-			if(eq_flag)
-				eqsplit();
+			if (eq_flag)
+				eqsplit(total_amount);
 			personAdapter.notifyDataSetChanged();
 		} else {
-			Log.v(TAG, "result not ok"); 
+			Log.v(TAG, "result not ok");
 		}
 	}
 
@@ -404,7 +415,7 @@ public class NewTransaction extends Activity {
 		ArrayList<Pair<UserDetails, Double>> pcp2 = null;
 		/* Must delete user from the pair list when someone is deleted */
 		if (owerinfo.size() < person_cost_pairs.size()) {
-			Log.v(TAG,"enter delete");
+			Log.v(TAG, "enter delete");
 			pcp2 = new ArrayList<Pair<UserDetails, Double>>(owerinfo.size());
 			for (Pair<UserDetails, Double> pair : person_cost_pairs) {
 				UserDetails existent_user = pair.getFirst();
@@ -413,7 +424,8 @@ public class NewTransaction extends Activity {
 						UserInfo userinfo = (UserInfo) parcelable;
 						UserDetails user = userinfo.getUserDetail();
 						if (existent_user.equals(user)) {
-							Log.v(TAG,existent_user.getFirstName() +" still in list");
+							Log.v(TAG, existent_user.getFirstName()
+									+ " still in list");
 
 							// User still in the new list so insert it
 							pcp2.add(pair);
@@ -426,13 +438,12 @@ public class NewTransaction extends Activity {
 
 			for (Pair<UserDetails, Double> pair : pcp2) {
 				Log.v(TAG, pair.getFirst().getFirstName());
-			}		
+			}
 		}
-		
+
 		for (Pair<UserDetails, Double> pair : person_cost_pairs) {
 			Log.v(TAG, pair.getFirst().getFirstName());
-		}	
-
+		}
 
 		/* Add to owers */
 		owers = new ArrayList<UserDetails>();
@@ -440,9 +451,9 @@ public class NewTransaction extends Activity {
 			if (parcelable instanceof UserInfo) {
 				UserInfo userinfo = (UserInfo) parcelable;
 				UserDetails user = userinfo.getUserDetail();
-				
-				Log.v(TAG, user.getFirstName()+" added ");
-				
+
+				Log.v(TAG, user.getFirstName() + " added ");
+
 				owers.add(user);
 
 				/* Do not add if the person is already in the list */
@@ -454,9 +465,10 @@ public class NewTransaction extends Activity {
 				}
 			}
 		}
-		personAdapter = new PersonAdapter(person_cost_pairs, NewTransaction.this);
+		personAdapter = new PersonAdapter(person_cost_pairs,
+				NewTransaction.this);
 		personList.setAdapter(personAdapter);
-//		personAdapter.notifyDataSetChanged();
+		// personAdapter.notifyDataSetChanged();
 		Log.v(TAG, "received friends");
 
 	}
@@ -548,7 +560,7 @@ public class NewTransaction extends Activity {
 	private boolean validateAmount() {
 		EditText _transAmount = (EditText) findViewById(R.id.amount);
 		double amount = Double.parseDouble(_transAmount.getText().toString());
-
+//		double individualAmount = amount 
 		double sum = 0;
 		/* Need to read price entered in each edit text */
 		for (int i = 0; i < person_cost_pairs.size(); i++) {
@@ -560,8 +572,25 @@ public class NewTransaction extends Activity {
 			sum += person.getSecond();
 		}
 
+		if (include_myself) {
+			double individual = amount / (person_cost_pairs.size() +1);
+			_transAmount.setText(""+sum);
+			return MyMath.practically_equal_loose(amount, sum+individual);
+		}
+		
 		return MyMath.practically_equal(amount, sum);
 	}
 
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog) {
+		include_myself = true;
+		eqsplit(total_amount);
+	}
+
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		include_myself = false;
+		eqsplit(total_amount);
+	}
 
 }
