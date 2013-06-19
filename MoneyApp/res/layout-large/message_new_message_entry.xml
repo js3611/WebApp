@@ -8,11 +8,12 @@
     <RelativeLayout 
         android:id="@+id/layout"
         android:background="@drawable/signin_custom_button"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/messageBoxHeightDim"
         android:layout_marginTop="@dimen/marginTB"
         android:layout_marginLeft="@dimen/marginRL"
-        android:layout_marginRight="@dimen/marginRL">
+        android:layout_marginRight="@dimen/marginRL"
+        android:gravity="right">
         
         <EditText 
             android:id="@+id/message"
@@ -20,6 +21,7 @@
             android:layout_width="@dimen/messageTextDim"
             android:layout_height="match_parent"
             android:background="@drawable/custom_message_box"
+            android:layout_toLeftOf="@+id/sendMessage"
             android:layout_margin="@dimen/messageMargin"
             android:hint="@string/messageString"
             android:gravity="top"/>
@@ -31,7 +33,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/messageMargin"
-            android:src="@drawable/send_message_button" />"
+            android:src="@drawable/send_message_button" />
         
         
     </RelativeLayout>
