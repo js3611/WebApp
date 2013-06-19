@@ -65,6 +65,7 @@ public class NewTransaction extends Activity {
 	/* User data */
 	private UserDetails user;
 	private boolean eq_flag = false;
+	private Activity thisActivity;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,7 @@ public class NewTransaction extends Activity {
 		setContentView(R.layout.transaction_new_transaction);
 
 		/* Set fields */
+		thisActivity = this;
 		personList = (ListView) findViewById(R.id.PersonList);
 
 		user = UserDetails.getUser(getIntent());
@@ -250,7 +252,7 @@ public class NewTransaction extends Activity {
 	}
 
 	private class AddTransaction extends AsyncTask<String, Void, Boolean> {
-
+				
 		@Override
 		protected Boolean doInBackground(String... params) {
 			return addToTransactions(params[0], params[1], params[2],
@@ -267,6 +269,10 @@ public class NewTransaction extends Activity {
 				MyToast.toastMessage(NewTransaction.this, msg);
 				/* Need to somehow know where to go back to */
 				
+				thisActivity.finish();
+
+				/*
+				
 				SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 				int view_mode = sharedPref.getInt(getString(R.string.view_mode), MainMenu.PER_PERSON_VIEW);
 				Intent intent = getIntent();
@@ -276,8 +282,9 @@ public class NewTransaction extends Activity {
 					intent.setClass(NewTransaction.this, PerPerson.class);
 				else 
 					intent.setClass(NewTransaction.this, PerItem.class);
+				*/
 				
-				startActivity(intent);
+//				startActivity(intent);
 			} else {
 				// Toast message
 				Context context = getApplicationContext();

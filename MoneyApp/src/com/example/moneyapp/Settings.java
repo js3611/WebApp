@@ -1,5 +1,7 @@
 package com.example.moneyapp;
 
+import com.example.moneyapp.setting.SettingFragment;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +13,12 @@ public class Settings extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_settings);
+		
+		getFragmentManager()
+			.beginTransaction()
+			.replace(android.R.id.content, new SettingFragment())
+			.commit();
+		
 	}
 
 	@Override

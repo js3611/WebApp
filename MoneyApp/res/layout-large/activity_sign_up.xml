@@ -66,7 +66,7 @@
         android:layout_marginBottom="50dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:hint="@string/password" >
+        android:hint="@string/repassword" >
 
         <requestFocus />
     </EditText>
