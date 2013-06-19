@@ -3,6 +3,7 @@ package com.example.moneyapp.message;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,16 +71,17 @@ public class MessageAdapter extends BaseAdapter {
         
         if (!msg.getGroup_chat()) {
         	if (user.getUserid() == msg.getUser1()) {
+        		
         		name = FriendsList.getFirstname(msg.getUser2());
         	} else {
-        		name = user.getFirstName();
+        		name = FriendsList.getFirstname(msg.getUser1());
         	}
         	
         	viewHolder.image.setImageResource(R.drawable.pleasure);
         }	
         else {
         	name = msg.getGroup_name(); 
-        	viewHolder.image.setImageResource(R.drawable.thai);
+        	viewHolder.image.setImageResource(R.drawable.angry);
         }
         	
         viewHolder.name_view.setText(name);

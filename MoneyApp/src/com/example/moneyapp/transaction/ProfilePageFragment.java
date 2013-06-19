@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.DateGen;
+import com.example.helpers.HttpReaders;
 import com.example.helpers.MyToast;
 import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
@@ -60,6 +61,55 @@ public class ProfilePageFragment extends Fragment {
 	public ProfilePageFragment() {
 	}
 
+	public void nudge_button() {
+		Log.v(TAG, "Nudging");
+		new NudgeTask().execute(Integer.toString(friendid),
+				user.getFirstName(),DateGen.getDate(),DateGen.getTime());
+		
+	}
+	
+	private class NudgeTask extends AsyncTask<String, Void, Void> {
+
+		@Override
+		protected Void doInBackground(String... params) {
+			
+			try {
+			String op = "nudgeFriend";
+			String friendid = params[0];
+			String firstname = params[1];
+			String date = params[2];
+			String time = params[3];
+			
+			String url = MainActivity.URL + MainActivity.MESSAGE;
+			List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(3);
+			nameValueP.add(new BasicNameValuePair("op", op));
+			nameValueP.add(new BasicNameValuePair("userid",Integer.toString(user.getUserid())));
+			nameValueP.add(new BasicNameValuePair("friendid", friendid));
+			nameValueP.add(new BasicNameValuePair("firstname",firstname));
+			nameValueP.add(new BasicNameValuePair("date", date));
+			nameValueP.add(new BasicNameValuePair("time", time));
+			
+			
+			InputStream in = CustomHttpClient.executeHttpPost(url, nameValueP);
+			
+			Log.v(TAG, HttpReaders.readIt(in, 1000));
+			
+			} catch (Exception e) {
+				Log.v(TAG, e.getMessage());
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			MyToast.toastMessage(getActivity(), "We just hustled them for you!");
+		}
+		
+	}
+	
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

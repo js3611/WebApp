@@ -79,6 +79,7 @@
             android:layout_marginTop="40dp"
             android:background="@drawable/custom_button"
             android:text="Nudge"
+            android:onClick="nudge_button"
             android:textSize="15sp" />
 
         <Button

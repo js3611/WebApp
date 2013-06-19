@@ -1,5 +1,12 @@
 package com.example.moneyapp.transaction;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import android.app.ActionBar;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -17,6 +24,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.helpers.CustomHttpClient;
+import com.example.helpers.DateGen;
+import com.example.helpers.HttpReaders;
 import com.example.helpers.MyToast;
 import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.MainMenu;
@@ -218,4 +228,9 @@ public class PerPersonProfile extends FragmentActivity implements PayDialog.Noti
 		ppfragment.makeFullPayment();
 	}
 
+	public void nudge_button(View view) {
+		ppfragment.nudge_button();
+		
+	}
+	
 }

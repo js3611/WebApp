@@ -20,6 +20,8 @@ public class Messages extends javax.servlet.http.HttpServlet implements
 		javax.servlet.Servlet {
 	static final long serialVersionUID = 1L;
 
+	String nudgemsg = "Yo, I need my money back!" +
+	 " I will come and smash your legs bro.";
 		/*
 		 * (non-Java-doc)
 		 * 
@@ -129,7 +131,7 @@ rc 413 = could not add message content
 rc 414 = done
 */	
 	
-	private void handleOperation(String operation, Connection conn,
+	protected void handleOperation(String operation, Connection conn,
 	 	HttpServletRequest request, PrintWriter writer) throws Exception {
 		
 	if (operation.equals("messageList")) {
@@ -226,6 +228,8 @@ rc 414 = done
 		
 	}
 	else if (operation.equals("newSingleMessage")) {
+		
+		writer.println("n3w stmt");
 		JSONBuilder jb = new JSONBuilder();
 		Statement newMessageStmt = conn.createStatement();
 		Statement contentStmt = conn.createStatement();
@@ -244,31 +248,37 @@ rc 414 = done
 						userid + " AND user2 =" +
 						friendid + ") OR (user1 = "+
 						friendid + " AND user2 = " +
-						userid + ") returning conversationid");
+						userid + ");");
 						
+	
+		
+		writer.println("old");
 		
 		if (rs.next()) { // means a message between these two people already exists
+			writer.println("reached sendMessage");
 			newConversationid = rs.getInt("conversationid");
-			ModifiedServletRequestMsg msr = new ModifiedServletRequestMsg(request,newConversationid);
+			ModifiedServletRequestMsg msr = new ModifiedServletRequestMsg(request,newConversationid,time,date,nudgemsg);
 			handleOperation("sendMessage",conn, msr, writer);
 		}
 		else{			
-
+			writer.println("reached returning stmt");
 		ResultSet message = newMessageStmt.executeQuery("INSERT INTO message( _date, "+
-									"_time, user1, user2) VALUES (" + 
-									date + ", " +
-									time + ", " +
+									"_time, user1, user2) VALUES ('" + 
+									date + "', '" +
+									time + "', " +
 									userid + ", " +
-									friendid +") returning conversationid");
-									
+									friendid +") RETURNING conversationid;");
+					
+		writer.println("2");
 		if (message.next()) {
+			
 			newConversationid = message.getInt("conversationid");
 			
 			int result = contentStmt.executeUpdate("INSERT INTO messagecontent (content, "+
-						"_date, _time, conversationid, userid) VALUES (" +
-						content + ", " +
-						date + ", " + 
-						time + ", " +
+						"_date, _time, conversationid, userid) VALUES ('" +
+						content + "', '" +
+						date + "', '" + 
+						time + "', " +
 						newConversationid + ", " +
 						userid + ")");
 						
@@ -301,7 +311,7 @@ rc 414 = done
 		ResultSet groups = checkExistStmt.executeQuery("SELECT c.groupid FROM " +
 							"chatgroups c INNER JOIN messagegroups m " +
 							"on (m.groupid = c.groupid) WHERE group_count = " +
-							group_count+":");
+							group_count+";");
 								
 		if(groups.next()){	// There exists group of similar size for inspection
 			boolean person_exists = false;
@@ -345,11 +355,52 @@ rc 414 = done
 					writer.println(getReturnCode(jb,413));
 				else
 					writer.println(getReturnCode(jb,414));
-
+		}
+	} else if (operation.equals("nudgeFriend")) {
+		
+		writer.println("nudging");
+					Statement msgStmt = conn.createStatement();
+					Statement lookupStmt = conn.createStatement();
+					JSONBuilder jb = new JSONBuilder();
+					
+					int userid = Integer.parseInt(request.getParameter("userid"));
+					int friendid = Integer.parseInt(request.getParameter("friendid"));
+					String user_firstname = request.getParameter("firstname");
+					String date_today = request.getParameter("date");
+					String time_now = request.getParameter("time");	
+					
+					
+					ResultSet conversation = lookupStmt.executeQuery("SELECT conversationid FROM message " +
+							 						"WHERE (user1 = " + userid + " " +
+							 						"AND user2 = " + friendid + ") OR (user1 = " + friendid + " " +
+								 					"AND user2 = " + userid + ");");
+					
+					if (!conversation.isBeforeFirst()) {
+						ModifiedServletRequestMsg msr = new ModifiedServletRequestMsg(request,-1, time_now,date_today,nudgemsg);
+						handleOperation("newSingleMessage", conn,msr,writer);
+					}	
+					else {
+						writer.println("nudging3");
+						conversation.next();
+						int conversationid = conversation.getInt("conversationid");
+						
+						int rs = msgStmt.executeUpdate("INSERT INTO  messagecontent (content, _date,_time,conversationid, userid) VALUES ('" +
+													nudgemsg +"', '" +
+													date_today +"', '" +
+													time_now + "', " +
+													conversationid + ", " +
+													userid + ");");
+						
+						writer.println("nudging4");
+						
+						if (rs == 0)
+							writer.println(getReturnCode(jb,415));
+						else
+							writer.println(getReturnCode(jb,416));
+					}
 		} else {
 			create_message_and_group(request, conn, writer, 0);
 		}
-	}
 	}
 	
 	private void create_message_and_group(HttpServletRequest request,Connection conn, PrintWriter writer, int CONVO_ID) throws SQLException{

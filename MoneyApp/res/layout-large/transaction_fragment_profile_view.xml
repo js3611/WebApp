@@ -80,6 +80,7 @@
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
             android:text="Nudge"
+            android:onClick="nudge_button"
             android:textSize="25sp" />
 
         <Button

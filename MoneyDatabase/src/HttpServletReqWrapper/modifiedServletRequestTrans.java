@@ -23,6 +23,8 @@ public class ModifiedServletRequestTrans extends HttpServletRequestWrapper {
 
 	}
 	
+	
+	
 	@Override
 	public String getParameter(String param) {
 		if (param.equals("transid")) {

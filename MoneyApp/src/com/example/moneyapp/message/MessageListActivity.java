@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.view.View;
 
 /**
  * An activity representing a list of People. This activity has different
@@ -26,6 +27,8 @@ import android.view.MenuItem;
 public class MessageListActivity extends FragmentActivity implements
 		PersonListFragment.Callbacks {
 
+	PersonDetailFragment fragment;
+	
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
 	 * device.
@@ -87,7 +90,7 @@ public class MessageListActivity extends FragmentActivity implements
 			// fragment transaction.
 			Bundle arguments = new Bundle();
 			arguments.putString(PersonDetailFragment.ARG_ITEM_ID, id);
-			PersonDetailFragment fragment = new PersonDetailFragment();
+			fragment = new PersonDetailFragment();
 			fragment.setArguments(arguments);
 			//put arguments
 			getSupportFragmentManager().beginTransaction()
@@ -100,5 +103,9 @@ public class MessageListActivity extends FragmentActivity implements
 			detailIntent.putExtra(PersonDetailFragment.ARG_ITEM_ID, id);
 			startActivity(detailIntent);
 		}
+	}
+	
+	public void sendMessage(View view) {
+		fragment.sendMessage();
 	}
 }

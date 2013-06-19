@@ -1,6 +1,9 @@
 package com.example.helpers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class DateGen {
 
@@ -20,4 +23,9 @@ public class DateGen {
 		return strB.toString();
 	}
 	
+	public static String getTime() {
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+		Date date = new Date();
+		return dateFormat.format(date);
+	}
 }

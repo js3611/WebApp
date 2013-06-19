@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import HttpServletReqWrapper.ModifiedServletRequestMsg;
 import HttpServletReqWrapper.ModifiedServletRequestTrans;
 import JSONBuilder.JSONBuilder;
 import IdMap.IDtoNameMap;
@@ -370,56 +371,8 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 						jb.endArray().endObject();			
 						writer.println(jb.build());
 				}
-			} else if (operation.equals("remindFriend")) {
-				Statement msgStmt = conn.createStatement();
-				Statement transStmt = conn.createStatement();
-				Statement lookupStmt = conn.createStatement();
-				JSONBuilder jb = new JSONBuilder();
-				
-				int userid = Integer.parseInt(request.getParameter("userid"));
-				int friendid = Integer.parseInt(request.getParameter("friendid"));
-//				String friend_firstname = idToNameMap.getFirstname(friendid);
-				String user_firstname = request.getParameter("firstname");
-				
-				int transid = Integer.parseInt(request.getParameter("transid"));
-				String date_today = request.getParameter("date");
-				String time_now = request.getParameter("time");
-				
-				
-				ResultSet trans = transStmt.executeQuery("SELECT t.name, d.amount, d.partial_pay " +
-									 "FROM debt d INNER JOIN transactions t on " +
-									 "(t.transid = d.transid) WHERE (d.userid = "+
-									 userid + " AND d.owesuserid = " + 
-									 friendid + "AND t.transid = " +
-									 transid + ";");
-
-				double total = trans.getDouble("amount") - trans.getDouble("partial_pay");
-				
-				
-				String msg = "Yo " + /*friend_firstname + */", " + user_firstname + " needs his money from "+
-							 trans.getString("name") + ". This comes to " + total + " pounds. Pay it back soon or "+
-							 "I'll come and smash your legs bro.";
-						
-				
-				ResultSet conversation = lookupStmt.executeQuery("SELECT conversationid FROM message " +
-						 						"WHERE (user1 = " + userid + " " +
-						 						"AND user2 = " + friendid + ") OR (user1 = " + userid + " " +
-							 					"AND user2 = " + friendid + ");");
-				
-				if (!conversation.isBeforeFirst()) {}
-					//TODO create conversation here		
-				else {
-					int conversationid = conversation.getInt("conversationid");
-					
-					int rs = msgStmt.executeUpdate("INSERT INTO messagecontent VALUES (" +
-												msg +", " +
-												date_today +", " +
-												time_now + ", " +
-												conversationid + ", " +
-												userid + ";");
-				}
+			} 
 			}
-		}
 												
 			    		
 	}

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.helpers.AdminHelper;
@@ -58,6 +59,7 @@ public class PersonDetailFragment extends Fragment {
 	String name; 
 	ListView messages;
 	MessageContentAdapter mca;
+	View v;
 
 	private FragmentActivity thisActivity;
 	
@@ -94,7 +96,7 @@ public class PersonDetailFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.messages_list,
 				container, false); 
-		
+		v = rootView;
 		messages = (ListView) rootView.findViewById(R.id.messageContentList);
 		// Show the dummy content as text in a TextView.
 		/*if (mItem != null) {
@@ -191,6 +193,44 @@ public class PersonDetailFragment extends Fragment {
 			errorMessage = e.getMessage();
 		}
 		return false;		
+	}
+	
+	public void sendMessage() {
+		//Async task
+		EditText et = (EditText) v.findViewById(R.id.message);
+		String content = et.getText().toString();
+		new SendMessageTask().execute(content);
+	}
+	
+	private class SendMessageTask extends AsyncTask<String, Void, Void> {
+
+		@Override
+		protected Void doInBackground(String... params) {
+			
+			String content = params[0];
+			int userid = user.getUserid();
+			int friendid=0;
+			String date=null;
+			String time=null;
+			String op = "messageDetails";
+			
+			Log.v(TAG,"userid ="+userid + ",name = "+ name +",convoId = "+conversationid);
+//			InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
+//					MainActivity.MESSAGE + "?"+
+//					"op="+op+"&"+ 
+//					"name="+ name+ "&" +
+//					"userid=" + userid + "&" +
+//					"conversationid=" + conversationid);
+//			processInput(in);					
+			
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+		}
 	}
 	
 }
