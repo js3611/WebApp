@@ -147,7 +147,7 @@ rc 414 = done
 					userid + " OR cg.userid = " +
 					userid + " UNION SELECT * FROM message WHERE user1 = " +
 					userid + " OR user2 = " + 
-					userid + ") AS b ON (a.groupid = b.groupid;");
+					userid + ") AS b ON (a.groupid = b.groupid);");
 					
 		if (!messageList.isBeforeFirst()) // no messages
 			writer.println(getReturnCode(jb,42));
@@ -161,7 +161,7 @@ rc 414 = done
 								.append("last_message_time", messageList.getString("_time"))
 								.append("user1", messageList.getInt("user1"))
 								.append("user2", messageList.getInt("user2"))
-								.append("group_chat", messageList.getString("group_chat"))
+								.append("group_chat", messageList.getBoolean("group_chat"))
 								.append("groupid", messageList.getInt("groupid"))
 								.append("group_name", messageList.getString("group_name"))
 				  .endObject();

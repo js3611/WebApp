@@ -60,10 +60,13 @@ public class PersonListFragment extends ListFragment {
 
 	private String TAG = "PersonListFragment";
 	private UserDetails user;
+	private int userid;
 	ArrayList<MessageDetails> details;
 	private String errorMessage = "";
-	String next_party;
-	String next_name;
+	int next_party;
+	String name;
+	ListView messageList;
+	MessageAdapter mca;
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
@@ -100,10 +103,15 @@ public class PersonListFragment extends ListFragment {
 		ArrayList<MessageDetails> details;
 		details = new ArrayList<MessageDetails>();
 		//Fill the screen with dummy entries
-		details = addDummies(details);
+		//details = addDummies(details);
 
-		setListAdapter(new MessageAdapter(details, getActivity()));
-		UserDetails user = UserDetails.getUser(getActivity().getIntent());
+		//setListAdapter(new MessageAdapter(details, getActivity()));
+		user = UserDetails.getUser(getActivity().getIntent());
+	
+		userid = user.getUserid();
+		new DownloadMessages().execute();
+		
+		
 		/*
 		// TODO: replace with a real list adapter.
 		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
@@ -114,7 +122,7 @@ public class PersonListFragment extends ListFragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-
+		
 		// Restore the previously serialized activated item position.
 		if (savedInstanceState != null
 				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
@@ -150,9 +158,19 @@ public class PersonListFragment extends ListFragment {
 		super.onListItemClick(listView, view, position, id);
 
 		//EDIT FROM HERE
-		int conversationid = 3;//gotten from clicking on the list bit
-		String name = "fix%20this";
-		new DownloadDetails().execute(Integer.toString(conversationid), Integer.toString(user.getUserid()),name);
+		String name;
+		int other_party;
+		int conversationid = details.get(position).getConversationID();
+		if (details.get(position).getGroup_chat()) {
+			name = details.get(position).getFirstname();
+			other_party = details.get(position).getGroupid();
+		}else {
+			name = details.get(position).getGroup_name();
+			if (details.get(position).getUser1() == userid)
+				other_party = details.get(position).getUser2();
+			else
+				other_party = details.get(position).getUser1();
+		}
 		
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
@@ -161,14 +179,13 @@ public class PersonListFragment extends ListFragment {
 		Bundle arguments = new Bundle();
 		arguments.putString(PersonDetailFragment.ARG_ITEM_ID, getActivity().getIntent()
 				.getStringExtra(PersonDetailFragment.ARG_ITEM_ID));
-		arguments.putString("next_name", next_name);
-		arguments.putString("next_party",next_party);
-		arguments.putParcelableArrayList("messageDetails", details);
-		
+		arguments.putInt("conversationid",conversationid);
+		arguments.putString("name", name);
+		arguments.putInt("other_person", other_party);
 		
 		PersonDetailFragment frag = new PersonDetailFragment();
 		frag.setArguments(arguments);
-		getFragmentManager().beginTransaction().commit();
+		getFragmentManager().beginTransaction().replace(R.id.person_detail_container, frag).commit();
 		
 	}
 
@@ -203,43 +220,39 @@ public class PersonListFragment extends ListFragment {
 		mActivatedPosition = position;
 	}
 	
-	
-	private class DownloadDetails extends AsyncTask<String, Void, ArrayList<MessageDetails>> {
+	private class DownloadMessages extends AsyncTask<Void, Void, ArrayList<MessageDetails>> {
 
 		@Override
-		protected ArrayList<MessageDetails> doInBackground(String... params) {
+		protected ArrayList<MessageDetails> doInBackground(Void... params) {
+			String op = "messageList";
+			InputStream in;
 			try {
-				int conversationid = Integer.parseInt(params[0]);
-				// populate with non sample
-				int userid = 4;
-				String name = params[2];
-				//int userid = Integer.parseInt(params[1]);
-				String op = "messageDetails";
-				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
+				details = new ArrayList<MessageDetails>();
+				in = CustomHttpClient.executeHttpGet(MainActivity.URL+
 						MainActivity.MESSAGE + "?"+
-						"op="+op+"&"+ 
-						"name="+ name+ "&" +
-						"userid=" + userid + "&" +
-						"conversationid=" + conversationid);
-				processInput(in);					
+						"op="+op+"&"+ "userid=" + userid);
+				processInput(in);
 				return details;
 			} catch (Exception e) {
-				Log.v(TAG, e.getMessage());
+				Log.v(TAG,e.getMessage());
 			}
-
 			return details;
 		}
 		
 		@Override
 		protected void onPostExecute(ArrayList<MessageDetails> result) {
-			// TODO Auto-generated method stub
 			super.onPostExecute(result);
+				
+			
+			mca = new MessageAdapter(result, getActivity(),user);
+			setListAdapter(mca);
+			mca.notifyDataSetChanged();
 		}
+		
 		
 	}
 	
-	private boolean processInput(InputStream in) {
-		
+	private boolean processInput(InputStream in){
 		JsonReader jr;
 		try {
 			jr = new JsonReader(new BufferedReader(new InputStreamReader(
@@ -259,10 +272,6 @@ public class PersonListFragment extends ListFragment {
 				return false; 
 			}
 			
-			jr.nextName();
-			String next_party = jr.nextString();
-			jr.nextName();
-			String name = jr.nextString();
 			ArrayList<MessageDetails> messageDetails = JsonCustomReader.readJsonMessages(jr, in);
 			jr.endObject();
 
@@ -276,57 +285,6 @@ public class PersonListFragment extends ListFragment {
 			errorMessage = e.getMessage();
 		}
 		return false;
-
-		
-	}
-	
-	public static ArrayList<MessageDetails> addDummies(ArrayList<MessageDetails> details) {
-		MessageDetails Detail;
-		Detail = new MessageDetails();
-		Detail.setIcon(R.drawable.terence);
-		Detail.setFirstname("terence");
-		Detail.setLast_message_date("2013-04-05");
-		Detail.setLast_message_time("11:00:00");
-		Detail.setContent("PLEASE");
-		Detail.setUser1(2);
-		Detail.setUser2(4);
-		Detail.setGroup_chat(false);		
-		details.add(Detail);
-
-		Detail = new MessageDetails();
-		Detail.setIcon(R.drawable.thai);
-		Detail.setFirstname("thai");
-		Detail.setLast_message_date("2013-05-05");
-		Detail.setLast_message_time("11:00:00");
-		Detail.setContent("WORK");
-		Detail.setUser1(2);
-		Detail.setUser2(3);
-		Detail.setGroup_chat(false);		
-		details.add(Detail);
-		
-		Detail = new MessageDetails();
-		Detail.setIcon(R.drawable.jo);
-		Detail.setFirstname("jo");
-		Detail.setLast_message_date("2013-05-05");
-		Detail.setLast_message_time("11:00:00");
-		Detail.setContent("YES");
-		Detail.setUser1(2);
-		Detail.setUser2(2);
-		Detail.setGroup_chat(false);		
-		details.add(Detail);
-
-		Detail = new MessageDetails();
-		Detail.setIcon(R.drawable.pleasure);
-		Detail.setLast_message_date("2013-06-05");
-		Detail.setLast_message_time("06:00:00");
-		Detail.setContent("Snippet of last message");
-		Detail.setUser1(2);
-		Detail.setGroup_chat(true);	
-		Detail.setGroupid(2);
-		Detail.setGroup_name("Test Group");
-		details.add(Detail);
-		
-		return details;
 	}
 
 }

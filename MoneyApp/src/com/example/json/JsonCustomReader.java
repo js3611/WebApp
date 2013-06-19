@@ -233,7 +233,7 @@ public class JsonCustomReader {
 		MessageDetails md = new MessageDetails(icon, conversationID, last_message_date, last_message_time,
 								user1, user2, group_chat, groupid, group_name, content, senderid,
 								firstname, date, time);
-		//Log.v("JSON", "Read transaction detail: " + td.toString());
+		Log.v("JSON", "Read message detail: " + md.toString());
 		return md;
 	}
 	

@@ -1,12 +1,31 @@
 package com.example.moneyapp.message;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.JsonReader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
 
+import com.example.helpers.AdminHelper;
+import com.example.helpers.CustomHttpClient;
+import com.example.helpers.metadata.MessageDetails;
+import com.example.helpers.metadata.Pair;
+import com.example.helpers.metadata.UserDetails;
+import com.example.json.JsonCustomReader;
+import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.R;
 import com.example.moneyapp.dummy.DummyContent;
 
@@ -29,8 +48,18 @@ public class PersonDetailFragment extends Fragment {
 	private DummyContent.DummyItem mItem;
 
 	String TAG = "PersonDetailFragment";
+	ArrayList<Parcelable> message_content ;
+	int next_party;
+	String next_name;
+	String errorMessage;
+	ArrayList<MessageDetails> details;
+	UserDetails user;
+	int conversationid;
+	String name; 
+	ListView messages;
+	MessageContentAdapter mca;
 
-
+	private FragmentActivity thisActivity;
 	
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -39,35 +68,129 @@ public class PersonDetailFragment extends Fragment {
 	public PersonDetailFragment() {
 	}
 
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		user = UserDetails.getUser(getActivity().getIntent());
+		thisActivity = getActivity();
+		
+		
 		if (getArguments().containsKey(ARG_ITEM_ID)) {
 			// Load the dummy content specified by the fragment
 			// arguments. In a real-world scenario, use< a Loader
 			// to load content from a content provider.
-			mItem = DummyContent.ITEM_MAP.get(getArguments().getString(
-					ARG_ITEM_ID));
+			/*mItem = DummyContent.ITEM_MAP.get(getArguments().getString(
+					ARG_ITEM_ID));*/
+			next_party = getArguments().getInt("next_party");
+			next_name = getArguments().getString("next_name");
+			message_content = getArguments().getParcelableArrayList("messageDetails");
+			
 		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_person_detail,
-				container, false);
-
+		View rootView = inflater.inflate(R.layout.messages_list,
+				container, false); 
+		
+		messages = (ListView) rootView.findViewById(R.id.messageContentList);
 		// Show the dummy content as text in a TextView.
 		/*if (mItem != null) {
 			((TextView) rootView.findViewById(R.id.person_detail))
 					.setText(mItem.content);
 		}*/
 		
+		int conversationid = getArguments().getInt("conversationid");
+		String name = getArguments().getString("name");
+		new DownloadDetails().execute(Integer.toString(conversationid), Integer.toString(user.getUserid()),name);
 		
-
 		return rootView;
 	}
+	
+	private class DownloadDetails extends AsyncTask<String, Void, ArrayList<MessageDetails>> {
 
+		@Override
+		protected ArrayList<MessageDetails> doInBackground(String... params) {
+			try {
+				int conversationid = Integer.parseInt(params[0]);
+				// populate with non sample
+				//int userid = 4;
+	
+				
+				String name = params[2];
+				int userid = Integer.parseInt(params[1]);
+				String op = "messageDetails";
+				
+				Log.v(TAG,"userid ="+userid + ",name = "+ name +",convoId = "+conversationid);
+				InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
+						MainActivity.MESSAGE + "?"+
+						"op="+op+"&"+ 
+						"name="+ name+ "&" +
+						"userid=" + userid + "&" +
+						"conversationid=" + conversationid);
+				processInput(in);					
+				return details;
+			} catch (Exception e) {
+				Log.v(TAG, e.getMessage());
+			}
+
+			return details;
+		}
+		
+		@Override
+		protected void onPostExecute(ArrayList<MessageDetails> result) {
+			super.onPostExecute(result);
+			for (MessageDetails messageDetails : result) {
+				Log.v(TAG,messageDetails.toString());
+			}
+		
+			mca = new MessageContentAdapter(result, thisActivity);
+			messages.setAdapter(mca);
+			mca.notifyDataSetChanged();
+		}
+		
+	}
+
+
+	private boolean processInput(InputStream in) {	
+		JsonReader jr;
+		try {
+			jr = new JsonReader(new BufferedReader(new InputStreamReader(
+					in, "UTF-8")));
+
+			jr.setLenient(true);
+			jr.beginObject();
+
+			/* Read ReturnCode */
+			Pair<String, Boolean> pair = AdminHelper
+					.handleResponse(JsonCustomReader
+							.readJSONRetCode(jr, in));
+			
+			if (!pair.getSecond()) {
+				errorMessage = pair.getFirst();
+				Log.v(TAG, "No Details found.");
+				return false; 
+			}
+			
+			jr.nextName();
+			next_party = Integer.parseInt(jr.nextString());
+			jr.nextName();
+			name = jr.nextString();
+			ArrayList<MessageDetails> messageDetails = JsonCustomReader.readJsonMessages(jr, in);
+			jr.endObject();
+
+			errorMessage = pair.getFirst();
+			details = messageDetails;
+			return true;
+			
+		} catch (UnsupportedEncodingException e) {
+			errorMessage = e.getMessage();
+		} catch (IOException e) {
+			errorMessage = e.getMessage();
+		}
+		return false;		
+	}
 	
 }

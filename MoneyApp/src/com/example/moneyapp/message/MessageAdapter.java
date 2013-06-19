@@ -10,7 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.MessageDetails;
+import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.R;
 
 public class MessageAdapter extends BaseAdapter {
@@ -18,10 +20,12 @@ public class MessageAdapter extends BaseAdapter {
 	private String TAG = "MessageAdapter";
 	private ArrayList<MessageDetails> _data;
 	Context _c;
+	UserDetails user;
 	
-    public MessageAdapter (ArrayList<MessageDetails> data, Context c){
+    public MessageAdapter (ArrayList<MessageDetails> data, Context c, UserDetails user){
         _data = data;
         _c = c;
+        this.user = user;
     }
 	
 	//Returns the number of items in the Adapter
@@ -55,7 +59,6 @@ public class MessageAdapter extends BaseAdapter {
 	        viewHolder.name_view = (TextView) v.findViewById(R.id.name_view);
 	        viewHolder.time_view = (TextView) v.findViewById(R.id.msgtime_view);
 	        viewHolder.date_view = (TextView) v.findViewById(R.id.msgdate_view);
-	        viewHolder.message_view = (TextView) v.findViewById(R.id.msgcontent_view);
 	        v.setTag(viewHolder);
 		} else {
 			viewHolder = (MessageViewHolder)v.getTag();
@@ -66,30 +69,31 @@ public class MessageAdapter extends BaseAdapter {
 
         
         if (!msg.getGroup_chat()) {
-        	
-        	name = msg.getFirstname();
-        	if (name.equals("jo")) {
-        		viewHolder.image.setImageResource(R.drawable.jo);
-        	} else if (name.equals("thai")) {
-        		viewHolder.image.setImageResource(R.drawable.thai); 
+        	if (user.getUserid() == msg.getUser1()) {
+        		name = FriendsList.getFirstname(msg.getUser2());
         	} else {
-        		viewHolder.image.setImageResource(R.drawable.terence);
+        		name = user.getFirstName();
         	}
+        	
+        	viewHolder.image.setImageResource(R.drawable.pleasure);
         }	
         else {
         	name = msg.getGroup_name(); 
-        	viewHolder.image.setImageResource(R.drawable.unhappy);
+        	viewHolder.image.setImageResource(R.drawable.thai);
         }
         	
         viewHolder.name_view.setText(name);
         //gets only part of the content of the last message (how to get last message? can use query on date and time matching on conversationid 
-        String snippet = msg.getContent(); 
-        if (snippet.length() > 15) {
+        /*String snippet = msg.getContent(); 
+        if (snippet!=null && snippet.length() > 15) {
         	snippet = msg.getContent().substring(0,15) +"...";
-        } 
-        viewHolder.message_view.setText(snippet); 
-        viewHolder.date_view.setText(msg.getDate());
-        viewHolder.time_view.setText(msg.getTime());
+        } */
+//        viewHolder.message_view.setText(snippet); 
+        //viewHolder.date_view.setText(msg.getDate());
+        //viewHolder.time_view.setText(msg.getTime());
+        
+        viewHolder.date_view.setText(msg.getLast_message_date());
+        viewHolder.time_view.setText(msg.getLast_message_time());
                      
 		return v;
 	}

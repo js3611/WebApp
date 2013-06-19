@@ -48,7 +48,7 @@ public class MessageListActivity extends FragmentActivity implements
 
 			// In two-pane mode, list items should be given the
 			// 'activated' state when touched.
-			((PersonListFragment) getSupportFragmentManager().findFragmentById(
+			 ((PersonListFragment) getSupportFragmentManager().findFragmentById(
 					R.id.person_list)).setActivateOnItemClick(true);
 		}
 

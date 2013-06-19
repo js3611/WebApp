@@ -33,6 +33,17 @@
             android:layout_marginRight="@dimen/marginRL"
             android:text="Date"/>
         
+         <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/date"
+            android:layout_marginTop="@dimen/marginTB"
+            android:layout_marginRight="@dimen/marginRL"
+            android:text="Time"/>
+        
         <TextView
             android:id="@+id/message"
             style="@style/MessageText"
