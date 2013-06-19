@@ -153,7 +153,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				// Gets the individual debts of each transaction (should have 1
 				// result if user owes, multiple if user is owed)
 				ResultSet debtSet = debtsStmt
-						.executeQuery("SELECT d.transid, d.amount, d.userid, a.firstname, a.surname, amount FROM" 
+						.executeQuery("SELECT d.transid, d.amount, d.userid, a.firstname, a.surname, amount, d.paid_off, d.partial_pay FROM" 
 								+ "  debt d INNER JOIN appuser a ON (d.owesuserid = a.userid)"  
 								+ " AND d.transid = " + transid +";" );
 				
@@ -203,12 +203,16 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 						int transId = debtSet.getInt("transid");
 						double amount = debtSet.getDouble("amount");
 						int friendid = debtSet.getInt("userid");
-						String friendfname = debtSet.getString("firstname");					
+						String friendfname = debtSet.getString("firstname");	
+						double partial =  debtSet.getDouble("partial_pay");
+						boolean paid_off = debtSet.getBoolean("paid_off");
 						
 						jbDetails.beginObject().append("transid", transId)
 											.append("userid",friendid)
 											.append("firstname",friendfname)
 											.append("amount",amount)
+											.append("paid_off",paid_off)
+											.append("partial_pay",partial)
 							  .endObject();
 						} while (debtSet.next()); 
 					jbDetails.endArray().endObject();			
@@ -588,7 +592,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				double epsilon = 0.0001;
 				double total = amount-partial_pay;
 				//If this payment completes the debt we can delegate to the debtRepaid operation
-				if (total < epsilon || total > epsilon )
+				if (Math.abs(total) <= epsilon)
 					handlePostOperation("debtRepaid", conn, request, writer); 
 			}
 			else			//Update went wrong
@@ -692,6 +696,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 			// COULD NOT RECOGNISE OPERATION
 		
 		}
+		
 	}
 	
 	private String getReturnCode(JSONBuilder jb, int ret) {

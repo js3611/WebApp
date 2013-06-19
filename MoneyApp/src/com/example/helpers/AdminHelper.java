@@ -33,6 +33,9 @@ public class AdminHelper {
 		case 7: // unknown error, nothing inserted
 			errorMessage = "There was an error with sign up! Please retry.";
 			break;
+		case 10:
+			errorMessage = "Unsupported Operation";
+			break;
 		case 20:
 			errorMessage = "No transaction to show";
 			return new Pair<String, Boolean>(errorMessage, true);

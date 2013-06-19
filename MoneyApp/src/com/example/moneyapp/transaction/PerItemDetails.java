@@ -12,12 +12,15 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.JsonReader;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +43,7 @@ import com.example.moneyapp.MainActivity;
 import com.example.moneyapp.MainMenu;
 import com.example.moneyapp.R;
 
-public class PerItemDetails extends Activity implements PayDialog.NoticeDialogListener {
+public class PerItemDetails extends Activity implements PayDialog.NoticeDialogListener, EnterAmountDialog.NoticeDialogListener {
 
 	private static final String TAG = "PerItemDetails";
 	private String errorMessage;
@@ -219,6 +222,7 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 			// Set views
 				
 				if (can_delete) { //If the user made the transaction, see list of ppl 
+					
 					personAdapter = new PersonAdapter(person_cost_pairs, thisActivity);
 					owerList.setAdapter(personAdapter);
 					Button payButton = (Button) findViewById(R.id.pay_button);
@@ -229,6 +233,7 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 					//Modify label & amount to pay
 					TextView tv = (TextView) findViewById(R.id.who_owe);
 					tv.setText("Pays to: ");
+					/* Maybe show how much they've paid so far and both the original price */ 
 					transaction.setPrice(individualAmount);
 					
 					ArrayList<Pair<UserDetails, Double>> owerArr = new ArrayList<Pair<UserDetails,Double>>();
@@ -282,22 +287,55 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 
 	@Override
 	public void onDialogPartialClick(DialogFragment dialog) {
-		//partialRepay		
-		new MakePayment().execute("partialRepay",
-					Integer.toString(transaction.getUserid()),
-					Integer.toString(/*transaction.getOwesuserid()*/user.getUserid()),
-					Integer.toString(transaction.getTransactionID()),
-					Double.toString(5.0));
+		//partialRepay	
+		EnterAmountDialog enterAD = new EnterAmountDialog();
+        enterAD.show(getFragmentManager(), "Partial Payment");
 	}
+
 
 	@Override
 	public void onDialogFullyClick(DialogFragment dialog) {
 		//debtRepaid
-		new MakePayment().execute("debtRepay",
+		new MakePayment().execute("debtRepaid",
 				Integer.toString(transaction.getUserid()),
-				Integer.toString(transaction.getOwesuserid()));
+				Integer.toString(/*transaction.getOwesuserid()*/user.getUserid()),
+				Integer.toString(transaction.getTransactionID()));
 	}
 	
+	/* When partial is clicked */
+	@Override
+	public void onAmountDialogPositiveClick(DialogFragment dialog) {
+		
+		EnterAmountDialog ead = (EnterAmountDialog) dialog;
+		String amount = ead.getAmount();
+		if(validAmount(amount)) {
+		
+		new MakePayment().execute("partialRepay",
+				Integer.toString(transaction.getUserid()),
+				Integer.toString(/*transaction.getOwesuserid()*/user.getUserid()),
+				Integer.toString(transaction.getTransactionID()),
+				Double.toString(Double.parseDouble(amount)));
+		} else {
+			MyToast.toastMessage(thisActivity, "Invalid number");
+		}
+	}
+
+	private boolean validAmount(String amount) {
+		try {
+			double val = Double.parseDouble(amount);
+			return val > 0 && transaction.getPrice() /*- transaction.getPartial_pay()*/ >= val;
+		} catch (NumberFormatException e) {
+			//Do nothing
+		}
+		return false;
+	}
+
+	@Override
+	public void onAmountDialogNegativeClick(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private class MakePayment extends AsyncTask<String, Void, Boolean>{
 
 		@Override
@@ -314,13 +352,15 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 				nameValueP.add(new BasicNameValuePair("userid", params[1]));
 				nameValueP.add(new BasicNameValuePair("owesuserid", params[2]));
 				nameValueP.add(new BasicNameValuePair("transid", params[3]));
-				nameValueP.add(new BasicNameValuePair("new_partial_pay", params[4]));
 				nameValueP.add(new BasicNameValuePair("date", DateGen.getDate()));
+
+				if (params[0].equals("partialRepay")) {
+					nameValueP.add(new BasicNameValuePair("new_partial_pay", params[4]));
+				}
+				
 				
 				InputStream in = CustomHttpClient
 						.executeHttpPost(url,nameValueP);
-
-				Log.v(TAG,HttpReaders.readIt(in, 1000));
 				
 				return processInput(in);
 
@@ -355,8 +395,6 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 				errorMessage = e.getMessage();
 			}
 			return false;
-
-			
 		}
 
 		@Override
@@ -372,5 +410,7 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 		}
 		
 	}
+	
+	
 	
 }
