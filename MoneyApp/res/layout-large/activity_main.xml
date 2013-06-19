@@ -23,6 +23,7 @@
         android:layout_below="@id/profile_pic"
         android:layout_alignLeft="@+id/passw"
         android:layout_marginTop="@dimen/inMarginMain"
+        android:layout_marginBottom="@dimen/inMarginMain"
         android:text="@string/phone" />
     
     <EditText
@@ -44,7 +45,6 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="@dimen/inMarginMain"
         android:layout_marginBottom="@dimen/inMarginMain"
         android:text="@string/password" />
 

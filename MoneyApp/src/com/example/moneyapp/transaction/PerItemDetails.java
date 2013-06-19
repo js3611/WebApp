@@ -12,28 +12,25 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.util.JsonReader;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
 import com.example.helpers.DateGen;
-import com.example.helpers.HttpReaders;
+import com.example.helpers.MyMath;
 import com.example.helpers.MyToast;
 import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
@@ -117,18 +114,14 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
+			Intent intent = getIntent().setClass(this, PerItem.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 
 	private class DownloadContent extends AsyncTask<Integer, Void, Boolean> {
 
@@ -209,15 +202,14 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 		private void fillPersonCostArray(ArrayList<UserDetails> users) {
 			person_cost_pairs = new ArrayList<Pair<UserDetails,Double>>();
 			for (UserDetails userDetails : users) {
-				person_cost_pairs.add(new Pair<UserDetails, Double>(userDetails, userDetails.getAmount()));
+				person_cost_pairs.add(new Pair<UserDetails, Double>(userDetails, MyMath.round(userDetails.getAmount())));
 			}
 			
 		}
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-			
+			super.onPostExecute(result);	
 			if(result){
 			// Set views
 				

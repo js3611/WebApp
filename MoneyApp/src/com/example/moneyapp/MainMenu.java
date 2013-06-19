@@ -7,13 +7,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.friend.Friend;
 import com.example.moneyapp.message.MessageListActivity;
+import com.example.moneyapp.setting.SettingFragment;
 import com.example.moneyapp.transaction.PerItem;
 import com.example.moneyapp.transaction.PerPerson;
 
@@ -58,17 +61,24 @@ public class MainMenu extends Activity {
 	
 	public void toTransactions(View view){
 		
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean per_person_mode = sharedPref.getBoolean(SettingFragment.PREF_VIEW_MODE, false);
+		Intent intent = getIntent();
+		intent.putExtra(MainActivity.USER_KEY, user);
+		
+		/*
 		SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		int view_mode = sharedPref.getInt(getString(R.string.view_mode), PER_PERSON_VIEW);
-		Intent intent = getIntent();
-		//intent.putExtra(MainActivity.USER_KEY, user);
-		view_mode = PER_TRANSACTION_VIEW;
-		if (view_mode == PER_PERSON_VIEW) 
+		view_mode = PER_TRANSACTION_VIEW; */
+		if (per_person_mode)//view_mode == PER_PERSON_VIEW) 
 			intent.setClass(MainMenu.this, PerPerson.class);
 		else 
 			intent.setClass(MainMenu.this, PerItem.class);
 		
-		startActivity(intent);
+		startActivity(intent); 
+		
+		
+		
 	}
 	
 	public void toMessages(View view){
@@ -83,7 +93,7 @@ public class MainMenu extends Activity {
 		startActivity(intent);
 	}
 	
-	public void toSettings(View view){
+	public void toSettings(MenuItem menu){
 		Intent intent = getIntent();
 		intent.setClass(MainMenu.this, Settings.class);
 		startActivity(intent);

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public class MyMath {
 
 	public static final double EPSILON = 0.0000001;
+	public static final double BEPSILON = 0.08;
 	
 	public static double round(double unrounded)
 	{
@@ -15,5 +16,9 @@ public class MyMath {
 	
 	public static boolean practically_equal(double amount, double sum) {
 		return Math.abs(amount-sum) < EPSILON;
+	}
+
+	public static boolean practically_equal_loose(double amount, double sum) {
+		return Math.abs(amount-sum) < BEPSILON;
 	}
 }

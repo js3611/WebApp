@@ -12,7 +12,7 @@
     <dimen name="personBorrowedDim">100dp</dimen>
     <dimen name="dateAndPerson">130dp</dimen>
     <dimen name="messageBoxHeightDim">150dp</dimen>
-    <dimen name="messageTextDim">450dp</dimen>
+    <dimen name="messageTextDim">350dp</dimen>
     <dimen name="extMarginMenu">225dp</dimen>
     <dimen name="extMarginMain">150dp</dimen>
     <dimen name="inMarginMain">50dp</dimen>
