@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -56,6 +57,7 @@ public class MessageListActivity extends FragmentActivity implements
 		}
 
 		// TODO: If exposing deep links into your app, handle intents here.
+		fragment = new PersonDetailFragment();
 	}
 
 	@Override
@@ -90,8 +92,8 @@ public class MessageListActivity extends FragmentActivity implements
 			// fragment transaction.
 			Bundle arguments = new Bundle();
 			arguments.putString(PersonDetailFragment.ARG_ITEM_ID, id);
-			fragment = new PersonDetailFragment();
 			fragment.setArguments(arguments);
+			
 			//put arguments
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.person_detail_container, fragment).commit();
@@ -104,8 +106,13 @@ public class MessageListActivity extends FragmentActivity implements
 			startActivity(detailIntent);
 		}
 	}
-	
+	/*
 	public void sendMessage(View view) {
+		if (fragment == null) {
+			Log.v("MessageListacticity", "errrr");
+		}
 		fragment.sendMessage();
 	}
+	*/
 }
+

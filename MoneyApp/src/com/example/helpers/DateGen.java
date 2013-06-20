@@ -10,7 +10,7 @@ public class DateGen {
 	public static String getDate() {
 		Calendar cal = Calendar.getInstance();
 		int day = cal.get(Calendar.DATE);
-		int month = cal.get(Calendar.MONTH);
+		int month = cal.get(Calendar.MONTH)+1;
 		int year = cal.get(Calendar.YEAR);
 		StringBuilder strB = new StringBuilder();
 		strB.append(year).append("-");

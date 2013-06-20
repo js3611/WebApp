@@ -153,11 +153,6 @@ public class Login extends javax.servlet.http.HttpServlet implements
 				jb = getFriendList(conn, jb, rs.getInt("userid"));
 				jb.endObject();
 				
-				
-//				if (idToNameMap == null)
-//					idToNameMap = IDtoNameMap.getInstance(conn,rs.getInt("userid"));
-
-				
 				out.print(jb.build());
 			} else { // wrong password
 				loginCount++;

@@ -24,7 +24,7 @@
         android:layout_alignParentBottom="true">
         
         <EditText 
-            android:id="@+id/message"
+            android:id="@+id/message_text"
             style="@style/MessageText"
             android:layout_width="@dimen/messageTextDim"
             android:layout_height="match_parent"
@@ -40,7 +40,6 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/messageMargin"
-            android:onClick="sendMessage"
             android:src="@drawable/send_message_button" />"
         
         

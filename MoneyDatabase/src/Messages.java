@@ -184,7 +184,7 @@ rc 414 = done
  		ResultSet messages = viewStmt.executeQuery("SELECT mc.content, mc._date,mc._time, " +
 					"mc.userid, a.firstname FROM messagecontent mc " +
 					"INNER JOIN appuser a ON(mc.userid = a.userid) WHERE conversationid = " +
-					conversationid + "ORDER BY _date ASC, _time ASC;");
+					conversationid + "ORDER BY _date DESC, _time DESC;");
 		
 		if (!messages.isBeforeFirst()) // no messages
 			writer.println(getReturnCode(jb,44));
@@ -192,7 +192,8 @@ rc 414 = done
 		/* select mc.content, mc._date,mc._time, mc.userid, a.firstname, a.surname from messagecontent mc inner join appuser a on(mc.userid=a.userid) where conversationid = 2 ORDER BY _date ASC, _time ASC; */
 			jb.beginObject().append("returnCode",45).append("other_party", other_party).append("name",name).beginArray();
 			while (messages.next()){
-				jb.beginObject().append("content", messages.getString("content"))
+				jb.beginObject().append("conversationid", conversationid)
+								.append("content", messages.getString("content"))
 								.append("date", messages.getString("_date"))
 								.append("time", messages.getString("_time"))
 								.append("senderid", messages.getInt("userid"))
@@ -214,10 +215,10 @@ rc 414 = done
 		String content = request.getParameter("content"); 
 		
 		int rs = addStmt.executeUpdate("INSERT INTO messagecontent (content, _date, " +
-										"_time, conversationid, userid) VALUES (" +
-										content + ", " +
-										date + ", " +
-										time + ", " +
+										"_time, conversationid, userid) VALUES ('" +
+										content + "', '" +
+										date + "', '" +
+										time + "', " +
 										conversationid + ", " +
 										userid + ");");
 										

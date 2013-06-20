@@ -90,7 +90,7 @@ public class MessageAdapter extends BaseAdapter {
         if (snippet!=null && snippet.length() > 15) {
         	snippet = msg.getContent().substring(0,15) +"...";
         } */
-//        viewHolder.message_view.setText(snippet); 
+        // viewHolder.message_view.setText(snippet); 
         //viewHolder.date_view.setText(msg.getDate());
         //viewHolder.time_view.setText(msg.getTime());
         

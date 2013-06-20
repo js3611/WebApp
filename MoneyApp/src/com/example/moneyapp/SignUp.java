@@ -111,6 +111,7 @@ public class SignUp extends Activity {
 				Intent intent = new Intent(SignUp.this, MainMenu.class);
 				intent.putExtra(MainActivity.USER_KEY, userDetails);
 				startActivity(intent);
+				finish();
 			} else {
 				errorView.setText(errorMessage);
 			}
@@ -155,9 +156,21 @@ public class SignUp extends Activity {
 			Pair<String, Boolean> pair = AdminHelper
 					.handleResponse(JsonCustomReader.readJSONRetCode(jr, in));
 
-			errorMessage = pair.getFirst();
-			return pair.getSecond();
+			if (!pair.getSecond()) {
+				errorMessage = pair.getFirst();
+				return false;
+			}
+		
+			/* Read User detail */
+			userDetails = JsonCustomReader.readJSONUser(jr, in);
+			/* No Friends */
+			FriendsList.createInstance(new ArrayList<UserDetails>());
+			
+			jr.endObject();
 
+			return true;
+			
+			
 		} catch (UnsupportedEncodingException e) {
 			errorMessage = e.getMessage();
 		} catch (IOException e) {

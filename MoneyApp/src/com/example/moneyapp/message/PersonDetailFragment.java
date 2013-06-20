@@ -6,6 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,12 +20,18 @@ import android.util.JsonReader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.helpers.AdminHelper;
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.DateGen;
+import com.example.helpers.HttpReaders;
+import com.example.helpers.MyToast;
+import com.example.helpers.TransactionHelper;
 import com.example.helpers.metadata.MessageDetails;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
@@ -36,7 +46,7 @@ import com.example.moneyapp.dummy.DummyContent;
  * either contained in a {@link MessageListActivity} in two-pane mode (on
  * tablets) or a {@link MessageDetailActivity} on handsets.
  */
-public class PersonDetailFragment extends Fragment {
+public class PersonDetailFragment extends Fragment implements OnClickListener {
 	/**
 	 * The fragment argument representing the item ID that this fragment
 	 * represents.
@@ -98,14 +108,16 @@ public class PersonDetailFragment extends Fragment {
 				container, false); 
 		v = rootView;
 		messages = (ListView) rootView.findViewById(R.id.messageContentList);
+		ImageButton ib = (ImageButton) v.findViewById(R.id.sendMessage);
+		ib.setOnClickListener(this);
 		// Show the dummy content as text in a TextView.
 		/*if (mItem != null) {
 			((TextView) rootView.findViewById(R.id.person_detail))
 					.setText(mItem.content);
 		}*/
 		
-		int conversationid = getArguments().getInt("conversationid");
-		String name = getArguments().getString("name");
+		conversationid = getArguments().getInt("conversationid");
+		name = getArguments().getString("name");
 		new DownloadDetails().execute(Integer.toString(conversationid), Integer.toString(user.getUserid()),name);
 		
 		return rootView;
@@ -147,7 +159,7 @@ public class PersonDetailFragment extends Fragment {
 			for (MessageDetails messageDetails : result) {
 				Log.v(TAG,messageDetails.toString());
 			}
-		
+			
 			mca = new MessageContentAdapter(result, thisActivity);
 			messages.setAdapter(mca);
 			mca.notifyDataSetChanged();
@@ -197,40 +209,84 @@ public class PersonDetailFragment extends Fragment {
 	
 	public void sendMessage() {
 		//Async task
-		EditText et = (EditText) v.findViewById(R.id.message);
+//		EditText et = (EditText) v.findViewById(R.id.message);
+		TextView et = (TextView) v.findViewById(R.id.message_text);
 		String content = et.getText().toString();
-		new SendMessageTask().execute(content);
+		String date = DateGen.getDate();
+		String time = DateGen.getTime();
+		
+		new SendMessageTask().execute(content,date,time,Integer.toString(conversationid));
 	}
 	
-	private class SendMessageTask extends AsyncTask<String, Void, Void> {
+	private class SendMessageTask extends AsyncTask<String, Void, Boolean> {
 
 		@Override
-		protected Void doInBackground(String... params) {
-			
+		protected Boolean doInBackground(String... params) {
+		try{	
 			String content = params[0];
 			int userid = user.getUserid();
-			int friendid=0;
-			String date=null;
-			String time=null;
-			String op = "messageDetails";
+			String date=params[1];
+			String time=params[2];
+			String conversationid = params[3];
+			String op = "sendMessage";
 			
 			Log.v(TAG,"userid ="+userid + ",name = "+ name +",convoId = "+conversationid);
-//			InputStream in = CustomHttpClient.executeHttpGet(MainActivity.URL+
-//					MainActivity.MESSAGE + "?"+
-//					"op="+op+"&"+ 
-//					"name="+ name+ "&" +
-//					"userid=" + userid + "&" +
-//					"conversationid=" + conversationid);
-//			processInput(in);					
 			
-			return null;
+			List<NameValuePair> nameValueP = new ArrayList<NameValuePair>(3);
+			nameValueP.add(new BasicNameValuePair("op", op));
+			nameValueP.add(new BasicNameValuePair("conversationid", conversationid));
+			nameValueP.add(new BasicNameValuePair("userid", Integer.toString(userid)));
+			nameValueP.add(new BasicNameValuePair("_date", date));
+			nameValueP.add(new BasicNameValuePair("_time", time));
+			nameValueP.add(new BasicNameValuePair("content", content));
+			
+			InputStream in = CustomHttpClient.executeHttpPost(MainActivity.URL+MainActivity.MESSAGE,nameValueP);
+			
+			//Log.v("person detail fragment", HttpReaders.readIt(in, 500));
+			
+			JsonReader jr =new JsonReader(new BufferedReader(
+					new InputStreamReader(in)));
+			jr.setLenient(true);
+			jr.beginObject();
+			int response = JsonCustomReader.readJSONRetCode(jr, in);
+			jr.endObject();	
+			Pair<String, Boolean> pair = AdminHelper
+					.handleResponse(response);
+			errorMessage = pair.getFirst();
+
+			return pair.getSecond();
+			
+		}
+		catch (Exception e) {
+			Log.v(TAG, e.getMessage());
+		}
+			return false;
 		}
 		
 		@Override
-		protected void onPostExecute(Void result) {
-			// TODO Auto-generated method stub
+		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
+			if (result) {
+				TextView et = (TextView) v.findViewById(R.id.message_text);
+				et.setText("");
+				conversationid = getArguments().getInt("conversationid");
+				name = getArguments().getString("name");
+				new DownloadDetails().execute(Integer.toString(conversationid), Integer.toString(user.getUserid()),name);
+				
+				MyToast.toastMessage(thisActivity, "Message sent!");
+		}  else
+				MyToast.toastMessage(thisActivity, errorMessage);
 		}
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.sendMessage:
+			sendMessage();
+		}
+		
 	}
 	
 }
