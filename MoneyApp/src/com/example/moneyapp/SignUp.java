@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.example.helpers.AdminHelper;
 import com.example.helpers.ConnectionHelper;
 import com.example.helpers.CustomHttpClient;
+import com.example.helpers.MyToast;
 import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
@@ -82,9 +83,9 @@ public class SignUp extends Activity {
 					enterPasswordString, phoneNum);
 
 		} else if (!passwordsMatch(enterPasswordString, checkPasswordString)) {
-			errorView.setText("Entered Passwords do not match!");
+			MyToast.toastMessage(this, "Entered Passwords do not match!");
 		} else if (!ConnectionHelper.checkNetworkConnection(connMgr)) {
-			errorView.setText("No network connection");
+			MyToast.toastMessage(this, "No network connection");
 		}
 
 	}
@@ -113,7 +114,7 @@ public class SignUp extends Activity {
 				startActivity(intent);
 				finish();
 			} else {
-				errorView.setText(errorMessage);
+				MyToast.toastMessage(SignUp.this, errorMessage);
 			}
 		}
 	}
