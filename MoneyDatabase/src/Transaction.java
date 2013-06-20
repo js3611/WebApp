@@ -154,9 +154,9 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 				// Gets the individual debts of each transaction (should have 1
 				// result if user owes, multiple if user is owed)
 				ResultSet debtSet = debtsStmt
-						.executeQuery("SELECT d.transid, d.amount, d.userid, a.firstname, a.surname, amount, d.paid_off, d.partial_pay FROM" 
+						.executeQuery("SELECT d.transid, d.amount, d.userid, d.owesuserid, a.firstname, a.surname, amount, d.paid_off, d.partial_pay FROM" 
 								+ "  debt d INNER JOIN appuser a ON (d.owesuserid = a.userid)"  
-								+ " AND d.transid = " + transid +";" );
+								+ " AND d.transid = " + transid +" AND d.paid_off=false;" );
 				
 				if (!detailsSet.isBeforeFirst() || !debtSet.isBeforeFirst()) { // SELECTs returned
 															// nothing , i.e.
@@ -203,7 +203,7 @@ public class Transaction extends javax.servlet.http.HttpServlet implements
 					do {
 						int transId = debtSet.getInt("transid");
 						double amount = debtSet.getDouble("amount");
-						int friendid = debtSet.getInt("userid");
+						int friendid = debtSet.getInt("owesuserid");
 						String friendfname = debtSet.getString("firstname");	
 						double partial =  debtSet.getDouble("partial_pay");
 						boolean paid_off = debtSet.getBoolean("paid_off");

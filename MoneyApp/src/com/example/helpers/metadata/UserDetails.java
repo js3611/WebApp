@@ -91,7 +91,7 @@ public class UserDetails implements Serializable {
 				+ ", firstName=" + firstName + ", calendarid=" + calendarid
 				+ ", wishlist=" + wishlist + ", password=" + password
 				+ ", phoneNo=" + phoneNo + ", profilePicture=" + profilePicture
-				+ "]";
+				+ ", amount="+ amount+"]";
 	}
 	public static UserDetails getUser(Intent intent) {
 		Bundle bundle = intent.getExtras();

@@ -65,8 +65,10 @@ public class JsonCustomReader {
 				password = jr.nextString();
 			} else if (name.equals("phonenumber")) {
 				phoneNo = jr.nextString();
-			} else if (name.equals("amount")){
-				amount = jr.nextDouble();
+			} else if (name.equals("amount")) {
+				amount += jr.nextDouble();
+			} else if (name.equals("partial_pay")) {
+				amount -= jr.nextDouble();
 			} else {
 				jr.skipValue();
 			}
@@ -75,7 +77,7 @@ public class JsonCustomReader {
 		UserDetails ud = new UserDetails(userid, surname, firstName,
 				calendarid, wishlist, password, phoneNo, profilePicture);
 		ud.setAmount(amount);
-		//Log.v("JSON", ud.toString());
+		Log.v("JSON", ud.toString());
 		return ud;
 		
 	}

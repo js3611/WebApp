@@ -175,40 +175,11 @@ public class PerPersonProfile extends FragmentActivity implements PayDialog.Noti
 	
 	}
 
-	private class MakePayment extends AsyncTask<String, Void, Boolean> {
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-			return makePayment();
-		}
-
-		private Boolean makePayment() {
-			String op = "personRepay";
-			String owesuserid = null;
-			String userid;
-			
-			return false;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-
-			if (result) {
-				// Toast message
-				MyToast.toastMessage(getApplicationContext(),"Paid successfully!");
-			} else {
-				MyToast.toastMessage(getApplicationContext(),"Error occurred");
-			}
-		}
-
-	}
-
-
 	@Override
 	public void onDialogPartialClick(DialogFragment dialog) {
-		Intent intent = getIntent().setClass(getApplicationContext(), NewTransaction.class);
-		/* Add user and friend */
-		startActivity(intent);
+		//Partial Payment
+		ppfragment.makePartialPayment();
+		
 	}
 
 	@Override

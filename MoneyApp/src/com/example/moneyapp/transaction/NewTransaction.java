@@ -81,8 +81,19 @@ public class NewTransaction extends Activity implements
 		personList = (ListView) findViewById(R.id.PersonList);
 
 		user = UserDetails.getUser(getIntent());
-
 		person_cost_pairs = new ArrayList<Pair<UserDetails, Double>>();
+		owers = new ArrayList<UserDetails>();
+		
+		if(getIntent().getBooleanExtra("fromPartialPay", false)) {
+			EditText et = (EditText) findViewById(R.id.item_text);
+			et.setText("Partial Pay");
+			UserDetails repay = new UserDetails();
+			int userid = getIntent().getIntExtra(Transactions.FRIENDID_STR,0);
+			repay.setUserid(userid);
+			person_cost_pairs.add(new Pair<UserDetails, Double>(repay, 0.0));
+			owers.add(repay);
+		}
+		
 		personAdapter = new PersonAdapter(person_cost_pairs, this);
 		personList.setAdapter(personAdapter);
 		registerForContextMenu(personList);
@@ -275,6 +286,10 @@ public class NewTransaction extends Activity implements
 				MyToast.toastMessage(NewTransaction.this, msg);
 				/* Need to somehow know where to go back to */
 
+				if(getIntent().getBooleanExtra("fromPartialPay", false)) {
+					startActivity(getIntent().setClass(thisActivity, PerPerson.class).putExtra("fromPartialPay", false));
+				}
+				
 				thisActivity.finish();
 
 				/*

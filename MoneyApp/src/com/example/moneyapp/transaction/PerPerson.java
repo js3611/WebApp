@@ -77,7 +77,7 @@ public class PerPerson extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		/* Asynchronously populate the list view the data */
-		new DownloadContent().execute(Integer.toString(user.getUserid()));
+		
 		Log.v(TAG, "Resumed");
 	}
 
@@ -90,7 +90,7 @@ public class PerPerson extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.v(TAG, "Restarted");
+		new DownloadContent().execute(Integer.toString(user.getUserid()));
 	}
 	
 
@@ -190,11 +190,13 @@ public class PerPerson extends Activity {
 
 				if (!pair.getSecond()) {
 					errorMessage = pair.getFirst();
+					details = new ArrayList<TransactionDetail>();
 					Log.v(TAG, "No Transactions");
 					return false;
 				}
 				Log.v(TAG, "Read fine");
 				if (jr.peek() == JsonToken.END_OBJECT) {
+					details = new ArrayList<TransactionDetail>();
 					Log.v(TAG, "No Transactions");
 					return true;
 				}
@@ -296,8 +298,6 @@ public class PerPerson extends Activity {
 			return newDetails;
 		}
 
-
-
 		@Override
 		protected void onPostExecute(ArrayList<TransactionDetail> result) {
 			super.onPostExecute(result);
@@ -309,48 +309,6 @@ public class PerPerson extends Activity {
 //			registerForContextMenu(transList);
 		}
 
-	}
-
-	public static ArrayList<TransactionDetail> addDummies(
-			ArrayList<TransactionDetail> details) {
-		TransactionDetail Detail;
-		Detail = new TransactionDetail();
-		Detail.setIcon(R.drawable.thai);
-		Detail.setOwesuser("Thai");
-		Detail.setSubject("Dinner");
-		Detail.setPrice(30);
-		details.add(Detail);
-
-		Detail = new TransactionDetail();
-		Detail.setIcon(R.drawable.terence);
-		Detail.setOwesuser("Terence");
-		Detail.setSubject("lunch");
-		Detail.setPrice(50);
-		details.add(Detail);
-
-		Detail = new TransactionDetail();
-		Detail.setIcon(R.drawable.jo);
-		Detail.setOwesuser("Jo");
-		Detail.setSubject("Malaga");
-		Detail.setPrice(340);
-		details.add(Detail);
-
-		Detail = new TransactionDetail();
-		Detail.setIcon(R.drawable.terence);
-		Detail.setOwesuser("Terence");
-		Detail.setSubject("Dinner");
-		Detail.setPrice(30);
-		details.add(Detail);
-
-		// String str = "{\"returnCode\":1," +
-		// "\"data\":[{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30},"
-		// +
-		// "{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}," +
-		// "{\"userfname\":\"jo\",\"owesfname\":\"terence\",\"price\":30}]}";
-		//
-		// InputStream in = new ByteArrayInputStream(str.getBytes());
-
-		return details;
 	}
 
 }

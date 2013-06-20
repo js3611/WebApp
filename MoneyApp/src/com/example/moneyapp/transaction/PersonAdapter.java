@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.helpers.metadata.FriendsList;
 import com.example.helpers.metadata.Pair;
 import com.example.helpers.metadata.UserDetails;
 import com.example.moneyapp.R;
@@ -84,7 +85,7 @@ public class PersonAdapter extends CustomAdapter<Pair<UserDetails, Double>> {
 		}
 		Pair<UserDetails, Double> detail = _data.get(position);
 		viewHolder.image.setImageResource(R.drawable.ic_launcher);
-		viewHolder.name_view.setText(detail.getFirst().getFirstName());
+		viewHolder.name_view.setText(FriendsList.getFirstname(detail.getFirst().getUserid()));
 		viewHolder.price_text.setText(""+detail.getSecond());
 		return v;
 	}

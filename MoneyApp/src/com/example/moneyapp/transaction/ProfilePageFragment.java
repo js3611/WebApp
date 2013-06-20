@@ -12,6 +12,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.JsonReader;
@@ -266,7 +267,18 @@ public class ProfilePageFragment extends Fragment {
 			((Button) view.findViewById(R.id.nudge_button)).setEnabled(false);
 			((TextView) view.findViewById(R.id.oweDirection)).setEnabled(false);
 			MyToast.toastMessage(getActivity(), "Payment successful!");
+			getActivity().finish();
 		}
+		
+	}
+
+
+	public void makePartialPayment() {
+		Intent intent = getActivity().getIntent().setClass(getActivity(), NewTransaction.class);
+		intent.putExtra("fromPartialPay", true);
+		intent.putExtra(Transactions.FRIENDID_STR, friendid);
+		/* Add user and friend */
+		startActivity(intent);
 		
 	}
 

@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewDebug.FlagToString;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -61,6 +62,7 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 	private ArrayList<Pair<UserDetails, Double>> person_cost_pairs;
 	private boolean can_delete;
 	private double individualAmount;
+	private double totalAmount;
 	
 	
 	@Override
@@ -202,7 +204,9 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 		private void fillPersonCostArray(ArrayList<UserDetails> users) {
 			person_cost_pairs = new ArrayList<Pair<UserDetails,Double>>();
 			for (UserDetails userDetails : users) {
-				person_cost_pairs.add(new Pair<UserDetails, Double>(userDetails, MyMath.round(userDetails.getAmount())));
+				double value = MyMath.round(userDetails.getAmount());
+				totalAmount += value;
+				person_cost_pairs.add(new Pair<UserDetails, Double>(userDetails, value ));
 			}
 			
 		}
@@ -219,12 +223,13 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 					owerList.setAdapter(personAdapter);
 					Button payButton = (Button) findViewById(R.id.pay_button);
 					payButton.setText("Edit");
+					transaction.setPrice(totalAmount);
 					//registerForContextMenu(transList);
 				} else { //Normally see who to pay to 
 
 					//Modify label & amount to pay
 					TextView tv = (TextView) findViewById(R.id.who_owe);
-					tv.setText("Pays to: ");
+					tv.setText("Pay to: ");
 					/* Maybe show how much they've paid so far and both the original price */ 
 					transaction.setPrice(individualAmount);
 					
@@ -247,7 +252,10 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 				EditText total_text = (EditText) findViewById(R.id.amount_text);
 				item_text.setText(transaction.getSubject());
 				item_description_text.setText(transaction.getDescription());
+				//Easy option for now
+
 				total_text.setText(Double.toString(transaction.getPrice()));
+//				total_text.setText(Double.toString(transaction.getPrice()));
 
 				
 			} else {
@@ -398,7 +406,8 @@ public class PerItemDetails extends Activity implements PayDialog.NoticeDialogLi
 			}
 			MyToast.toastMessage(thisActivity, "Payment successful!");
 			
-			startActivity(getIntent().setClass(thisActivity, PerItem.class));
+			startActivity(getIntent().setClass(thisActivity, PerItem.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+			finish();
 		}
 		
 	}
